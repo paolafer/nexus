@@ -1,0 +1,44 @@
+
+
+ ################################################ 
+
+
+/run/verbose 1
+/event/verbose 0 
+/tracking/verbose 0
+
+/Geometry/Lab_vertices/starting_point 0 
+/Geometry/Lab_vertices/file_name /Users/paola/Software/nexus/petalo_fork/vertices_LXe_128_128_50.root 
+
+/Geometry/PetLXeCell/z_size 5. cm 
+
+/Geometry/PetLXeCell/max_step_size 1.0 mm 
+#/Geometry/SiPMpet/physics true
+/Geometry/PetPlainDice/reflectivity 0.97
+/Geometry/PetLXeCell/physics true
+/Geometry/SiPMpet/refr_index 1.54
+
+/Generator/DoubleParticle/particle e- 
+
+/Generator/DoubleParticle/min_energy 511 keV 
+
+/Generator/DoubleParticle/max_energy 511 keV 
+
+/Generator/DoubleParticle/region ANYTHING 
+
+
+/PhysicsList/Nexus/clustering          false 
+
+/PhysicsList/Nexus/drift               false 
+
+/PhysicsList/Nexus/electroluminescence false 
+
+/PhysicsList/Nexus/offScintillation false 
+
+/PhysicsList/Nexus/offCherenkov true 
+
+
+/nexus/persistency/outputFile /Users/paola/Software/nexus/petalo_fork/LXe_VUV3mm_xy2.4cm_z5cm_PHYS_noCher.pet 
+
+/nexus/random_seed -2 
+

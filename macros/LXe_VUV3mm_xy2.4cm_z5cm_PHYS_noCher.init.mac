@@ -1,0 +1,29 @@
+
+
+ ################################################ 
+
+
+/PhysicsList/RegisterPhysics G4EmStandardPhysics_option4
+/PhysicsList/RegisterPhysics G4OpticalPhysics
+/PhysicsList/RegisterPhysics G4DecayPhysics
+/PhysicsList/RegisterPhysics G4StepLimiterPhysics
+/PhysicsList/RegisterPhysics NexusPhysics
+
+/Geometry/RegisterGeometry VERTICES
+
+
+/Generator/RegisterGenerator DOUBLE_PARTICLE
+
+
+/Actions/RegisterTrackingAction DEFAULT 
+
+/Actions/RegisterSteppingAction DEFAULT 
+
+/Actions/RegisterRunAction DEFAULT 
+
+/Actions/RegisterEventAction DEFAULT 
+
+
+/nexus/RegisterMacro /Users/paola/Software/nexus/petalo_fork/macros/LXe_VUV3mm_xy2.4cm_z5cm_PHYS_noCher.config.mac 
+
+

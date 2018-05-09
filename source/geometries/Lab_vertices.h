@@ -19,7 +19,7 @@
 class G4GenericMessenger;
 namespace nexus {class Pet2boxes;}
 namespace nexus {class PetLYSObox;}
-namespace nexus {class PetLXeCell;}
+namespace nexus {class PetLXeCellCheck;}
 namespace nexus {class PetLYSOCell;}
 
 namespace nexus {
@@ -42,7 +42,7 @@ namespace nexus {
     /// Messenger for the definition of control commands
     G4GenericMessenger* _msg;
 
-    PetLXeCell* module_;
+    PetLXeCellCheck* module_;
 
     TFile* file_;
     G4float px1_, py1_, pz1_, px2_, py2_, pz2_;

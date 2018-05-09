@@ -10,7 +10,7 @@
 #include "Lab_vertices.h"
 
 #include "Pet2boxes.h"
-#include "PetLXeCell.h"
+#include "PetLXeCellCheck.h"
 //#include "PetLYSObox.h"
 #include "PetLYSOCell.h"
 #include "MaterialsList.h"
@@ -47,7 +47,7 @@ namespace nexus {
      // Which material are we using?
      _msg->DeclareProperty("det_type", type_, "type of detector");
 
-     module_ = new PetLXeCell();
+     module_ = new PetLXeCellCheck();
     
   }
 
