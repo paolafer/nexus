@@ -4,31 +4,12 @@
 ### --------------------------------------------------------
 
 
-##### ACTIONS #####
 
 
-##### JOB CONTROL #####
-#/nexus/random_seed 0
-/nexus/persistency/eventType background
-/nexus/persistency/outputFile Next100.Neutron.next
 
 
 
 ##### GEOMETRY #####
-/Geometry/Next100/pressure 15. bar
-/Geometry/Next100/max_step_size 1. mm
-/Geometry/Next100/elfield false
-
-
-/Geometry/Next100/shielding_vis false
-/Geometry/Next100/vessel_vis false
-/Geometry/Next100/ics_vis false
-/Geometry/Next100/field_cage_vis false
-/Geometry/Next100/grids_vis false
-/Geometry/Next100/energy_plane_vis false
-/Geometry/Next100/tracking_plane_vis false
-/Geometry/PmtR11410/SD_depth 3
-
 
 
 ##### GENERATOR #####
@@ -40,36 +21,13 @@
 #		  PMT_BODY, PMT, TRK_SUPPORT, DICE_BOARD, EL_TABLE
 
 # Single Particle
-#/Generator/SingleParticle/particle e-
-#/Generator/SingleParticle/min_energy 1.0 MeV
-#/Generator/SingleParticle/max_energy 2.0 MeV
-#/Generator/SingleParticle/region DICE_BOARD
-#/Generator/SingleParticle/momentum_direction (0., 0., 1.)
+/Generator/SingleParticle/particle p
+/Generator/SingleParticle/min_energy 2 GeV
+/Generator/SingleParticle/max_energy 2 GeV
+/Generator/SingleParticle/region BEAM
+/Generator/SingleParticle/momentum_direction (0, -1, 0)
 
 
-# Deacy0 Interface for bb0nu/bb2nu decays
-#/Generator/Decay0Interface/inputFile /data4/NEXT/NEXTNEW/decay0/Xe136_bb0nu/Xe136_bb0nu_decay0.0.txt
-#/Generator/Decay0Interface/region ACTIVE
-
-# Ion Gun for background decays
-#/Generator/IonGun/atomic_number 83
-#/Generator/IonGun/mass_number 214
-#/Generator/IonGun/region FIELD_CAGE
-
-#Neutron generator for cosmogenics
-/Generator/NeutronGenerator/min_energy 100 MeV
-/Generator/NeutronGenerator/max_energy 	100 MeV
-/Generator/NeutronGenerator/region EXTERNAL
-
-# ACTIONS
-#/Actions/ElSimEventAction/max_energy 3. MeV
-#/Actions/DefaultEventAction/energy_threshold 0. MeV
-#/Actions/DefaultEventAction/max_energy 3. MeV
-
-## No full simulation
-/PhysicsList/Nexus/clustering          false
-/PhysicsList/Nexus/drift               false
-/PhysicsList/Nexus/electroluminescence false
 
 ##### VERBOSITIES #####
 /run/verbose 0
@@ -77,3 +35,6 @@
 /tracking/verbose 0
 
 
+##### JOB CONTROL #####
+/nexus/persistency/hdf5 true
+/nexus/persistency/outputFile cevns_test

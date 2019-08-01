@@ -1,4 +1,4 @@
-### Initialization macro for proton beam on target
+### Initialization macro for proton beam on targe
 
 
 ### PHYSICS
@@ -6,7 +6,7 @@
 /PhysicsList/RegisterPhysics G4DecayPhysics
 /PhysicsList/RegisterPhysics G4RadioactiveDecayPhysics
 /PhysicsList/RegisterPhysics G4HadronElasticPhysicsHP
-/PhysicsList/RegisterPhysics G4HadronPhysicsQGSP_BERT_HP
+/PhysicsList/RegisterPhysics G4HadronPhysicsQGSP_BERT
 /PhysicsList/RegisterPhysics G4StoppingPhysics
 /PhysicsList/RegisterPhysics G4IonPhysics
 /PhysicsList/RegisterPhysics NexusPhysics
@@ -14,12 +14,13 @@
 
 /Geometry/RegisterGeometry CEVNS
 
-/Generator/RegisterGenerator SingleParticle
+/Generator/RegisterGenerator SINGLE_PARTICLE
 
 /Actions/RegisterTrackingAction DEFAULT
-/Actions/RegisterEventAction DEFAULT
+/Actions/RegisterEventAction EL_SIM
 /Actions/RegisterSteppingAction DEFAULT
 /Actions/RegisterStackingAction DEFAULT
 /Actions/RegisterRunAction DEFAULT
 
-/nexus/RegisterMacro macros/NEW_pair.config.mac
+
+/nexus/RegisterMacro macros/Cevns.config.mac

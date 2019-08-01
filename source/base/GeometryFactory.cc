@@ -39,6 +39,7 @@ GeometryFactory::~GeometryFactory()
 #include "NextNew.h"
 #include "MagBox.h"
 #include "NextTonScale.h"
+#include "Cevns.h"
 
 BaseGeometry* GeometryFactory::CreateGeometry() const
 {
@@ -59,6 +60,8 @@ BaseGeometry* GeometryFactory::CreateGeometry() const
   else if (_name == "MAG_BOX") p = new MagBox();
 
   else if (_name == "TON_SCALE") p = new NextTonScale();
+
+  else if (_name == "CEVNS") p = new Cevns();
 
   else {
     G4String err = "The user selected an unknown geometry: " + _name;

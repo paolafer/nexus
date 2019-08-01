@@ -15,6 +15,7 @@
 #include "DetectorConstruction.h"
 #include "PrimaryGeneration.h"
 #include "PersistencyManager.h"
+#include "CevnsPersistencyManager.h"
 #include "BatchSession.h"
 
 #include <G4GenericPhysicsList.hh>
@@ -25,7 +26,7 @@ using namespace nexus;
 
 
 
-NexusApp::NexusApp(G4String init_macro): G4RunManager()
+NexusApp::NexusApp(G4String init_macro): G4RunManager(), _cevns(false)
 {
   // Create and configure a generic messenger for the app
   _msg = new G4GenericMessenger(this, "/nexus/", "Nexus control commands.");
@@ -42,7 +43,7 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
 
   // Define a command to set a seed for the random number generator.
   _msg->DeclareMethod("random_seed", &NexusApp::SetRandomSeed, 
-    "Set a seed for the random number generator."); 
+    "Set a seed for the random number generator.");
 
   /////////////////////////////////////////////////////////
 
@@ -103,6 +104,7 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
   if (UI->GetCurrentValues("/Actions/RegisterSteppingAction") != "")
     this->SetUserAction(actfctr.CreateSteppingAction());
 
+
   G4String historyFile_config = historyFile + ".config.history";
   UI->StoreHistory(historyFile_config.c_str());
 
@@ -112,7 +114,12 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
   // number generator
   SetRandomSeed(-1);
 
-  PersistencyManager::Initialize(historyFile_init, historyFile_config);
+  if (UI->GetCurrentValues("/Geometry/RegisterGeometry") == "CEVNS_TRUE") {
+    _cevns =true;
+    CevnsPersistencyManager::Initialize(historyFile_init, historyFile_config);
+  } else {
+    PersistencyManager::Initialize(historyFile_init, historyFile_config);
+  }
 }
 
 
@@ -120,10 +127,16 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
 NexusApp::~NexusApp()
 {
   // Close output file before finishing
-  PersistencyManager* current = dynamic_cast<PersistencyManager*>
-    (G4VPersistencyManager::GetPersistencyManager());
-  current->CloseFile();
-
+  if (_cevns) {
+    CevnsPersistencyManager* current = dynamic_cast<CevnsPersistencyManager*>
+      (G4VPersistencyManager::GetPersistencyManager());
+    current->CloseFile();
+  } else {
+    PersistencyManager* current = dynamic_cast<PersistencyManager*>
+      (G4VPersistencyManager::GetPersistencyManager());
+    current->CloseFile();
+  }
+  
   delete _msg;
 }
 

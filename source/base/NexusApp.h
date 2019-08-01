@@ -55,6 +55,9 @@ namespace nexus {
     std::vector<G4String> _macros;
     std::vector<G4String> _delayed;
 
+    G4bool _cevns;
+
+
   };
 
   // INLINE DEFINITIONS ////////////////////////////////////

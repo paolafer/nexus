@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 ///  \file   PersistencyManager.h
-///  \brief  
-/// 
+///  \brief
+///
 ///  \author   <justo.martin-albo@ific.uv.es>
 ///  \date     13 March 2013
 ///  \version  $Id$
@@ -20,6 +20,7 @@ class G4GenericMessenger;
 class G4TrajectoryContainer;
 class G4HCofThisEvent;
 class G4VHitsCollection;
+
 namespace gate { class Event; }
 namespace gate { class MCParticle; }
 namespace gate { class MCTrack; }
@@ -96,11 +97,11 @@ namespace nexus {
     G4int _nevt; ///< Event ID
     G4int _start_id; ///< ID for the first event in file
     G4bool _first_evt; ///< true only for the first event of the run
+
     G4bool _hdf5dump; ///< if true write to hdf5 file
 
     HDF5Writer* _h5writer;  ///< Event writer to hdf5 file
 
-    std::pair<G4int, G4double> _event_info;
   };
 
 
