@@ -36,23 +36,23 @@ NuTrackingAction::~NuTrackingAction()
 void NuTrackingAction::PreUserTrackingAction(const G4Track* track)
 {
   // Do nothing if the track is not a neutrino
-  if (track->GetDefinition() != G4NeutrinoE::Definition()       & 
-      track->GetDefinition() != G4NeutrinoMu::Definition()      &
-      track->GetDefinition() != G4NeutrinoTau::Definition()     &
-      track->GetDefinition() != G4AntiNeutrinoE::Definition()   & 
-      track->GetDefinition() != G4AntiNeutrinoMu::Definition()  &
-      track->GetDefinition() != G4AntiNeutrinoTau::Definition()) {
-      fpTrackingManager->SetStoreTrajectory(false);    
+  if ((track->GetDefinition() != G4NeutrinoE::Definition())       &
+      (track->GetDefinition() != G4NeutrinoMu::Definition())      &
+      (track->GetDefinition() != G4NeutrinoTau::Definition())     &
+      (track->GetDefinition() != G4AntiNeutrinoE::Definition())   &
+      (track->GetDefinition() != G4AntiNeutrinoMu::Definition())  &
+      (track->GetDefinition() != G4AntiNeutrinoTau::Definition())) {
+      fpTrackingManager->SetStoreTrajectory(false);
       return;
   }
 
   // Create a new trajectory associated to the track.
   // N.B. If the processesing of a track is interrupted to be resumed
   // later on (to process, for instance, its secondaries) more than
-  // one trajectory associated to the track will be created, but 
+  // one trajectory associated to the track will be created, but
   // the event manager will merge them at some point.
   G4VTrajectory* trj = new Trajectory(track);
-  
+
    // Set the trajectory in the tracking manager
   fpTrackingManager->SetStoreTrajectory(true);
   fpTrackingManager->SetTrajectory(trj);
@@ -63,13 +63,13 @@ void NuTrackingAction::PreUserTrackingAction(const G4Track* track)
 void NuTrackingAction::PostUserTrackingAction(const G4Track* track)
 {
   // Do nothing if the track is an optical photon or an ionization electron
-  if (track->GetDefinition() != G4NeutrinoE::Definition()       & 
-      track->GetDefinition() != G4NeutrinoMu::Definition()      &
-      track->GetDefinition() != G4NeutrinoTau::Definition()     &
-      track->GetDefinition() != G4AntiNeutrinoE::Definition()   & 
-      track->GetDefinition() != G4AntiNeutrinoMu::Definition()  &
-      track->GetDefinition() != G4AntiNeutrinoTau::Definition()) return;
- 
+  if ((track->GetDefinition() != G4NeutrinoE::Definition())      &
+      (track->GetDefinition() != G4NeutrinoMu::Definition())     &
+      (track->GetDefinition() != G4NeutrinoTau::Definition())    &
+      (track->GetDefinition() != G4AntiNeutrinoE::Definition())  &
+      (track->GetDefinition() != G4AntiNeutrinoMu::Definition()) &
+      (track->GetDefinition() != G4AntiNeutrinoTau::Definition())) return;
+
 
   Trajectory* trj = (Trajectory*) TrajectoryMap::Get(track->GetTrackID());
 
