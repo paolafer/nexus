@@ -221,7 +221,9 @@ void PersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc,
     G4ThreeVector mom = trj->GetInitialMomentum();
     G4double energy = sqrt(mom.mag2() + mass*mass);
     ipart->SetInitialMom(mom.x(), mom.y(), mom.z(), energy);
-    ipart->SetFinalMom(0, 0, 0, mass);
+    G4ThreeVector final_mom = trj->GetFinalMomentum();
+    G4double final_energy = sqrt(final_mom.mag2() + mass*mass);
+    ipart->SetFinalMom(final_mom.x(), final_mom.y(), final_mom.z(), final_energy);
 
     ievent->AddMCParticle(ipart);
 
@@ -229,6 +231,7 @@ void PersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc,
       float ini_pos[4] = {(float)ini_xyz.x(), (float)ini_xyz.y(), (float)ini_xyz.z(), (float)ini_t};
       float final_pos[4] = {(float)xyz.x(), (float)xyz.y(), (float)xyz.z(), (float)t};
       float momentum[3] = {(float)mom.x(), (float)mom.y(), (float)mom.z()};
+      float final_momentum[3] = {(float)final_mom.x(), (float)final_mom.y(), (float)final_mom.z()};
       float kin_energy = energy - mass;
       char primary = 0;
       G4int mother_id = 0;
@@ -245,7 +248,8 @@ void PersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc,
 				   ini_pos[0], ini_pos[1], ini_pos[2], ini_pos[3],
 				   final_pos[0], final_pos[1], final_pos[2], final_pos[3],
 				   ini_volume.c_str(), volume.c_str(),
-				   momentum[0],  momentum[1], momentum[2],
+				   momentum[0], momentum[1], momentum[2],
+                                   final_momentum[0], final_momentum[1], final_momentum[2],
 				   kin_energy, trj->GetCreatorProcess().c_str());
     }
   }

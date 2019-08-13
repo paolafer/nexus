@@ -104,7 +104,7 @@ void HDF5Writer::WriteHitInfo(int evt_number, int particle_indx, int hit_indx, f
   _ihit++;
 }
 
-void HDF5Writer::WriteParticleInfo(int evt_number, int particle_indx, const char* particle_name, char primary, int mother_id, float initial_vertex_x, float initial_vertex_y, float initial_vertex_z, float initial_vertex_t, float final_vertex_x, float final_vertex_y, float final_vertex_z, float final_vertex_t, const char* initial_volume, const char* final_volume, float momentum_x, float momentum_y, float momentum_z, float kin_energy, const char* creator_proc)
+void HDF5Writer::WriteParticleInfo(int evt_number, int particle_indx, const char* particle_name, char primary, int mother_id, float initial_vertex_x, float initial_vertex_y, float initial_vertex_z, float initial_vertex_t, float final_vertex_x, float final_vertex_y, float final_vertex_z, float final_vertex_t, const char* initial_volume, const char* final_volume, float momentum_x, float momentum_y, float momentum_z, float final_momentum_x, float final_momentum_y, float final_momentum_z, float kin_energy, const char* creator_proc)
 {
   particle_info_t trueInfo;
   trueInfo.event_id = evt_number;
@@ -130,6 +130,9 @@ void HDF5Writer::WriteParticleInfo(int evt_number, int particle_indx, const char
   trueInfo.initial_momentum_x = momentum_x;
   trueInfo.initial_momentum_y = momentum_y;
   trueInfo.initial_momentum_z = momentum_z;
+  trueInfo.final_momentum_x = final_momentum_x;
+  trueInfo.final_momentum_y = final_momentum_y;
+  trueInfo.final_momentum_z = final_momentum_z;
   //  memcpy(trueInfo.momentum, momentum, sizeof(*momentum)*size_momentum);
   trueInfo.kin_energy = kin_energy;
   memset(trueInfo.creator_proc, 0, STRLEN);

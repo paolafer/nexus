@@ -76,6 +76,9 @@ namespace nexus {
     // the start-of-event time
     G4double GetInitialTime() const;
 
+    G4ThreeVector GetFinalMomentum() const;
+    void SetFinalMomentum(const G4ThreeVector&);
+
     G4ThreeVector GetFinalPosition() const;
     void SetFinalPosition(const G4ThreeVector&);
 
@@ -122,6 +125,7 @@ namespace nexus {
     G4int _parentId;  ///< Identification number of the parent particle
 
     G4ThreeVector _initial_momentum;
+    G4ThreeVector _final_momentum;
 
     G4ThreeVector _initial_position;
     G4ThreeVector _final_position;
@@ -172,6 +176,12 @@ inline G4VTrajectoryPoint* nexus::Trajectory::GetPoint(G4int i) const
 
 inline G4ThreeVector nexus::Trajectory::GetInitialMomentum() const
 { return _initial_momentum; }
+
+inline G4ThreeVector nexus::Trajectory::GetFinalMomentum() const
+{ return _final_momentum; }
+
+inline void nexus::Trajectory::SetFinalMomentum(const G4ThreeVector& m)
+{ _final_momentum = m; }
 
 inline G4int nexus::Trajectory::GetTrackID() const
 { return _trackId; }

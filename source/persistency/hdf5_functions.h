@@ -50,6 +50,9 @@
     float initial_momentum_x;
     float initial_momentum_y;
     float initial_momentum_z;
+    float final_momentum_x;
+    float final_momentum_y;
+    float final_momentum_z;
     float kin_energy;
     char creator_proc[CONFLEN];
   } particle_info_t;
