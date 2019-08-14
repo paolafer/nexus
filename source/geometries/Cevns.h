@@ -3,6 +3,8 @@
 
 #include "BaseGeometry.h"
 
+class G4GenericMessenger;
+
 namespace nexus {
 
   class Cevns : public BaseGeometry
@@ -21,6 +23,11 @@ namespace nexus {
 
     
   private:
+
+    // Messenger for the definition of control commands
+    G4GenericMessenger* _msg;
+
+    G4bool _ess;
     
   };
 }
