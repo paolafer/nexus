@@ -7,7 +7,7 @@
 #include "NexusApp.h"
 #include "DetectorConstruction.h"
 #include "BaseGeometry.h"
-#include "HDF5Writer.h"
+#include "CevnsHDF5Writer.h"
 
 #include <G4GenericMessenger.hh>
 #include <G4Event.hh>
@@ -72,7 +72,7 @@ void CevnsPersistencyManager::Initialize(G4String historyFile_init, G4String his
 
 void CevnsPersistencyManager::OpenFile(G4String filename)
 {
-  _h5writer = new HDF5Writer();
+  _h5writer = new CevnsHDF5Writer();
   G4String hdf5file = filename + ".h5";
   _h5writer->Open(hdf5file);
   return;
@@ -118,7 +118,7 @@ G4bool CevnsPersistencyManager::Store(const G4Event* event)
 
 
 
-void CevnsPersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc)         
+void CevnsPersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc)
 {
   // If the pointer is null, no trajectories were stored in this event
   if (!tc) return;
@@ -127,6 +127,10 @@ void CevnsPersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc)
   for (G4int i=0; i<tc->entries(); ++i) {
     Trajectory* trj = dynamic_cast<Trajectory*>((*tc)[i]);
     if (!trj) continue;
+
+    if ((trj->GetParticleName() != "nu_mu") && (trj->GetParticleName() != "anti_nu_mu") && (trj->GetParticleName() != "anti_nu_e") && (trj->GetParticleName() != "pi+") && (trj->GetParticleName() != "mu+")) {
+      continue;
+    }
 
     G4int trackid = trj->GetTrackID();
 
@@ -143,24 +147,37 @@ void CevnsPersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc)
     G4double energy = sqrt(mom.mag2() + mass*mass);
 
     G4ThreeVector final_mom = trj->GetFinalMomentum();
-    G4double final_energy = sqrt(final_mom.mag2() + mass*mass);
-   
+    //G4double final_energy = sqrt(final_mom.mag2() + mass*mass);
+
     float ini_pos[4] = {(float)ini_xyz.x(), (float)ini_xyz.y(), (float)ini_xyz.z(), (float)ini_t};
     float final_pos[4] = {(float)xyz.x(), (float)xyz.y(), (float)xyz.z(), (float)t};
     float momentum[3] = {(float)mom.x(), (float)mom.y(), (float)mom.z()};
     float final_momentum[3] = {(float)final_mom.x(), (float)final_mom.y(), (float)final_mom.z()};
     float kin_energy = energy - mass;
-    
+
     char primary = 0;
     G4int mother_id = 0;
+    G4String mother_name = "";
     if (!trj->GetParentID()) {
       primary = 1;
     } else {
       mother_id = trj->GetParentID();
     }
- 
+
+    // Loop again to find the mother
+    for (G4int j=0; j<tc->entries(); ++j) {
+      Trajectory* mtrj = dynamic_cast<Trajectory*>((*tc)[j]);
+      if (!mtrj) continue;
+
+      G4int mid = mtrj->GetTrackID();
+      if (mid == mother_id) {
+	mother_name = mtrj->GetParticleName();
+	break;
+      }
+    }
+
     _h5writer->WriteParticleInfo(_nevt, trackid, trj->GetParticleName().c_str(),
-				 primary, mother_id,
+				 primary, mother_name.c_str(),
 				 ini_pos[0], ini_pos[1], ini_pos[2], ini_pos[3],
 				 final_pos[0], final_pos[1], final_pos[2], final_pos[3],
 				 ini_volume.c_str(), volume.c_str(),
@@ -199,8 +216,8 @@ void CevnsPersistencyManager::SaveConfigurationInfo(G4String file_name)
     if (key != "") {
       _h5writer->WriteRunInfo(key.c_str(), value.c_str());
     }
-    
+
   }
-  
+
   history.close();
 }

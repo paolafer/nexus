@@ -10,7 +10,7 @@ class G4TrajectoryContainer;
 class G4HCofThisEvent;
 class G4VHitsCollection;
 
-namespace nexus { class HDF5Writer; }
+namespace nexus { class CevnsHDF5Writer; }
 
 namespace nexus {
 
@@ -68,7 +68,7 @@ namespace nexus {
     G4int _start_id; ///< ID for the first event in file
     G4bool _first_evt; ///< true only for the first event of the run
 
-    HDF5Writer* _h5writer;  ///< Event writer to hdf5 file
+    CevnsHDF5Writer* _h5writer;  ///< Event writer to hdf5 file
 
     G4double _bin_size, _tof_bin_size;
 

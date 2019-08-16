@@ -1,0 +1,28 @@
+
+/Geometry/Cevns/ess 1
+
+# Single Particle
+/Generator/SingleParticle/particle proton
+/Generator/SingleParticle/min_energy 2 GeV
+/Generator/SingleParticle/max_energy 2 GeV
+/Generator/SingleParticle/region BEAM
+/Generator/SingleParticle/momentum_X 0
+/Generator/SingleParticle/momentum_Y -1
+/Generator/SingleParticle/momentum_Z 0
+
+
+
+##### VERBOSITIES #####
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+
+##### JOB CONTROL #####
+/nexus/persistency/outputFile cevns_beam
+
+/nexus/random_seed -1
+
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0

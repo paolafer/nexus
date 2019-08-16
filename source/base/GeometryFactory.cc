@@ -63,6 +63,8 @@ BaseGeometry* GeometryFactory::CreateGeometry() const
 
   else if (_name == "CEVNS") p = new Cevns();
 
+  else if (_name == "CEVNS_TRUE") p = new Cevns();
+
   else {
     G4String err = "The user selected an unknown geometry: " + _name;
     G4Exception("CreateGeometry", "[BaseGeometry]", FatalException, err);
