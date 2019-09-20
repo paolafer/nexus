@@ -284,6 +284,7 @@ namespace nexus {
     //G4double sipm_pitch_ext = sipm_dim.x() + 0.5 * mm;
     G4double offset = 0.1 * mm;
     G4int n_sipm_ext = 2*pi*external_radius_/sipm_pitch_;
+    G4cout << "Number of SiPMs per row: " << n_sipm_ext << G4endl;
     G4cout << "Number of sipms in external face: " <<  n_sipm_ext * lin_n_sipm_per_cell_ << G4endl;
     radius = external_radius_ - sipm_dim.z()/2. - offset;
 
@@ -355,8 +356,12 @@ namespace nexus {
     G4int i_r_max = floor(depth_/binning); // max bin number (R - 1)
     G4int imax = floor(pitch/binning); // max bin number (Z - 1)
 
-    G4int jmax = 6;
-    G4double binning_angle = step_/2./jmax;
+    G4int jmax = 12;
+    G4double binning_angle = step_/jmax;
+    G4cout << "phi step = " << binning_angle << G4endl;
+
+    //G4cout << "pointID,r,phi,z" << G4endl;
+    G4int c = 0;
 
     for (G4int i_r=0; i_r<i_r_max; ++i_r) {
 
@@ -367,7 +372,7 @@ namespace nexus {
 
       for (G4int j=0; j<jmax+1; ++j) { // Loop through the phi bins
 
-	G4double phi = pi/2 + j*binning_angle;
+	G4double phi = pi/2 + (-jmax/2+j)*binning_angle;
 
 	for (G4int i=0; i<imax+1; ++i) { // Loop through the z bins
 
@@ -377,10 +382,11 @@ namespace nexus {
 	  } else if (i == imax) {
 	    z = z - offset;
 	  }
-	  if (j*binning_angle <= step_/2.) {
-	    //G4cout << radius << " " << phi << " " << z << G4endl;
+	  if (j*binning_angle <= step_) {
+	    //G4cout << c << ","  << radius << "," << phi << "," << z << G4endl;
 	    G4ThreeVector xyz(radius*std::cos(phi), radius*std::sin(phi), z);
 	    sc_table_vertices_.push_back(xyz);
+            c++;
 	  }
 
 	}
