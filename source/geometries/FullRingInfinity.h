@@ -28,6 +28,7 @@ namespace nexus {
     void BuildQuadSensors();
     void BuildSensors();
     void BuildPhantom();
+    void CalculateScintTableVertices(G4double pitch, G4double binning);
 
     SiPMpetFBK* sipm_;
 
@@ -56,9 +57,17 @@ namespace nexus {
 
     SpherePointSampler* spheric_gen_;
 
-    G4double _specific_vertex_X;
-    G4double _specific_vertex_Y;
-    G4double _specific_vertex_Z;
+    G4double specific_vertex_X_;
+    G4double specific_vertex_Y_;
+    G4double specific_vertex_Z_;
+
+    G4int sc_table_point_id_;
+    mutable G4int sc_table_index_;
+    mutable std::vector<G4ThreeVector> sc_table_vertices_;
+    G4double sc_table_binning_;
+
+    G4double step_, radius_;
+
 
   };
 }

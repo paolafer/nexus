@@ -79,20 +79,30 @@ namespace nexus {
     msg_->DeclareProperty("instrumented_faces", instr_faces_, "Number of instrumented faces");
 
     G4GenericMessenger::Command&  specific_vertex_X_cmd =
-      msg_->DeclareProperty("specific_vertex_X", _specific_vertex_X,
+      msg_->DeclareProperty("specific_vertex_X", specific_vertex_X_,
                             "If region is AD_HOC, x coord where particles are generated");
     specific_vertex_X_cmd.SetParameterName("specific_vertex_X", true);
     specific_vertex_X_cmd.SetUnitCategory("Length");
     G4GenericMessenger::Command&  specific_vertex_Y_cmd =
-      msg_->DeclareProperty("specific_vertex_Y", _specific_vertex_Y,
+      msg_->DeclareProperty("specific_vertex_Y", specific_vertex_Y_,
                             "If region is AD_HOC, y coord where particles are generated");
     specific_vertex_Y_cmd.SetParameterName("specific_vertex_Y", true);
     specific_vertex_Y_cmd.SetUnitCategory("Length");
     G4GenericMessenger::Command&  specific_vertex_Z_cmd =
-      msg_->DeclareProperty("specific_vertex_Z", _specific_vertex_Z,
+      msg_->DeclareProperty("specific_vertex_Z", specific_vertex_Z_,
                             "If region is AD_HOC, z coord where particles are generated");
     specific_vertex_Z_cmd.SetParameterName("specific_vertex_Z", true);
     specific_vertex_Z_cmd.SetUnitCategory("Length");
+
+    G4GenericMessenger::Command& table_cmd =
+      msg_->DeclareProperty("sc_table_binning", sc_table_binning_,
+                            "Pitch for scintillation generation");
+    table_cmd.SetUnitCategory("Length");
+    table_cmd.SetParameterName("sc_table_binning", false);
+    table_cmd.SetRange("sc_table_binning>0.");
+
+    msg_->DeclareProperty("sc_table_point_id", sc_table_point_id_, "");
+
 
     sipm_ = new SiPMpetFBK();
   }
@@ -122,6 +132,9 @@ namespace nexus {
     BuildCryostat();
     BuildSensors();
     BuildPhantom();
+
+    CalculateScintTableVertices(sipm_pitch_, sc_table_binning_);
+    G4cout << "Number of prob. points: "<< sc_table_vertices_.size() << G4endl;
 
   }
 
@@ -235,7 +248,7 @@ namespace nexus {
     if (instr_faces_ == 2) {
       G4cout << "Number of sipms in inner face: " <<  n_sipm_int *  lin_n_sipm_per_cell_<< G4endl;
     }
-    G4double step = 2.*pi/n_sipm_int;
+    step_ = 2.*pi/n_sipm_int;
     G4double radius = inner_radius_ + sipm_dim.z()/2.;
 
     G4RotationMatrix rot;
@@ -244,7 +257,7 @@ namespace nexus {
     G4int copy_no = 999;
     for (G4int j=0; j<lin_n_sipm_per_cell_; j++) {
       // The first must be positioned outside the loop
-      if (j!=0) rot.rotateZ(step);
+      if (j!=0) rot.rotateZ(step_);
       G4double z_dimension = -lat_dimension_cell_/2. + (j + 1./2.) * sipm_pitch_;
       G4ThreeVector position(0., radius, z_dimension);
       copy_no += 1;
@@ -255,8 +268,8 @@ namespace nexus {
       }
 
       for (G4int i=2; i<=n_sipm_int; ++i) {
-        G4double angle = (i-1)*step;
-        rot.rotateZ(step);
+        G4double angle = (i-1)*step_;
+        rot.rotateZ(step_);
         position.setX(-radius*sin(angle));
         position.setY(radius*cos(angle));
         copy_no += 1;
@@ -274,10 +287,10 @@ namespace nexus {
     G4cout << "Number of sipms in external face: " <<  n_sipm_ext * lin_n_sipm_per_cell_ << G4endl;
     radius = external_radius_ - sipm_dim.z()/2. - offset;
 
-    rot.rotateZ(step);
+    rot.rotateZ(step_);
     rot.rotateX(pi);
 
-    step = 2.*pi/n_sipm_ext;
+    step_ = 2.*pi/n_sipm_ext;
 
     //copy_no = 2000;
     if (instr_faces_ == 1) {
@@ -286,7 +299,7 @@ namespace nexus {
 
     for (G4int j=0; j<lin_n_sipm_per_cell_; j++) {
       // The first must be positioned outside the loop
-      if (j!=0) rot.rotateZ(step);
+      if (j!=0) rot.rotateZ(step_);
       G4double z_pos = -lat_dimension_cell_/2. + (j + 1./2.) * sipm_pitch_;
       G4ThreeVector position(0., radius, z_pos);
       copy_no = copy_no + 1;
@@ -298,8 +311,8 @@ namespace nexus {
       //G4cout << "INSERT INTO ChannelPositionP7R410Z1950mm (MinRun, MaxRun, SensorID, X, Y, Z) VALUES (0, 100000, "
       //	       << copy_no << ", " << position.getX() << ", " << position.getY() << ", " << position.getZ() << ");" << G4endl;
       for (G4int i=2; i<=n_sipm_ext; ++i) {
-        G4double angle = (i-1)*step;
-        rot.rotateZ(step);
+        G4double angle = (i-1)*step_;
+        rot.rotateZ(step_);
         position.setX(-radius*sin(angle));
         position.setY(radius*cos(angle));
         copy_no = copy_no + 1;
@@ -323,7 +336,7 @@ namespace nexus {
     G4Orb* phantom_solid = new G4Orb("PHANTOM",  phantom_diam_/2.);
     G4LogicalVolume* phantom_logic =
       new G4LogicalVolume(phantom_solid, MaterialsList::PEEK(), "PHANTOM");
-    G4ThreeVector phantom_origin = G4ThreeVector(_specific_vertex_X, _specific_vertex_Y, _specific_vertex_Z);
+    G4ThreeVector phantom_origin = G4ThreeVector(specific_vertex_X_, specific_vertex_Y_, specific_vertex_Z_);
     new G4PVPlacement(0, phantom_origin, phantom_logic, "PHANTOM", lab_logic_, false, 0, true);
 
     spheric_gen_ =
@@ -331,6 +344,51 @@ namespace nexus {
 
 
   }
+
+  void FullRingInfinity::CalculateScintTableVertices(G4double pitch, G4double binning)
+  {
+    // Calculate the xyz positions of the points of a scintillation
+    // lookup table given a certain binning
+
+    G4double offset = 0.001 * mm;
+
+    G4int i_r_max = floor(depth_/binning); // max bin number (R - 1)
+    G4int imax = floor(pitch/binning); // max bin number (Z - 1)
+
+    G4int jmax = 6;
+    G4double binning_angle = step_/2./jmax;
+
+    for (G4int i_r=0; i_r<i_r_max; ++i_r) {
+
+      G4double radius = inner_radius_ + i_r*binning;
+      if (i_r == 0){
+	radius += offset;
+      }
+
+      for (G4int j=0; j<jmax+1; ++j) { // Loop through the phi bins
+
+	G4double phi = pi/2 + j*binning_angle;
+
+	for (G4int i=0; i<imax+1; ++i) { // Loop through the z bins
+
+	  G4double z = -lat_dimension_cell_/2. + i*binning;
+	  if (i == 0){
+	    z += offset;
+	  } else if (i == imax) {
+	    z = z - offset;
+	  }
+	  if (j*binning_angle <= step_/2.) {
+	    //G4cout << radius << " " << phi << " " << z << G4endl;
+	    G4ThreeVector xyz(radius*std::cos(phi), radius*std::sin(phi), z);
+	    sc_table_vertices_.push_back(xyz);
+	  }
+
+	}
+      }
+
+    }
+  }
+
 
 
   G4ThreeVector FullRingInfinity::GenerateVertex(const G4String& region) const
@@ -341,14 +399,29 @@ namespace nexus {
     if (region == "CENTER") {
       vertex = vertex;
     } else if (region == "AD_HOC") {
-      vertex = G4ThreeVector(_specific_vertex_X, _specific_vertex_Y, _specific_vertex_Z);
+      vertex = G4ThreeVector(specific_vertex_X_, specific_vertex_Y_, specific_vertex_Z_);
     } else if (region == "PHANTOM") {
       vertex = spheric_gen_->GenerateVertex("VOLUME");
+    } else if (region == "TABLE") {
+      unsigned int i = sc_table_point_id_ + sc_table_index_;
+
+      if (i == (sc_table_vertices_.size()-1)) {
+        G4Exception("[FullRingInfinity]", "GenerateVertex()",
+		    RunMustBeAborted, "Reached last event in scintillation lookup table.");
+      }
+
+      try {
+        vertex = sc_table_vertices_.at(i);
+        sc_table_index_++;
+      }
+      catch (const std::out_of_range& oor) {
+        G4Exception("[FullRingInfinity]", "GenerateVertex()", FatalErrorInArgument, "Scintillation lookup table point out of range.");
+      }
     } else {
       G4Exception("[FullRingInfinity]", "GenerateVertex()", FatalException,
                   "Unknown vertex generation region!");
     }
-
+    
     return vertex;
   }
 
