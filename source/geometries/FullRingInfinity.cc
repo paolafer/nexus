@@ -46,7 +46,9 @@ namespace nexus {
     inner_radius_(15.*cm),
     cryo_width_(12.*cm),
     cryo_thickn_(1.*mm),
-    max_step_size_(1.*mm)
+    max_step_size_(1.*mm),
+    sc_table_index_(0),
+    sc_table_binning_(0.5*mm)
   {
      // Messenger
     msg_ = new G4GenericMessenger(this, "/Geometry/FullRingInfinity/",
