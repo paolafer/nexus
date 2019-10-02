@@ -128,7 +128,7 @@ void CevnsPersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc)
     Trajectory* trj = dynamic_cast<Trajectory*>((*tc)[i]);
     if (!trj) continue;
 
-    if ((trj->GetParticleName() != "nu_mu") && (trj->GetParticleName() != "anti_nu_mu") && (trj->GetParticleName() != "anti_nu_e") && (trj->GetParticleName() != "pi+") && (trj->GetParticleName() != "mu+")) {
+    if ((trj->GetParticleName() != "nu_mu") && (trj->GetParticleName() != "anti_nu_mu")  && (trj->GetParticleName() != "nu_e") && (trj->GetParticleName() != "pi+") && (trj->GetParticleName() != "mu+")) {
       continue;
     }
 
