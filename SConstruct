@@ -136,7 +136,7 @@ vars.AddVariables(
 
     ('CXXFLAGS',
      'c++ compiler options.',
-     ['-std=c++11']),
+     ['-std=c++11', '-O0']),
 
     ('CPPPATH',
      'List of directories where the include headers are located.',
