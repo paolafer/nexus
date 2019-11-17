@@ -10,5 +10,6 @@ source/.DS_Store
 *.root
 buildvars.scons
 nexus
+nexus-test
 *.history
 *.pet
