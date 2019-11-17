@@ -27,11 +27,19 @@ This might be harder than it looks for several reasons:
 * destructors not cleaning up after themselves properly
 * my lack of understanding of Geant4 setup/teardown semantics
 
+So we may need to reuse 1 instance of G4RunManager for all tests:
+
 Found out that the G4RunManager destructor calls the G4UImanager destructor; this means the G4UImanager::GetUIpointer() call will return a valid value the first time, and null pointers thereafter, making execution of more than 1 test break.
 
 This means I need to understand how to correctly initialize the G4UImanager instead of relying on it being there on first run.
 
-Illustrated in `source/tests/G4UImanagerTest.cc`, if run in gdb with `break G4UImanager::~G4UImanager()`:
+Illustrated in `source/tests/G4UImanagerTest.cc`, if run in gdb:
+* `gdb nexus-test`
+* `break G4UImanager::~G4UImanager()`
+* `run`
+* `backtrace`
+
+we get
 
 ```
 Breakpoint 1, G4UImanager::~G4UImanager (this=0x55ad7917c940, __in_chrg=<optimized out>) at /geant4/source/intercoms/src/G4UImanager.cc:119
