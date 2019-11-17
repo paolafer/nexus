@@ -1,4 +1,15 @@
+# Overview
 
+Attempt to add [catch2](https://github.com/catchorg/Catch2)-based tests to nexus.
 
-----
-$Id$
+# Usage
+
+`catch2` is integrated into the scons build as another dependency.
+
+1. ensure `catch.hpp` is available in your include path eg. in ubuntu:
+  `sudo apt-get install catch`
+  or just download the header to `/usr/include`
+2. build:
+  `scons`
+3. run tests:
+  `./nexus-test`

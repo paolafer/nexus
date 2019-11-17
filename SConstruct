@@ -243,7 +243,7 @@ if not env['LIBPATH']:
         Abort('GSL headers not found.')
 
     if not conf.CheckCXXHeader('catch.hpp'):
-        Abort('catch2 headers not found.')
+        Abort('catch2 header catch.hpp not found.')
 
  #   env.Append(LIBS = ['gsl','gslcblas'])
 
