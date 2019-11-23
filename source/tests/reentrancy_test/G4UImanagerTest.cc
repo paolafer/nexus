@@ -11,7 +11,7 @@ void run_test() {
   // G4UImanager is available on first run, nil on second
   G4UImanager *UI = G4UImanager::GetUIpointer();
 
-  printf("UI %p\n", UI);
+  printf("UI %p\n", (void*) UI);
 
   G4RunManager *runManager = new G4RunManager;
 

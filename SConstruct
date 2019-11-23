@@ -272,9 +272,13 @@ env['LINKCOMSTR'] = "Linking $TARGET"
 
 nexus = env.Program('nexus', ['source/nexus.cc']+src)
 
-test_src = Glob('source/tests/*.cc')
-env.Append(CPPPATH = ['source/tests'])
+env.Append(CPPPATH = ['source/tests/unit_tests'])
+unit_tests = env.Program('unit_test', Glob('source/tests/unit_test/*.cc')+src)
 
-nexus_test = env.Program('nexus-test', ['source/nexus-test.cc']+src+test_src)
+env.Append(CPPPATH = ['source/tests/reentrancy_test'])
+unit_tests = env.Program('reentrancy_test', Glob('source/tests/reentrancy_test/*.cc')+src)
+
+env.Append(CPPPATH = ['source/tests/PETit_ring_test'])
+unit_tests = env.Program('PETit_ring_test', Glob('source/tests/PETit_ring_test/*.cc')+src)
 
 Clean(nexus, 'buildvars.scons')

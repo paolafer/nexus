@@ -2,8 +2,21 @@
 
 Attempt to add [catch2](https://github.com/catchorg/Catch2)-based tests to nexus.
 
-First attempt at creating tests for petalo, starting from integration tests
-as these are easiest to understand conceptually.
+First attempt at creating tests for petalo.
+
+setup/teardown of the geant4 machinery is nontrivial (see test reentrancy below): this means that isolating test cases that involve G4RunManager from each other is nontrivial.
+
+The approach I'm taking is creating a different executable target for each required G4RunManager instance (there's a target per directory); we might put all unit tests in the same target if they don't require different G4RunManagers, but more complex integration tests will require their own executable target:
+
+```
+tests/
+|-- reentrancy_test
+|   |-- G4UImanagerTest.cc
+|   `-- reentrancy_test.cc
+`-- unit_tests
+    |-- TrivialTest.cc
+    `-- unit_tests.cc
+```
 
 # Usage
 
@@ -15,26 +28,15 @@ as these are easiest to understand conceptually.
 2. build:
   `scons`
 3. run tests:
-  `./nexus-test`
+  `./unit_tests`, `./reentrancy_test`
 
-# Test reentrancy
 
-My initial goal is to successfully launch a few macros from the tests,
-this will at least validate the macro file syntax and tell us if we have made
-a change that makes them segfault.
-
-This might be harder than it looks for several reasons:
-* destructors not cleaning up after themselves properly
-* my lack of understanding of Geant4 setup/teardown semantics
-
-So we may need to reuse 1 instance of G4RunManager for all tests:
+## Test reentrancy
 
 Found out that the G4RunManager destructor calls the G4UImanager destructor; this means the G4UImanager::GetUIpointer() call will return a valid value the first time, and null pointers thereafter, making execution of more than 1 test break.
 
-This means I need to understand how to correctly initialize the G4UImanager instead of relying on it being there on first run.
-
-Illustrated in `source/tests/G4UImanagerTest.cc`, if run in gdb:
-* `gdb nexus-test`
+Illustrated in `source/tests/reentrancy_test`, if run in gdb:
+* `gdb reentrancy_test`
 * `break G4UImanager::~G4UImanager()`
 * `run`
 * `backtrace`
