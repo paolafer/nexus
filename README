@@ -10,10 +10,14 @@ The approach I'm taking is creating a different executable target for each requi
 
 ```
 tests/
+|-- PETit_ring_test
+|   |-- PETit_ring.cc
+|   `-- test.cc
 |-- reentrancy_test
 |   |-- G4UImanagerTest.cc
 |   `-- reentrancy_test.cc
-`-- unit_tests
+`-- unit_test
+    |-- BoxPointSamplerTests.cc
     |-- TrivialTest.cc
     `-- unit_tests.cc
 ```
