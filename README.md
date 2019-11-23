@@ -32,7 +32,7 @@ tests/
 2. build:
   `scons`
 3. run tests:
-  `./unit_tests`, `./reentrancy_test`
+  `./unit_test`, `./reentrancy_test`, `./PETit_ring_test`
 
 
 ## Test reentrancy
