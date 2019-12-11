@@ -1,6 +1,6 @@
 #include <G4RunManager.hh>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <G4UImanager.hh>
 #include <stdio.h>

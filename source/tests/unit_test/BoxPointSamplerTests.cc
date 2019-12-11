@@ -1,5 +1,5 @@
 #include <BoxPointSampler.h>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 // Should do something more than instantiate the class
 TEST_CASE("BoxPointSampler") {
