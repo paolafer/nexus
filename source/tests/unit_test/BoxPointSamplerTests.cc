@@ -1,9 +1,37 @@
 #include <BoxPointSampler.h>
+
 #include <catch2/catch.hpp>
 
-// Should do something more than instantiate the class
 TEST_CASE("BoxPointSampler") {
-  auto sampler = nexus::BoxPointSampler(1, 1, 1, 1);
+  auto a = 10.;
+  auto b = 10.;
+  auto c = 10.;
+  auto thick = 1.;
+  auto sampler = nexus::BoxPointSampler(a, b, c, thick);
+  auto vertex  = sampler.GenerateVertex("WHOLE_VOL");
+  if (((vertex.x() >  a/2.)         & (vertex.x() <  a/2. + thick)) ||
+      ((vertex.x() > -a/2. - thick) & (vertex.x() < -a/2.))  ) {
+    REQUIRE(vertex.y() > -b/2 - thick);
+    REQUIRE(vertex.y() <  b/2 + thick);
+    REQUIRE(vertex.z() > -c/2 - thick);
+    REQUIRE(vertex.z() <  c/2 + thick);
+  }
 
-  REQUIRE(1 == 1);
+  if (((vertex.y() >  b/2.)         & (vertex.y() <  b/2. + thick)) ||
+      ((vertex.y() > -b/2. - thick) & (vertex.y() < -b/2.))  ) {
+    REQUIRE(vertex.x() > -a/2 - thick);
+    REQUIRE(vertex.x() <  a/2 + thick);
+    REQUIRE(vertex.z() > -c/2 - thick);
+    REQUIRE(vertex.z() <  c/2 + thick);
+  }
+
+  if (((vertex.z() >  c/2.)         & (vertex.z() <  c/2. + thick)) ||
+      ((vertex.z() > -c/2. - thick) & (vertex.z() < -c/2.))  ) {
+    REQUIRE(vertex.x() > -a/2 - thick);
+    REQUIRE(vertex.x() <  a/2 + thick);
+    REQUIRE(vertex.y() > -b/2 - thick);
+    REQUIRE(vertex.y() <  b/2 + thick);
+  }
+
+
 }
