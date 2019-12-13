@@ -1,6 +1,8 @@
 #include <BoxPointSampler.h>
 #include <Randomize.hh>
 
+#include <cmath>
+
 #include <catch2/catch.hpp>
 
 TEST_CASE("BoxPointSampler") {
@@ -13,45 +15,32 @@ TEST_CASE("BoxPointSampler") {
     auto thick = G4UniformRand();
     auto sampler = nexus::BoxPointSampler(a, b, c, thick);
     auto vertex  = sampler.GenerateVertex("WHOLE_VOL");
+    auto x = vertex.x();
+    auto y = vertex.y();
+    auto z = vertex.z();
 
-    REQUIRE(vertex.x() > -a/2 - thick);
-    REQUIRE(vertex.x() <  a/2 + thick);
-    REQUIRE(vertex.y() > -b/2 - thick);
-    REQUIRE(vertex.y() <  b/2 + thick);
-    REQUIRE(vertex.z() > -c/2 - thick);
-    REQUIRE(vertex.z() <  c/2 + thick);
-    
-    if (((vertex.x() >  a/2.)         & (vertex.x() <  a/2. + thick)) ||
-	((vertex.x() > -a/2. - thick) & (vertex.x() < -a/2.))) {
-      REQUIRE(vertex.y() > -b/2 - thick);
-      REQUIRE(vertex.y() <  b/2 + thick);
-      REQUIRE(vertex.z() > -c/2 - thick);
-      REQUIRE(vertex.z() <  c/2 + thick);
-    } else if ((vertex.x() > -a/2) & (vertex.x() < a/2)) {
+    REQUIRE(x >= -a/2 - thick);
+    REQUIRE(x <=  a/2 + thick);
+    REQUIRE(y >= -b/2 - thick);
+    REQUIRE(y <=  b/2 + thick);
+    REQUIRE(z >= -c/2 - thick);
+    REQUIRE(z <=  c/2 + thick);
 
-      
-     
-      G4cout << a << ", " << b << ", " << c << ", " << thick << G4endl;
-      G4cout << vertex.x() << ", " << vertex.y() << ", " << vertex.z() << G4endl;
-      REQUIRE((((vertex.z() >= -c/2 - thick) & (vertex.z() <= -c/2)) ||
-	      ((vertex.z() >= c/2) & (vertex.z() <= c/2 + thick))));
+    if ((std::abs(x) < a/2) & (std::abs(y) < b/2)) {
+      REQUIRE(std::abs(z) >= c/2);
+      REQUIRE(std::abs(z) <= c/2 + thick);
     }
 
-    if (((vertex.y() >  b/2.)         & (vertex.y() <  b/2. + thick)) ||
-	((vertex.y() > -b/2. - thick) & (vertex.y() < -b/2.))  ) {
-      REQUIRE(vertex.x() > -a/2 - thick);
-      REQUIRE(vertex.x() <  a/2 + thick);
-      REQUIRE(vertex.z() > -c/2 - thick);
-      REQUIRE(vertex.z() <  c/2 + thick);
+    if ((std::abs(x) < a/2) & (std::abs(z) < c/2)) {
+      REQUIRE(std::abs(y) >= b/2);
+      REQUIRE(std::abs(y) <= b/2 + thick);
     }
 
-    if (((vertex.z() >  c/2.)         & (vertex.z() <  c/2. + thick)) ||
-	((vertex.z() > -c/2. - thick) & (vertex.z() < -c/2.))  ) {
-      REQUIRE(vertex.x() > -a/2 - thick);
-      REQUIRE(vertex.x() <  a/2 + thick);
-      REQUIRE(vertex.y() > -b/2 - thick);
-      REQUIRE(vertex.y() <  b/2 + thick);
+    if ((std::abs(y) < b/2) & (std::abs(z) < c/2)) {
+      REQUIRE(std::abs(x) >= a/2);
+      REQUIRE(std::abs(x) <= a/2 + thick);
     }
+
   }
 
 }
