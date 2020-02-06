@@ -13,6 +13,9 @@
 #define __DEFAULT_RUN_ACTION__ 
 
 #include <G4UserRunAction.hh>
+#include <G4String.hh>
+
+class G4GenericMessenger;
 
 
 namespace nexus {
@@ -29,6 +32,14 @@ namespace nexus {
   
     virtual void BeginOfRunAction(const G4Run*);
     virtual void EndOfRunAction(const G4Run*);
+
+  private:
+
+    /// Messenger for the definition of control commands
+    G4GenericMessenger* msg_;
+
+    /// Name of files with ntuples for posterior plotting
+    G4String analysis_file_;
   };
 
 }
