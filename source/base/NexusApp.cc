@@ -42,7 +42,11 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
 
   // Define a command to set a seed for the random number generator.
   _msg->DeclareMethod("random_seed", &NexusApp::SetRandomSeed, 
-    "Set a seed for the random number generator."); 
+    "Set a seed for the random number generator.");
+
+  //G4String analysis_file = "analysis2";
+  //_msg->DeclareProperty("analysisFile", analysis_file,
+  //			"Name of analysis file");
 
   /////////////////////////////////////////////////////////
 
@@ -111,6 +115,8 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
   // Set by default a random seed (system time) for the random
   // number generator
   SetRandomSeed(-1);
+
+  //UI->ApplyCommand("/analysis/setFileName " + analysis_file);
 
   PersistencyManager::Initialize(historyFile_init, historyFile_config);
 }

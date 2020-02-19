@@ -3,6 +3,8 @@
 /event/verbose 0
 /tracking/verbose 0
 
+#/analysis/setFileName prova
+
 /control/execute macros/geometries/NextNew.mac
 
 
@@ -21,3 +23,5 @@
 /nexus/persistency/eventType background
 /nexus/persistency/hdf5 true
 /nexus/persistency/outputFile NEW_valid.K40.DICE_BOARD.next
+
+/Actions/DefaultRunAction/analysisFile analysis

@@ -16,5 +16,7 @@
 /Actions/RegisterSteppingAction DEFAULT
 /Actions/RegisterRunAction DEFAULT
 
+#/nexus/analysisFile my_analysis
 /nexus/RegisterMacro macros/validation/NEW_valid_K40.config.mac
+
 #/nexus/RegisterDelayedMacro macros/physics/Bi214.mac
