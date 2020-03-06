@@ -22,49 +22,49 @@ using namespace CLHEP;
 G4MaterialPropertiesTable* OpticalMaterialProperties::Vacuum()
 {
   G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
-  
+
   const G4int entries = 2;
   G4double energy[entries] = {0.01*eV, 100.*eV};
-  
+
   // REFRACTIVE INDEX
   G4double rindex[entries] = {1., 1.};
   mpt->AddProperty("RINDEX", energy, rindex, entries);
-  
+
   // ABSORPTION LENGTH
   G4double abslen[entries] = {1.e8*m, 1.e8*m};
   mpt->AddProperty("ABSLENGTH", energy, abslen, entries);
-  
+
   return mpt;
 }
 
 G4MaterialPropertiesTable* OpticalMaterialProperties::Epoxy()
 {
   // Optical properties of Epoxy adhesives.
-  // Obtained from 
+  // Obtained from
   // http://www.epotek.com/SSCDocs/techtips/Tech%20Tip%2018%20-%20Understanding%20Optical%20Properties%20for%20Epoxy%20Apps.pdf
 
   G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
-  
-  G4double energy[2] = 
+
+  G4double energy[2] =
     {1*eV, 10.751*eV};
-  G4double rindex[2] = 
+  G4double rindex[2] =
     {1.54, 1.54};
 
   // ABSORPTION LENGTH /////////////////////////////////////////////////////////
 
   const G4int abs_entries = 17;
-  
+
   G4double abs_energy[abs_entries]=
-    {1.*eV, 2.132*eV, 2.735*eV, 2.908*eV, 3.119*eV, 
-     3.320*eV, 3.476*eV, 3.588*eV, 3.749*eV, 3.869*eV, 
-     3.973*eV, 4.120*eV, 4.224*eV, 4.320*eV, 4.420*eV, 
+    {1.*eV, 2.132*eV, 2.735*eV, 2.908*eV, 3.119*eV,
+     3.320*eV, 3.476*eV, 3.588*eV, 3.749*eV, 3.869*eV,
+     3.973*eV, 4.120*eV, 4.224*eV, 4.320*eV, 4.420*eV,
      5.018*eV, 8.*eV};
   G4double abslength[abs_entries] =
-    {15000.*cm, 326.*mm, 117.68*mm, 85.89*mm, 50.93*mm, 
-     31.25*mm, 17.19*mm, 10.46*mm, 5.26*mm, 3.77*mm, 
+    {15000.*cm, 326.*mm, 117.68*mm, 85.89*mm, 50.93*mm,
+     31.25*mm, 17.19*mm, 10.46*mm, 5.26*mm, 3.77*mm,
      2.69*mm, 1.94*mm, 1.94*mm, 1.94*mm, 1.94*mm,
-     1.94*mm, 1.94*mm}; 
- 
+     1.94*mm, 1.94*mm};
+
   mpt->AddProperty("RINDEX", energy, rindex, 2);
   mpt->AddProperty("ABSLENGTH", abs_energy, abslength, abs_entries);
 
@@ -148,11 +148,11 @@ G4MaterialPropertiesTable* OpticalMaterialProperties::FusedSilica()
   G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
 
   // REFRACTIVE INDEX //////////////////////////////////////////////////////////
-  // The range is chosen to be up to ~10.7 eV because Sellmeier's equation 
+  // The range is chosen to be up to ~10.7 eV because Sellmeier's equation
   // for fused silica is valid only in that range
- 
+
   const G4int ri_entries = 200;
-  
+
   G4double ri_energy[ri_entries];
   for (int i=0; i<ri_entries; i++) {
     ri_energy[i] = (1 + i*0.049)*eV;
@@ -163,7 +163,7 @@ G4MaterialPropertiesTable* OpticalMaterialProperties::FusedSilica()
   //    n^2 - 1 = B_1 * \lambda^2 / (\lambda^2 - C_1) +
   //            + B_2 * \lambda^2 / (\lambda^2 - C_2) +
   //            + B_3 * \lambda^2 / (\lambda^2 - C_3),
-  // with wavelength \lambda in micrometers and 
+  // with wavelength \lambda in micrometers and
   //    B_1 = 4.73E-1, B_2 = 6.31E-1, B_3 = 9.06E-1
   //    C_1 = 1.30E-2, C_2 = 4.13E-3, C_3 = 9.88E+1.
 
@@ -177,7 +177,7 @@ G4MaterialPropertiesTable* OpticalMaterialProperties::FusedSilica()
   G4double rindex[ri_entries];
   for (int i=0; i<ri_entries; i++) {
     G4double lambda = h_Planck*c_light/ri_energy[i]*1000; // in micron
-    G4double n2 = 1 + B_1*pow(lambda,2)/(pow(lambda,2)-C_1) 
+    G4double n2 = 1 + B_1*pow(lambda,2)/(pow(lambda,2)-C_1)
       + B_2*pow(lambda,2)/(pow(lambda,2)-C_2)
       + B_3*pow(lambda,2)/(pow(lambda,2)-C_3);
     rindex[i] = sqrt(n2);
@@ -188,22 +188,22 @@ G4MaterialPropertiesTable* OpticalMaterialProperties::FusedSilica()
   // ABSORPTION LENGTH /////////////////////////////////////////////////////////
 
   const G4int abs_entries = 30;
-  
+
   G4double abs_energy[abs_entries]=
-    {1.*eV, 6.46499*eV, 6.54*eV, 6.59490*eV, 6.64*eV, 
-     6.72714*eV, 6.73828*eV, 6.75*eV, 6.82104*eV, 6.86*eV, 
-     6.88*eV, 6.89*eV, 7.*eV, 7.01*eV, 7.01797*eV, 
-     7.05*eV, 7.08*eV, 7.08482*eV, 7.30*eV, 7.36*eV, 
-     7.4*eV, 7.48*eV, 7.52*eV, 7.58*eV, 7.67440*eV, 
+    {1.*eV, 6.46499*eV, 6.54*eV, 6.59490*eV, 6.64*eV,
+     6.72714*eV, 6.73828*eV, 6.75*eV, 6.82104*eV, 6.86*eV,
+     6.88*eV, 6.89*eV, 7.*eV, 7.01*eV, 7.01797*eV,
+     7.05*eV, 7.08*eV, 7.08482*eV, 7.30*eV, 7.36*eV,
+     7.4*eV, 7.48*eV, 7.52*eV, 7.58*eV, 7.67440*eV,
      7.76*eV, 7.89*eV, 7.93*eV, 8.*eV, 10.7*eV};
   G4double abslength[abs_entries] =
-    {1500.*cm, 1500.*cm, 200.*cm, 200.*cm, 90.*cm, 
-     45.*cm, 45*cm, 30*cm, 24*cm, 21*cm, 
+    {1500.*cm, 1500.*cm, 200.*cm, 200.*cm, 90.*cm,
+     45.*cm, 45*cm, 30*cm, 24*cm, 21*cm,
      20*cm , 19*cm, 16*cm, 14.*cm, 13.*cm,
-     8.5*cm, 8.*cm, 6.*cm, 1.5*cm, 1.2*cm, 
-     1.*cm, .65*cm, .4*cm, .37*cm, .32*cm, 
-     .28*cm, .220*cm, .215*cm, .00005*cm, .00005*cm}; 
- 
+     8.5*cm, 8.*cm, 6.*cm, 1.5*cm, 1.2*cm,
+     1.*cm, .65*cm, .4*cm, .37*cm, .32*cm,
+     .28*cm, .220*cm, .215*cm, .00005*cm, .00005*cm};
+
   mpt->AddProperty("ABSLENGTH", abs_energy, abslength, abs_entries);
 
   return mpt;
@@ -876,6 +876,57 @@ G4MaterialPropertiesTable* OpticalMaterialProperties::LXe_window()
   LXe_mpt->AddProperty("ABSLENGTH", energy, abslen, 2);
 
   return LXe_mpt;
+}
+
+
+G4MaterialPropertiesTable* OpticalMaterialProperties::GenericWLS(G4double decay, G4double qe)
+{
+  /// This is the simulation of the optical properties of a generic wavelength shifter
+  /// which converts VUV photons to blue photons.
+  /// The same refractive index as liquid xenon is set, in lack of a better estimation.
+  /// The same emission spectrum of TPB is also set.
+  /// A WLS material is characterized by its photon absorption and photon emission
+  /// spectrua
+  /// and by a possible time delay between the absorption and re-emission of the photon.
+
+  G4MaterialPropertiesTable* wls_mpt = new G4MaterialPropertiesTable();
+
+  const G4int ri_entries = 18;
+  G4double ri_energy[ri_entries] = {1*eV, 2*eV, 3*eV, 4*eV, 5*eV, 6*eV, 6.2*eV, 6.4*eV,
+				    6.6*eV, 6.8*eV, 7*eV, 7.2*eV, 7.4*eV, 7.6*eV, 7.8*eV,
+				    8*eV, 8.2*eV, 8.21*eV};
+  XenonLiquidProperties LXe_prop;
+  G4double rindex[ri_entries];
+  for (G4int i=0; i<ri_entries; i++) {
+    rindex[i] = LXe_prop.RefractiveIndex(ri_energy[i]);
+  }
+
+  const G4int em_numentries = 55;
+/* Right border of the bins*/
+  G4double WLS_Emission_Energies[em_numentries] = {1.96800306364 *eV,  1.98230541148 *eV,  1.99681716413 *eV,  2.01154295443 *eV,  2.0264875529 *eV,  2.04165587291 *eV,  2.05705297602 *eV,  2.07268407766 *eV,  2.08855455299 *eV,  2.10466994306 *eV,  2.12103596128 *eV,  2.13765850016 *eV,  2.15454363839 *eV,  2.17169764825 *eV,  2.18912700337 *eV,  2.2068383869 *eV,  2.2248387 *eV,  2.24313507089 *eV,  2.26173486418 *eV,  2.28064569081 *eV,  2.29987541838 *eV,  2.31943218215 *eV,  2.3393243964 *eV,  2.35956076661 *eV,  2.3801503021 *eV,  2.4011023294 *eV,  2.4224265064 *eV,  2.4441328371 *eV,  2.46623168735 *eV,  2.48873380128 *eV,  2.51165031879 *eV,  2.53499279387 *eV,  2.55877321408 *eV,  2.58300402103 *eV,  2.60769813212 *eV,  2.63286896352 *eV,  2.65853045439 *eV,  2.68469709272 *eV,  2.71138394255 *eV,  2.7386066729 *eV,  2.76638158844 *eV,  2.7947256621 *eV,  2.82365656957 *eV,  2.85319272616 *eV,  2.8833533258 *eV,  2.91415838269 *eV,  2.9456287756 *eV,  2.97778629498 *eV,  3.01065369338 *eV,  3.04425473906 *eV,  3.07861427337 *eV,  3.11375827192 *eV,  3.14971391017 *eV,  3.18650963341 *eV,  3.22417523192 *eV};
+;
+
+ G4double WLS_Emission[em_numentries] = {5e-05 , 5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  5e-05 ,  0.0001 ,  0.0002 ,  0.0003 ,  0.0003 ,  0.0003 ,  0.0003 ,  0.0003 ,  0.0002 ,  0.0007 ,  0.0007 ,  0.001 ,  0.0011 ,  0.0013 ,  0.0016 ,  0.0018 ,  0.0022 ,  0.0029 ,  0.0035 ,  0.0034 ,  0.0041 ,  0.0046 ,  0.0053 ,  0.0061 ,  0.0069 ,  0.008 ,  0.0087 ,  0.0101 ,  0.0101 ,  0.0103 ,  0.0105 ,  0.0112 ,  0.0117 ,  0.0112 ,  0.011 ,  0.014 ,  0.008 ,  0.008 ,  0.007 ,  0.0038 ,  0.0012 ,  0.0008, 0.0004};
+
+  const G4int wls_numentries = 17;
+ G4double WLS_Energies[wls_numentries] =
+   {1.*eV, 2.8*eV, 4.*eV, 4.95937*eV, 5.16601*eV, 5.39062*eV,
+    5.63565*eV, 5.90401*eV, 6.19921*eV, 6.52548*eV, 6.88801*eV, 7.29319*eV,
+    7.74901*eV, 8.26561*eV, 9.*eV, 10.*eV, 12.4*eV};
+ G4double WLS_ConvEfficiency[wls_numentries] =
+   {0., 0., 0., 0., 0., 0.,
+    0., qe, qe, qe, qe, qe,
+    qe, qe, qe, qe, qe};
+
+ wls_mpt->AddProperty("RINDEX", ri_energy, rindex, ri_entries);
+ wls_mpt->AddProperty("WLSCOMPONENT", WLS_Emission_Energies, WLS_Emission, em_numentries);
+ wls_mpt->AddProperty("WLSCONVEFFICIENCY", WLS_Energies,
+		      WLS_ConvEfficiency, wls_numentries);
+ wls_mpt->AddConstProperty("WLSTIMECONSTANT", decay);
+
+ G4cout << "Decay time of WLS = " << decay/nanosecond << " nanoseconds." << G4endl;
+
+  return wls_mpt;
 }
 
 G4MaterialPropertiesTable*

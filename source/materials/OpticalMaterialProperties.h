@@ -67,6 +67,7 @@ namespace nexus {
    static G4MaterialPropertiesTable* FakeLXe();
    static G4MaterialPropertiesTable* LXe_nconst();
    static G4MaterialPropertiesTable* LXe_window();
+    static G4MaterialPropertiesTable* GenericWLS(G4double decay=2.2*nanosecond, G4double qe=0.80);
 
 
     static G4MaterialPropertiesTable* Glass();
