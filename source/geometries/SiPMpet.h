@@ -1,12 +1,6 @@
 // ----------------------------------------------------------------------------
-///  \file   SiPMpet.h
-///  \brief  Geometry of a 1x1 mm2 SiPM
-///
-///  \author   <justo.martin-albo@ific.uv.es>
-///  \date     2 March 2010
-///  \version  $Id$
-///
-///  Copyright (c) 2010-2013 NEXT Collaboration. All rights reserved.
+//  Author:  <paola.ferrario@dipc.org>
+//  Created: 5 March 2020
 // ----------------------------------------------------------------------------
 
 #ifndef SILICON_PM_pet_H
@@ -20,8 +14,8 @@ class G4GenericMessenger;
 namespace nexus {
 
 
-  /// Geometry of the Hamamatsu surface-mounted 1x1 mm2 MPPC (SiPM)
-  
+  /// Geometry of a generic SiPM
+
   class SiPMpet: public BaseGeometry
   {
   public:
@@ -29,25 +23,31 @@ namespace nexus {
     SiPMpet();
     /// Destructor
     ~SiPMpet();
-    
-    /// Return dimensions of the SiPM
-    G4ThreeVector GetDimensions() const;
-    
+
     /// Invoke this method to build the volumes of the geometry
     void Construct();
-    
+
   private:
-    G4ThreeVector _dimensions; ///< external dimensions of the SiPMpet
 
     // Visibility of the tracking plane
-    G4bool _visibility;
+    G4bool visibility_;
 
-     // Messenger for the definition of control commands
-    G4GenericMessenger* _msg;
+    // Optical properties to be used for epoxy
+    G4double refr_index_;
 
-    G4double _time_binning;
+    // PDE of SiPMs
+    G4double eff_;
 
+    G4double time_binning_, sipm_size_;
 
+    G4int mother_depth_, naming_order_;
+
+    G4bool wls_coating_;
+    G4double decay_time_; ///< decay time of WLS
+    G4double qe_; ///< quantum efficiency of WLS
+
+    // Messenger for the definition of control commands
+    G4GenericMessenger* msg_;
 
   };
 
