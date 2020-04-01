@@ -34,7 +34,11 @@ namespace nexus {
 		      refr_index_(1.54),
 		      eff_(1.),
 		      time_binning_(1.*microsecond),
-		      sipm_size_(3.*mm),
+		      sipm_size_(3.5*mm),
+                      sipm_z_(0.6 * mm),
+                      offset_(0.1*mm),
+                      active_depth_(0.1*mm),
+                      active_size_(3.*mm),
 		      mother_depth_(0),
 		      naming_order_(0),
 		      wls_coating_(false),
@@ -60,6 +64,12 @@ namespace nexus {
     size_cmd.SetUnitCategory("Length");
     size_cmd.SetParameterName("size", false);
     size_cmd.SetRange("size>0.");
+
+    G4GenericMessenger::Command& active_size_cmd =
+      msg_->DeclareProperty("active_size", active_size_, "Size of SiPM active area");
+    active_size_cmd.SetUnitCategory("Length");
+    active_size_cmd.SetParameterName("active_size", false);
+    active_size_cmd.SetRange("active_size>0.");
 
     msg_->DeclareProperty("mother_depth", mother_depth_,
 			  "Depth of sipm in its mother, being replicated");
@@ -89,22 +99,16 @@ namespace nexus {
 
   void SiPMpet::Construct()
   {
-    G4double offset = 0.1 * mm;
-
-    G4double sipm_x = sipm_size_;
-    G4double sipm_y = sipm_size_;
-    G4double sipm_z = 0.6 * mm;
-
-    SetDimensions(G4ThreeVector(sipm_x, sipm_y, sipm_z));
+    SetDimensions(G4ThreeVector(sipm_size_, sipm_size_, sipm_z_));
 
     G4String name = "SIPMpet";
-    G4Box* sipm_solid = new G4Box(name, sipm_x/2., sipm_y/2., sipm_z/2);
+    G4Box* sipm_solid = new G4Box(name, sipm_size_/2., sipm_size_/2., sipm_z_/2);
 
     G4Material* epoxy = MaterialsList::Epoxy();
     if (refr_index_ > 0) {
       epoxy->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyFixedRefr(refr_index_));
     } else {
-       epoxy->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyLXeRefr());
+      epoxy->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyLXeRefr());
     }
 
     G4LogicalVolume* sipm_logic = new G4LogicalVolume(sipm_solid, epoxy, name);
@@ -116,28 +120,42 @@ namespace nexus {
     if (wls_coating_) {
       name = "WLS";
       G4double tpb_z = 0.001 * mm;
-      G4Box* tpb_solid = new G4Box(name, sipm_x/2., sipm_y/2., tpb_z/2);
+      G4Box* tpb_solid = new G4Box(name, sipm_size_/2., sipm_size_/2., tpb_z/2);
       G4Material* TPB = MaterialsList::TPB();
       TPB->SetMaterialPropertiesTable(OpticalMaterialProperties::GenericWLS(decay_time_,
 									    qe_));
-    G4LogicalVolume* tpb_logic = new G4LogicalVolume(tpb_solid, TPB, name);
+      G4LogicalVolume* tpb_logic = new G4LogicalVolume(tpb_solid, TPB, name);
 
-    pos_z = (sipm_z - tpb_z) / 2.;
-    new G4PVPlacement(0, G4ThreeVector(0.,0.,pos_z), tpb_logic,
-                      name, sipm_logic, false, 0, true);
+      pos_z = (sipm_z_ - tpb_z) / 2.;
+      new G4PVPlacement(0, G4ThreeVector(0.,0.,pos_z), tpb_logic,
+                        name, sipm_logic, false, 0, true);
 
     }
 
-    // ACTIVE WINDOW /////////////////////////////////////////////////
+    // PLASTIC SUPPORT //
 
-    G4double active_x = sipm_x;
-    G4double active_y = sipm_y;
-    G4double active_depth = 0.01 * mm;
+    name = "SIPM_SUPPORT";
+    G4double support_depth = sipm_z_ - offset_;
+
+    G4Box* support_solid =
+      new G4Box(name, sipm_size_/2., sipm_size_/2., support_depth/2);
+
+    G4Material* plastic =
+      G4NistManager::Instance()->FindOrBuildMaterial("G4_POLYCARBONATE");
+
+    G4LogicalVolume* support_logic =
+      new G4LogicalVolume(support_solid, plastic, name);
+
+    pos_z = -sipm_z_/2. + support_depth/2.;
+    new G4PVPlacement(0, G4ThreeVector(0., 0., pos_z),
+		      support_logic, name, sipm_logic, false, 0, true);
+
+    // ACTIVE REGION //
 
     name = "PHOTODIODES";
 
     G4Box* active_solid =
-      new G4Box(name, active_x/2., active_y/2., active_depth/2);
+      new G4Box(name, active_size_/2., active_size_/2., active_depth_/2);
 
     G4Material* silicon =
       G4NistManager::Instance()->FindOrBuildMaterial("G4_Si");
@@ -145,9 +163,9 @@ namespace nexus {
     G4LogicalVolume* active_logic =
       new G4LogicalVolume(active_solid, silicon, name);
 
-    pos_z = sipm_z/2. - active_depth/2. - offset;
+    pos_z = support_depth/2. - active_depth_/2.;
     new G4PVPlacement(0, G4ThreeVector(0., 0., pos_z),
-		      active_logic, name, sipm_logic, false, 0, true);
+		      active_logic, name, support_logic, false, 0, true);
 
 
     // OPTICAL SURFACES //////////////////////////////////////////////
@@ -187,14 +205,15 @@ namespace nexus {
     if (visibility_) {
       G4VisAttributes sipm_col = nexus::Brown();
       sipm_logic->SetVisAttributes(sipm_col);
-
-      G4VisAttributes active_col = nexus::Red();;
+      G4VisAttributes active_col = nexus::Red();
       active_col.SetForceSolid(true);
       active_logic->SetVisAttributes(active_col);
+      G4VisAttributes support_col = nexus::Yellow();
+      support_logic->SetVisAttributes(support_col);
     }
     else {
-      sipm_logic->SetVisAttributes(G4VisAttributes::Invisible);
       active_logic->SetVisAttributes(G4VisAttributes::Invisible);
+      support_logic->SetVisAttributes(G4VisAttributes::Invisible);
     }
   }
 

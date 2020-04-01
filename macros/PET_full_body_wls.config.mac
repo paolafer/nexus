@@ -13,7 +13,8 @@
 /Geometry/SiPMpet/efficiency 0.2
 /Geometry/SiPMpet/visibility true
 /Geometry/SiPMpet/time_binning 1. microsecond
-/Geometry/SiPMpet/size 6. mm
+/Geometry/SiPMpet/active_size 6. mm
+/Geometry/SiPMpet/size 6.5 mm
 /Geometry/SiPMpet/wls_coating true
 /Geometry/SiPMpet/decay_time 4. nanosecond
 /Geometry/SiPMpet/wls_qe 0.80

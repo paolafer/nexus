@@ -38,7 +38,9 @@ namespace nexus {
     // PDE of SiPMs
     G4double eff_;
 
-    G4double time_binning_, sipm_size_;
+    G4double time_binning_;
+    G4double sipm_size_, sipm_z_, offset_;
+    G4double active_depth_, active_size_;
 
     G4int mother_depth_, naming_order_;
 
