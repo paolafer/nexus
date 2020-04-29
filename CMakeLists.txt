@@ -15,16 +15,17 @@ ENDIF(COMMAND cmake_policy)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-find_package(GATE REQUIRED)
 find_package(Geant4 REQUIRED ui_all vis_all)
 find_package(GSL REQUIRED)
 find_package(HDF5 REQUIRED)
 find_package(ROOT REQUIRED)
 
+find_package(NEST REQUIRED)
+include_directories(${NEST_INCLUDE_DIRS})
+
 include(${Geant4_USE_FILE})
 include(${ROOT_USE_FILE})
 
-include_directories(${GATE_INCLUDE_DIRS})
 include_directories(${GSL_INCLUDE_DIRS})
 include_directories(${HDF5_INCLUDE_DIRS})
 

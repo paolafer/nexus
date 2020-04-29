@@ -13,13 +13,13 @@
 #define DEFAULT_STACKING_ACTION_H
 
 #include <G4UserStackingAction.hh>
-
+#include <NESTStackingAction.hh>
 
 namespace nexus {
 
   // General-purpose user stacking action
 
-  class DefaultStackingAction: public G4UserStackingAction
+  class DefaultStackingAction: public NESTStackingAction
   {
   public:
     /// Constructor
