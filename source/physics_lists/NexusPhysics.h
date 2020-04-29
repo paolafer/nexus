@@ -40,6 +40,7 @@ namespace nexus {
     G4bool _noCompt; ///< Switch off Compton scattering
 
     G4bool nest_;
+    G4double sc_yield_factor_;
 
     G4GenericMessenger* _msg;
     WavelengthShifting* _wls;

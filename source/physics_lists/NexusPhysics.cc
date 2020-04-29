@@ -34,7 +34,7 @@ namespace nexus {
 
   NexusPhysics::NexusPhysics():
     G4VPhysicsConstructor("NexusPhysics"), risetime_(false), _noCompt(false)
-    nest_(true)
+    nest_(true), sc_yield_factor_(0.818)
   {
     _msg = new G4GenericMessenger(this, "/PhysicsList/Nexus/",
       "Control commands of the nexus physics list.");
@@ -47,6 +47,8 @@ namespace nexus {
 
     _msg->DeclareProperty("nest", nest_,
       "True if NEST is used for scintillation");
+    _msg->DeclareProperty("sc_yield_factor", sc_yield_factor_,
+      "Factor to reduce scintillation yield in NEST");
   }
 
 
@@ -106,6 +108,7 @@ namespace nexus {
 	new NEST::NESTProc("S1", fElectromagnetic, petaloCalc, petalo);
       theNESTScintillationProcess->SetDetailedSecondaries(true); // this is to use the full scintillation spectrum of LXe.
       theNESTScintillationProcess->SetStackElectrons(false);
+      theNESTScintillationProcess->SetScintillationYieldFactor(sc_yield_factor_);
 
       auto aParticleIterator = GetParticleIterator();
       aParticleIterator->reset();
