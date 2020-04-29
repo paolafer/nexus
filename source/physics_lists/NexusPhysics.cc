@@ -9,6 +9,9 @@
 #include "NexusPhysics.h"
 #include "WavelengthShifting.h"
 
+#include "NESTProc.hh"
+#include "PetaloDetector.hh"
+
 #include <G4Scintillation.hh>
 #include <G4GenericMessenger.hh>
 #include <G4OpticalPhoton.hh>
@@ -88,6 +91,14 @@ namespace nexus {
         FindProcess("compt", G4Gamma::Definition());
        pmanager->RemoveProcess(cs);
     }
+
+    PetaloDetector* petalo = new PetaloDetector();
+    NEST::NESTProc* theNESTScintillationProcess =
+      new NEST::NESTProc("S1", fElectromagnetic, petalo);
+    pmanager = G4Electron::Definition()->GetProcessManager();
+    pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
+    pmanager = G4Gamma::Definition()->GetProcessManager();
+    pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
 
   }
 
