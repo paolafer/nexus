@@ -19,13 +19,10 @@
 
 ### PHYSICS
 /PhysicsList/Nexus/nest true
-/PhysicsList/Nexus/clustering          false
-/PhysicsList/Nexus/drift               false
-/PhysicsList/Nexus/electroluminescence false
-/PhysicsList/Nexus/offScintillation false
+/PhysicsList/Nexus/offScintillation true
 /PhysicsList/Nexus/offCherenkov false
 
-/Actions/DefaultEventAction/energy_threshold 1.02 MeV
+/Actions/DefaultEventAction/energy_threshold 0.511 MeV
 
 ### VERBOSITIES
 /run/verbose 1
