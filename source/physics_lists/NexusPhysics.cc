@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 //  $Id$
 //
-//  Author:  <justo.martin-albo@ific.uv.es> <paola.ferrario@dipc.org>
+//  Authors:  <justo.martin-albo@ific.uv.es>, <paola.ferrario@dipc.org>
 //  Created: 27 Jan 2010
 //
 //  Copyright (c) 2010-2013 NEXT Collaboration. All rights reserved.
