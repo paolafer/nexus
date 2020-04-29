@@ -62,6 +62,8 @@ namespace nexus {
   void NexusPhysics::ConstructParticle()
   {
     G4OpticalPhoton::Definition();
+    NEST::NESTThermalElectron::Definition();
+    //G4OpticalPhoton::OpticalPhotonDefinition();
   }
 
 
