@@ -71,7 +71,7 @@ def AssertG4Version(path):
         print (msg, g4version)
         if not g4version in NEXUS_G4VERSION_NUMBER:
             msg = 'This version of NEXUS requires Geant4 version(s) ' \
-                + str(NEXUS_G4VERSION_NUMBER) 
+                + str(NEXUS_G4VERSION_NUMBER)
             Abort(msg)
 
 
@@ -93,7 +93,7 @@ vars.AddVariables(
     PathVariable('GEANT4_BINDIR',                     # var name
                  'Path to Geant4 headers directory',  # var description
                  NULL_PATH),                       # var default value
-        
+
     ## ROOT
 
     PathVariable('ROOT_BINDIR',
@@ -111,15 +111,21 @@ vars.AddVariables(
     PathVariable('GSL_DIR',
                  'Path to gsl installation.',
                  NULL_PATH),
-    
 
-    ## The following vars shouldn't be defined by users unless they 
+   ## NEST
+
+    PathVariable('NEST_DIR',
+                 'Path to NEST installation.',
+                 NULL_PATH),
+
+
+    ## The following vars shouldn't be defined by users unless they
     ## know what they are doing.
 
     ('CPPDEFINES',
      'Preprocessor definitions.',
      []),
-    
+
     ('CCFLAGS',
      'General options passed to the compiler.',
      []),
@@ -131,19 +137,19 @@ vars.AddVariables(
     ('CXXFLAGS',
      'c++ compiler options.',
      ['-std=c++11']),
-    
+
     ('CPPPATH',
      'List of directories where the include headers are located.',
      []),
-    
+
     ('LIBPATH',
      'List of directories where the linked libraries are located.',
      []),
-    
+
     ('LIBS',
      'List of libraries to link against.',
      []),
-    
+
     ('LINKFLAGS',
      'User options passed to the linker.',
      [])
@@ -160,7 +166,7 @@ env = Environment(variables=vars, ENV=os.environ)
 
 ## If the LIBPATH buildvar (for instance) is not defined, the configure
 ## step has not been run yet
-if not env['LIBPATH']: 
+if not env['LIBPATH']:
 
     ## Create a Configure object that provides autoconf-like functionality
     conf = Configure(env, conf_dir='.sconf', log_file='.sconf/sconf.log')
@@ -169,7 +175,7 @@ if not env['LIBPATH']:
     ## Geant4 configuration --------------------------------
 
     AssertG4Version(env['GEANT4_BINDIR'])
-    
+
     if env['GEANT4_BINDIR'] != NULL_PATH:
         env.PrependENVPath('PATH', env['GEANT4_BINDIR'])
 
@@ -180,9 +186,9 @@ if not env['LIBPATH']:
 
     if env['ROOT_BINDIR'] != NULL_PATH:
         env.PrependENVPath('PATH', env['ROOT_BINDIR'])
-        
+
     env.ParseConfig('root-config --cflags --libs')
- 
+
     ## Check for libraries and headers ---------------------
 
     if not conf.CheckCXXHeader('G4Event.hh'):
@@ -200,8 +206,8 @@ if not env['LIBPATH']:
 
     if env['HDF5_DIR'] != NULL_PATH:
         env.PrependENVPath('PATH', env['HDF5_DIR'])
-      
-    try: 
+
+    try:
         env['HDF5_LIB'] = os.environ['HDF5_LIB']
         env.Append( LIBPATH = [env['HDF5_LIB']] )
         env.Append(LIBS = ['hdf5'])
@@ -209,8 +215,8 @@ if not env['LIBPATH']:
         env.Append( CPPPATH = [env['HDF5_INC']] )
     except KeyError: pass
 
-    ## GSL configuration --------------------------   -------
-    
+    ## GSL configuration --------------------------
+
     if env['GSL_DIR'] != NULL_PATH:
         env.PrependENVPath('PATH', env['GSL_DIR'])
 
@@ -218,11 +224,24 @@ if not env['LIBPATH']:
 
     if not conf.CheckCXXHeader('gsl/gsl_errno.h'):
         Abort('GSL headers not found.')
-    
+
  #   env.Append(LIBS = ['gsl','gslcblas'])
- 
+
 #    if not conf.CheckLib(library='GSL', language='CXX', autoadd=0):
 #        Abort('GSL library not found.')
+
+
+    ## NEST configuration --------------------------
+
+    env.Append( LIBPATH = [os.environ['NEST_DIR']+'/lib'] )
+    env.Append( CPPPATH = [os.environ['NEST_DIR']+'/include'] )
+    env.Append(LIBS = ['NEST'])
+
+    if not conf.CheckCXXHeader('NEST.hh'):
+        Abort('NEST headers not found.')
+
+    #if not conf.CheckLib(library='NEST', language='CXX', autoadd=0):
+    #    Abort('NEST libraries could not be found.')
 
 ## ##################################################################
     env = conf.Finish()
