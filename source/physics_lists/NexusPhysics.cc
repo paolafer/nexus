@@ -104,6 +104,7 @@ namespace nexus {
       NEST::NESTProc* theNESTScintillationProcess =
 	new NEST::NESTProc("S1", fElectromagnetic, petaloCalc, petalo);
       theNESTScintillationProcess->SetDetailedSecondaries(true); // this is to use the full scintillation spectrum of LXe.
+      theNESTScintillationProcess->SetStackElectrons(false);
 
       auto aParticleIterator = GetParticleIterator();
       aParticleIterator->reset();
