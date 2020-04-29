@@ -25,7 +25,6 @@
 /process/optical/processActivation Scintillation true
 /process/optical/processActivation Cerenkov      true
 
-
 ### VERBOSITIES
 /run/verbose 1
 /event/verbose 0
@@ -35,6 +34,6 @@
 
 ### OUTPUT FILE
 /nexus/persistency/start_id 10
-/nexus/persistency/sns_only true
-/nexus/persistency/tof_time 50. nanosecond
+#/nexus/persistency/sns_only true
+#/nexus/persistency/tof_time 50. nanosecond
 /nexus/persistency/outputFile petit_ring.pet
