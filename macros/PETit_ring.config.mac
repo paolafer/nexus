@@ -25,6 +25,7 @@
 /process/optical/processActivation Scintillation true
 /process/optical/processActivation Cerenkov      true
 
+
 ### VERBOSITIES
 /run/verbose 1
 /event/verbose 0
