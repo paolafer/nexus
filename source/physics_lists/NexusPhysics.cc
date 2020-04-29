@@ -33,6 +33,7 @@ namespace nexus {
 
   NexusPhysics::NexusPhysics():
     G4VPhysicsConstructor("NexusPhysics"), risetime_(false), noCompt_(false)
+    nest_(true)
   {
     msg_ = new G4GenericMessenger(this, "/PhysicsList/Nexus/",
       "Control commands of the nexus physics list.");
@@ -42,6 +43,9 @@ namespace nexus {
 
     msg_->DeclareProperty("offCompt", noCompt_,
 			  "Switch off Compton Scattering.");
+
+    _msg->DeclareProperty("nest", nest_,
+      "True if NEST is used for scintillation");
   }
 
 
@@ -92,13 +96,15 @@ namespace nexus {
        pmanager->RemoveProcess(cs);
     }
 
-    PetaloDetector* petalo = new PetaloDetector();
-    NEST::NESTProc* theNESTScintillationProcess =
-      new NEST::NESTProc("S1", fElectromagnetic, petalo);
-    pmanager = G4Electron::Definition()->GetProcessManager();
-    pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
-    pmanager = G4Gamma::Definition()->GetProcessManager();
-    pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
+    if (nest_) {
+      PetaloDetector* petalo = new PetaloDetector();
+      NEST::NESTProc* theNESTScintillationProcess =
+	new NEST::NESTProc("S1", fElectromagnetic, petalo);
+      pmanager = G4Electron::Definition()->GetProcessManager();
+      pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
+      pmanager = G4Gamma::Definition()->GetProcessManager();
+      pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
+    }
 
   }
 
