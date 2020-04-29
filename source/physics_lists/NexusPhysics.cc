@@ -103,10 +103,17 @@ namespace nexus {
       NEST::NESTcalc* petaloCalc = new NEST::NESTcalc(petalo);
       NEST::NESTProc* theNESTScintillationProcess =
 	new NEST::NESTProc("S1", fElectromagnetic, petaloCalc, petalo);
-      pmanager = G4Electron::Definition()->GetProcessManager();
-      pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
-      pmanager = G4Gamma::Definition()->GetProcessManager();
-      pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
+      theNESTScintillationProcess->SetDetailedSecondaries(true); // this is to use the full scintillation spectrum of LXe.
+
+      auto aParticleIterator = GetParticleIterator();
+      aParticleIterator->reset();
+      while ((*aParticleIterator)()) {
+        G4ParticleDefinition* particle = aParticleIterator->value();
+        if (theNESTScintillationProcess->IsApplicable(*particle)) {
+          pmanager = particle->GetProcessManager();
+          pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
+        }
+      }
     }
 
   }
