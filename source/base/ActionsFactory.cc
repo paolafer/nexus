@@ -117,12 +117,14 @@ G4UserSteppingAction* ActionsFactory::CreateSteppingAction() const
 
 //////////////////////////////////////////////////////////////////////
 #include "DefaultStackingAction.h"
+#include "NESTdevStackingAction.h"
 
 G4UserStackingAction* ActionsFactory::CreateStackingAction() const
 {
   G4UserStackingAction* p = 0;
 
   if (_stkact_name == "DEFAULT") p = new DefaultStackingAction();
+  if (_stkact_name == "NEST") p = new NESTdevStackingAction();
 
   else {
     G4String err = "Unknown user stacking action: " + _stkact_name;

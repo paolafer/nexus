@@ -14,7 +14,7 @@ using namespace nexus;
 
 
 
-DefaultStackingAction::DefaultStackingAction():	NESTStackingAction()
+DefaultStackingAction::DefaultStackingAction(): G4UserStackingAction()
 {
 }
 
