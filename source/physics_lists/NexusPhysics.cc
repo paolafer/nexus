@@ -98,8 +98,9 @@ namespace nexus {
 
     if (nest_) {
       PetaloDetector* petalo = new PetaloDetector();
+      NEST::NESTcalc* petaloCalc = new NEST::NESTcalc(petalo);
       NEST::NESTProc* theNESTScintillationProcess =
-	new NEST::NESTProc("S1", fElectromagnetic, petalo);
+	new NEST::NESTProc("S1", fElectromagnetic, petaloCalc, petalo);
       pmanager = G4Electron::Definition()->GetProcessManager();
       pmanager->AddProcess(theNESTScintillationProcess, ordDefault+1, ordInActive, ordDefault+1);
       pmanager = G4Gamma::Definition()->GetProcessManager();
