@@ -39,6 +39,7 @@ namespace nexus {
     G4GenericMessenger* msg_;
     WavelengthShifting* wls_;
     G4bool nest_;
+    G4double sc_yield_factor_;
   };
 
 } // end namespace nexus
