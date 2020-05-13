@@ -33,7 +33,7 @@ namespace nexus {
 
 
   NexusPhysics::NexusPhysics():
-    G4VPhysicsConstructor("NexusPhysics"), risetime_(false), _noCompt(false)
+    G4VPhysicsConstructor("NexusPhysics"), risetime_(false), _noCompt(false),
     nest_(true), sc_yield_factor_(0.818)
   {
     _msg = new G4GenericMessenger(this, "/PhysicsList/Nexus/",
