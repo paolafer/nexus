@@ -32,7 +32,11 @@ namespace nexus {
 
 
   NexusPhysics::NexusPhysics():
+<<<<<<< HEAD
     G4VPhysicsConstructor("NexusPhysics"), risetime_(false), noCompt_(false)
+=======
+    G4VPhysicsConstructor("NexusPhysics"), risetime_(false), _noCompt(false),
+>>>>>>> Modify macro according to latest changes.
     nest_(true), sc_yield_factor_(0.818)
   {
     msg_ = new G4GenericMessenger(this, "/PhysicsList/Nexus/",
