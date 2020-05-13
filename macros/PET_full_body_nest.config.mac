@@ -18,9 +18,8 @@
 /Generator/Back2back/region CENTER
 
 ### PHYSICS
+/process/optical/processActivation Scintillation false
 /PhysicsList/Nexus/nest true
-/PhysicsList/Nexus/offScintillation true
-/PhysicsList/Nexus/offCherenkov false
 
 /Actions/DefaultEventAction/energy_threshold 0.511 MeV
 
