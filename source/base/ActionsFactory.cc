@@ -127,7 +127,6 @@ G4UserStackingAction* ActionsFactory::CreateStackingAction() const
   if (stkact_name_ == "DEFAULT") p = new DefaultStackingAction();
   if (stkact_name_ == "NEST") p = new NESTdevStackingAction();
 
-
   else {
     G4String err = "Unknown user stacking action: " + stkact_name_;
     G4Exception("[ActionsFactory]", "CreateStackingAction()",
