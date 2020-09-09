@@ -32,6 +32,7 @@ GeometryFactory::~GeometryFactory()
 //////////////////////////////////////////////////////////////////////
 #include "FullRingInfinity.h"
 #include "FullRingTiles.h"
+#include "FullRingLYSO.h"
 #include "Lab_vertices.h"
 #include "Lab.h"
 
@@ -40,6 +41,8 @@ BaseGeometry* GeometryFactory::CreateGeometry() const
   BaseGeometry* p = 0;
 
   if (name_ == "FULLRING") p = new FullRingInfinity();
+
+  else if (name_ == "LYSO") p = new FullRingLYSO();
 
   else if (name_ == "RING_TILES") p = new FullRingTiles();
 

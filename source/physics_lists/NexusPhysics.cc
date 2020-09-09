@@ -32,7 +32,7 @@ namespace nexus {
 
 
   NexusPhysics::NexusPhysics():
-    G4VPhysicsConstructor("NexusPhysics"), risetime_(false), _noCompt(false),
+    G4VPhysicsConstructor("NexusPhysics"), risetime_(false), noCompt_(false),
     nest_(true), sc_yield_factor_(0.818)
   {
     msg_ = new G4GenericMessenger(this, "/PhysicsList/Nexus/",
@@ -44,9 +44,9 @@ namespace nexus {
     msg_->DeclareProperty("offCompt", noCompt_,
 			  "Switch off Compton Scattering.");
 
-    _msg->DeclareProperty("nest", nest_,
+    msg_->DeclareProperty("nest", nest_,
       "True if NEST is used for scintillation");
-    _msg->DeclareProperty("sc_yield_factor", sc_yield_factor_,
+    msg_->DeclareProperty("sc_yield_factor", sc_yield_factor_,
       "Factor to reduce scintillation yield in NEST");
   }
 
