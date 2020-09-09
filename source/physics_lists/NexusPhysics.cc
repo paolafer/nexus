@@ -33,7 +33,7 @@ namespace nexus {
 
   NexusPhysics::NexusPhysics():
     G4VPhysicsConstructor("NexusPhysics"), risetime_(false), noCompt_(false),
-    nest_(true), sc_yield_factor_(0.818)
+    nest_(false), sc_yield_factor_(0.818)
   {
     msg_ = new G4GenericMessenger(this, "/PhysicsList/Nexus/",
       "Control commands of the nexus physics list.");
