@@ -1261,7 +1261,7 @@ G4MaterialPropertiesTable* OpticalMaterialProperties::LYSO()
 {
   G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
 
-  // Refractive index taken by "Optical and Scintillation Properties of Inorganic Scintillators in High Energy Physics", R. Mao, Liyuan Zhang, and Ren-Yuan Zhu, IEEE TRANSACTIONS ON NUCLEAR SCIENCE, VOL. 55, NO. 4, AUGUST 2008
+  // Refractive index taken by "Optical and Scintillation Properties of Inorganic Scintillators in High Energy Physics", R. Mao, Liyuan Zhang, and Ren-Yuan Zhu, IEEE TRANSACTIONS ON NUCLEAR SCIENCE, VOL. 55, NO. 4, AUGUST 2008 (http://www.hep.caltech.edu/~zhu/papers/08_tns_crystal.pdf)
   // Scintillation spectrum from https://www.crystals.saint-gobain.com/sites/imdf.crystals.com/files/documents/lyso-material-data-sheet.pdf
   const G4int ri_entries = 16;
   // G4double ri_energy[ri_entries] = {1.9074*eV, 2.2708*eV, 2.4028*eV, 2.5511*eV, 2.6895*eV, 2.8437*eV, 2.9520*eV, 3.0613*eV, 3.2542*eV};
