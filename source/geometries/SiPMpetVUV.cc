@@ -137,7 +137,7 @@ namespace nexus {
     G4double efficiency[entries]   = {eff_, eff_, eff_,
                                       eff_, eff_, eff_,
                                       eff_, eff_, eff_,
-                                      eff_, eff_};
+                                      eff_, eff_, eff_};
 
 
     G4MaterialPropertiesTable* sipm_mt = new G4MaterialPropertiesTable();
