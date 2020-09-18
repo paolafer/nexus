@@ -18,7 +18,7 @@ class G4GenericMessenger;
 
 namespace nexus {
 
-  class Next100SiPMBoard;
+  class Next100AbsBoard;
   class CylinderPointSampler2020;
 
   // Geometry of the tracking plane of the NEXT-100 detector
@@ -51,7 +51,7 @@ namespace nexus {
 
     G4bool visibility_;
 
-    Next100SiPMBoard* sipm_board_geom_;
+    Next100AbsBoard* sipm_board_geom_;
 
     CylinderPointSampler2020* copper_plate_gen_;
 

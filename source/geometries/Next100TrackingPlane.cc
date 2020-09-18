@@ -8,7 +8,7 @@
 
 #include "Next100TrackingPlane.h"
 
-#include "Next100SiPMBoard.h"
+#include "Next100AbsBoard.h"
 #include "CylinderPointSampler2020.h"
 #include "Visibilities.h"
 
@@ -30,7 +30,7 @@ Next100TrackingPlane::Next100TrackingPlane(G4double origin_z_coord):
   copper_plate_thickness_ ( 120.*mm),
   distance_board_board_   (   1.*mm),
   visibility_(true),
-  sipm_board_geom_(new Next100SiPMBoard),
+  sipm_board_geom_(new Next100AbsBoard),
   copper_plate_gen_(nullptr),
   mpv_(nullptr),
   msg_(nullptr)
@@ -115,7 +115,6 @@ void Next100TrackingPlane::Construct()
   // Column on the far right has 5 boards.
   // It is located 3.5 boards away from the center.
   PlaceSiPMBoardColumns(5,  3.5, zpos, board_index, sipm_board_logic_vol);
-
 
   // VISIBILITIES //////////////////////////////////////////
 
