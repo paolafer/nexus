@@ -1,0 +1,26 @@
+
+### GEOMETRY
+
+/Geometry/LYSOCrystal/z_size 5. mm
+
+
+### GENERATOR
+/Generator/Back2back/region CENTER
+/Generator/Back2back/min_costheta 0.9996876464081228
+/Generator/Back2back/max_costheta 1.
+
+/PhysicsList/Nexus/nest false
+/PhysicsList/Nexus/scintRiseTime true
+
+### VERBOSITIES
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+
+/nexus/random_seed 132312
+
+### OUTPUT FILE
+
+/nexus/persistency/start_id 0
+/nexus/persistency/tof_time 50. nanosecond
+/nexus/persistency/outputFile crystal_lyso.pet

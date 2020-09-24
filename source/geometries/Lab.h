@@ -15,7 +15,7 @@ class G4GenericMessenger;
 namespace nexus {class Pet2boxes;}
 namespace nexus {class PetLYSObox;}
 namespace nexus {class PetLXeCell;}
-namespace nexus {class PetLYSOCell;}
+namespace nexus {class LYSOCrystal;}
 
 namespace nexus {
 
@@ -36,7 +36,7 @@ namespace nexus {
     /// Messenger for the definition of control commands
     G4GenericMessenger* msg_;
 
-    PetLXeCell* module_;
+    LYSOCrystal* module_;
 
   };
 
