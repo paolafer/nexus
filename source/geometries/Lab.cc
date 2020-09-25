@@ -77,12 +77,12 @@ namespace nexus {
 
     G4LogicalVolume* module_logic = module_->GetLogicalVolume();
     new G4PVPlacement(0, G4ThreeVector(0., 0., -1.*cm), module_logic, "MODULE_0",
-        lab_logic, false, 0, true);
+        lab_logic, false, 1, true);
 
     G4RotationMatrix rot;
     rot.rotateY(pi);
     new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 1*cm)), module_logic,
-                      "MODULE_1", lab_logic, false, 1, true);
+                      "MODULE_1", lab_logic, false, 2, true);
 
     // // Build walls of stainless steel, with low thickness
     // G4double det_size = cell_dim.x();
