@@ -1,13 +1,13 @@
 // ----------------------------------------------------------------------------
-// nexus | PetLYSOCrystal.h
+// nexus | LXeMiniCell.h
 //
-// Basic cell made of LYSO.
+// Basic cell made of LXe.
 //
 // The NEXT Collaboration
 // ----------------------------------------------------------------------------
 
-#ifndef PET_LYSO_CRYSTAL_H
-#define PET_LYSO_CRYSTAL_H
+#ifndef LXE_MINI_CELL_H
+#define LXE_MINI_CELL_H
 
 #include "BaseGeometry.h"
 
@@ -19,13 +19,13 @@ class G4GenericMessenger;
 
 namespace nexus {
 
-  class LYSOCrystal: public BaseGeometry {
+  class LXeMiniCell: public BaseGeometry {
   public:
     /// Constructor
-    LYSOCrystal();
+    LXeMiniCell();
 
     /// Destructor
-    ~LYSOCrystal();
+    ~LXeMiniCell();
 
     /// Generate a vertex within a given region of the geometry
     G4ThreeVector GenerateVertex(const G4String& region) const;
@@ -43,7 +43,7 @@ namespace nexus {
     /// Messenger for the definition of control commands
     // G4GenericMessenger* msg_;
 
-    G4double lyso_zsize_;
+    G4double lxe_zsize_;
 
   };
 

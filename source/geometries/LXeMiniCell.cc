@@ -1,12 +1,12 @@
 // ----------------------------------------------------------------------------
-// nexus | LYSOCrystal.cc
+// nexus | LXeMiniCell.cc
 //
-// Basic cell made of LYSO.
+// Basic cell made of LXe.
 //
 // The NEXT Collaboration
 // ----------------------------------------------------------------------------
 
-#include "LYSOCrystal.h"
+#include "LXeMiniCell.h"
 #include "MaterialsList.h"
 #include "IonizationSD.h"
 #include "PetKDBFixedPitch.h"
@@ -33,22 +33,22 @@
 
 namespace nexus {
 
-  LYSOCrystal::LYSOCrystal():
+  LXeMiniCell::LXeMiniCell():
     BaseGeometry(),
 
     // Detector dimensions
     active_size_ (1.*mm),
     max_step_size_ (1.*mm),
-    lyso_zsize_ (5.*mm)
+    lxe_zsize_ (5.*mm)
 
   {
     // Messenger
-    // msg_ = new G4GenericMessenger(this, "/Geometry/LYSOCrystal/",
+    // msg_ = new G4GenericMessenger(this, "/Geometry/LXeMiniCell/",
     //                               "Control commands of geometry Petalo.");
 
-    // // z size
+    // z size
     //  G4GenericMessenger::Command& zsize_cmd =
-    //    msg_->DeclareProperty("z_size", lyso_zsize_, "z dimension");
+    //    msg_->DeclareProperty("z_size", lxe_zsize_, "z dimension");
     //  zsize_cmd.SetUnitCategory("Length");
     //  zsize_cmd.SetParameterName("z_size", false);
     //  zsize_cmd.SetRange("z_size>0.");
@@ -63,35 +63,48 @@ namespace nexus {
   }
 
 
-  LYSOCrystal::~LYSOCrystal()
+  LXeMiniCell::~LXeMiniCell()
   {
   }
 
 
-  void LYSOCrystal::Construct()
+  void LXeMiniCell::Construct()
   {
-    G4Material* lyso = MaterialsList::LYSO();
-    lyso->SetMaterialPropertiesTable(OpticalMaterialProperties::LYSO());
-
     G4double sipm_x = 1. * mm;
     G4double sipm_y = 1. * mm;
     G4double sipm_z = 1.55 * mm;
-    
-    G4double tot_zsize = lyso_zsize_ + sipm_z;
-    G4Box* lyso_solid =
-      new G4Box("LYSO", active_size_/2., active_size_/2., tot_zsize/2.);
-    G4LogicalVolume* lyso_logic = new G4LogicalVolume(lyso_solid, lyso, "LYSO");
-    this->SetLogicalVolume(lyso_logic);
+    G4double tot_zsize = lxe_zsize_ + sipm_z;
+
+    G4double container_thickn = 1. * mm;
+    G4double container_xysize = active_size_ + 2.*container_thickn;
+    G4double container_zsize  = tot_zsize + 2.*container_thickn;
+
+    G4Box* cont_solid =
+      new G4Box("CONTAINER", container_xysize/2.,
+                container_xysize/2., container_zsize/2.);
+    G4Material* steel = MaterialsList::Steel();
+    G4LogicalVolume* cont_logic = new G4LogicalVolume(cont_solid, steel, "CONTAINER");
+    this->SetLogicalVolume(cont_logic);
+
+    G4Material* lxe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
+    lxe->SetMaterialPropertiesTable(OpticalMaterialProperties::LXe());
+
+    G4Box* lxe_solid =
+      new G4Box("LXE", active_size_/2., active_size_/2., tot_zsize/2.);
+    G4LogicalVolume* lxe_logic = new G4LogicalVolume(lxe_solid, lxe, "LXE");
+    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
+                      lxe_logic, "LXE", cont_logic, false, 0, true);
 
     // Build and place the SiPM
+    // No window (FBK style), support made of whatever
     G4Box* sipm_solid = new G4Box("SIPMpet", sipm_x/2., sipm_y/2., sipm_z/2);
-    G4Material* epoxy = MaterialsList::Epoxy();
-    epoxy->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyFixedRefr(1.54));
+    G4Material* sipm_mat = MaterialsList::FR4();
+    // epoxy->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyFixedRefr(1.54));
     G4LogicalVolume* sipm_logic =
-      new G4LogicalVolume(sipm_solid, epoxy, "SIPMpet");
+      new G4LogicalVolume(sipm_solid, sipm_mat, "SIPMpet");
 
     G4double wndw_depth = 0.01 * mm;
-    G4double offset = 0.01 * mm;
+    G4double offset = 0.0 * mm;
     G4Box* wndw_solid =
       new G4Box("PHOTODIODES", active_size_/2., active_size_/2., wndw_depth/2);
     G4Material* silicon =
@@ -105,7 +118,7 @@ namespace nexus {
     const G4int entries = 4;
     G4double energies[entries]     = {1.5*eV, 4*eV, 6.*eV, 8.26558*eV};
     G4double reflectivity[entries] = {0., 0., 0., 0.};
-    G4double efficiency[entries]   = {0.45, 0.45, 0.45, 0.45};
+    G4double efficiency[entries]   = {0.2, 0.2, 0.2, 0.2};
 
     G4MaterialPropertiesTable* sipm_mt = new G4MaterialPropertiesTable();
     sipm_mt->AddProperty("EFFICIENCY", energies, efficiency, entries);
@@ -131,37 +144,40 @@ namespace nexus {
     }
 
     new G4PVPlacement(0, G4ThreeVector(0., 0., -tot_zsize/2. + sipm_z/2.),
-                      sipm_logic, "SIPMpet", lyso_logic, false, 0, true);
+                      sipm_logic, "SIPMpet", lxe_logic, false, 0, true);
 
     G4Box* active_solid =
-      new G4Box("ACTIVE_LYSO", active_size_/2., active_size_/2., lyso_zsize_/2.);
+      new G4Box("ACTIVE_LXE", active_size_/2., active_size_/2., lxe_zsize_/2.);
     G4LogicalVolume* active_logic =
-      new G4LogicalVolume(active_solid, lyso, "ACTIVE_LYSO");
+      new G4LogicalVolume(active_solid, lxe, "ACTIVE_LXE");
     active_logic->SetVisAttributes(G4VisAttributes::Invisible);
 
-    G4double crystal_zpos = tot_zsize/2. - lyso_zsize_/2.;
+    G4double crystal_zpos = tot_zsize/2. - lxe_zsize_/2.;
     new G4PVPlacement(0, G4ThreeVector(0., 0., crystal_zpos), active_logic,
-		      "ACTIVE_LYSO", lyso_logic, false, 0, true);
+		      "ACTIVE_LXE", lxe_logic, false, 0, true);
 
     active_logic->SetUserLimits(new G4UserLimits(max_step_size_));
     // Set the ACTIVE volume as an ionization sensitive active
-    IonizationSD* ionisd = new IonizationSD("/PETALX/ACTIVE_LYSO");
+    IonizationSD* ionisd = new IonizationSD("/PETALX/ACTIVE_LXE");
     active_logic->SetSensitiveDetector(ionisd);
     G4SDManager::GetSDMpointer()->AddNewDetector(ionisd);
+
+    G4VisAttributes cont_col = nexus::Lilla();
+    cont_logic->SetVisAttributes(cont_col);
 
     G4VisAttributes sipm_col = nexus::Yellow();
     sipm_logic->SetVisAttributes(sipm_col);
     G4VisAttributes wndw_col = nexus::Red();
     wndw_col.SetForceSolid(true);
     wndw_logic->SetVisAttributes(wndw_col);
-    
+
     G4VisAttributes active_col = nexus::Blue();
     active_col.SetForceSolid(true);
     active_logic->SetVisAttributes(active_col);
   }
 
 
-  G4ThreeVector LYSOCrystal::GenerateVertex(const G4String& /*region*/) const
+  G4ThreeVector LXeMiniCell::GenerateVertex(const G4String& /*region*/) const
   {
     G4ThreeVector vertex(0.,0.,0.);
 
