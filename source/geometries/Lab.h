@@ -16,6 +16,7 @@ namespace nexus {class Pet2boxes;}
 namespace nexus {class PetLYSObox;}
 namespace nexus {class PetLXeCell;}
 namespace nexus {class LYSOCrystal;}
+namespace nexus {class LXeMiniCell;}
 
 namespace nexus {
 
@@ -35,8 +36,10 @@ namespace nexus {
   private:
     /// Messenger for the definition of control commands
     G4GenericMessenger* msg_;
+    G4bool lyso_;
 
-    LYSOCrystal* module_;
+    LYSOCrystal* lyso_module_;
+    LXeMiniCell* lxe_module_;
 
   };
 

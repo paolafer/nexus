@@ -11,6 +11,7 @@
 #include "Pet2boxes.h"
 #include "PetLXeCell.h"
 #include "LYSOCrystal.h"
+#include "LXeMiniCell.h"
 #include "PetLYSOCell.h"
 #include "MaterialsList.h"
 #include "OpticalMaterialProperties.h"
@@ -36,13 +37,12 @@ namespace nexus {
   using namespace CLHEP;
 
   Lab::Lab():
-    BaseGeometry(), msg_(0)
+    BaseGeometry(), msg_(0), lyso_(true)
   {
     msg_ = new G4GenericMessenger(this, "/Geometry/Lab/",
 				  "Control commands of geometry Lab.");
-
-    module_ = new LYSOCrystal();
-
+    msg_->DeclareProperty("lyso", lyso_,
+                          "True if lyso crystals, false if LXe mini cells.");
   }
 
 
@@ -72,10 +72,21 @@ namespace nexus {
     // (i.e., this is the volume that will be placed in the world)
     this->SetLogicalVolume(lab_logic);
 
-    module_->Construct();
-    //G4ThreeVector cell_dim = module_->GetDimensions();
+    if (lyso_) {
+      lyso_module_ = new LYSOCrystal();
+    } else {
+      lxe_module_ = new LXeMiniCell();
+    }
 
-    G4LogicalVolume* module_logic = module_->GetLogicalVolume();
+    G4LogicalVolume* module_logic = nullptr;
+     if (lyso_) {
+      lyso_module_->Construct();
+      module_logic = lyso_module_->GetLogicalVolume();
+    } else {
+      lxe_module_->Construct();
+      module_logic = lxe_module_->GetLogicalVolume();
+    }
+
     new G4PVPlacement(0, G4ThreeVector(0., 0., -1.*cm), module_logic, "MODULE_0",
         lab_logic, false, 1, true);
 
