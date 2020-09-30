@@ -21,6 +21,7 @@
 #include <G4Material.hh>
 #include <G4OpticalSurface.hh>
 #include <G4LogicalSkinSurface.hh>
+#include <G4LogicalBorderSurface.hh>
 #include <G4LogicalVolume.hh>
 #include <G4PVPlacement.hh>
 #include <G4VisAttributes.hh>
@@ -72,16 +73,48 @@ namespace nexus {
   {
     G4Material* lyso = MaterialsList::LYSO();
     lyso->SetMaterialPropertiesTable(OpticalMaterialProperties::LYSO());
+    G4Material* kapton =
+      G4NistManager::Instance()->FindOrBuildMaterial("G4_KAPTON");
 
     G4double sipm_x = 1. * mm;
     G4double sipm_y = 1. * mm;
     G4double sipm_z = 1.55 * mm;
-    
-    G4double tot_zsize = lyso_zsize_ + sipm_z;
+    G4double reflector_thickn = 0.1 * mm;
+    G4double container_thickn = 0.1 * mm;
+
+    G4double tot_xy_size = active_size_ + 2.*reflector_thickn + 2.*container_thickn;
+    G4double tot_z_size  = lyso_zsize_ + sipm_z + 2.*reflector_thickn + 2.*container_thickn;
+    G4Box* container_solid =
+      new G4Box("CONTAINER", tot_xy_size/2., tot_xy_size/2., tot_z_size/2.);
+    G4LogicalVolume* container_logic =
+      new G4LogicalVolume(container_solid, kapton, "CONTAINER");
+    this->SetLogicalVolume(container_logic);
+
+    G4double refl_xy = tot_xy_size - 2.*container_thickn;
+    G4double refl_z = tot_z_size - 2.*container_thickn;
+    G4Box* refl_solid =
+      new G4Box("REFLECTOR", refl_xy/2., refl_xy/2., refl_z/2.);
+    G4LogicalVolume* refl_logic =
+      new G4LogicalVolume(refl_solid, kapton, "REFLECTOR");
+    G4PVPlacement* refl_phys =
+       new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
+                         refl_logic, "REFLECTOR", container_logic, false, 0, true);
+
+    G4double internal_z_size = lyso_zsize_ + sipm_z;
     G4Box* lyso_solid =
-      new G4Box("LYSO", active_size_/2., active_size_/2., tot_zsize/2.);
+      new G4Box("LYSO", active_size_/2., active_size_/2., internal_z_size/2.);
     G4LogicalVolume* lyso_logic = new G4LogicalVolume(lyso_solid, lyso, "LYSO");
-    this->SetLogicalVolume(lyso_logic);
+    G4PVPlacement* lyso_phys =
+      new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
+                        lyso_logic, "LYSO", refl_logic, false, 0, true);
+
+
+    G4OpticalSurface* lyso_refl_surf =
+      new G4OpticalSurface("LYSO_REFL_OPSURF", glisur, ground,
+                           dielectric_dielectric, .01);
+    lyso_refl_surf->SetMaterialPropertiesTable(OpticalMaterialProperties::ReflectantSurface(0.));
+    new G4LogicalBorderSurface("LYSO_REFL_OPSURF", lyso_phys, refl_phys, lyso_refl_surf);
+
 
     // Build and place the SiPM
     G4Box* sipm_solid = new G4Box("SIPMpet", sipm_x/2., sipm_y/2., sipm_z/2);
@@ -122,7 +155,7 @@ namespace nexus {
 
     if (!sdmgr->FindSensitiveDetector(sdname, false)) {
       ToFSD* sipmsd = new ToFSD(sdname);
-      sipmsd->SetDetectorVolumeDepth(2);
+      sipmsd->SetDetectorVolumeDepth(4);
       // sipmsd->SetMotherVolumeDepth(2);
       // sipmsd->SetDetectorNamingOrder(1000.);
       sipmsd->SetTimeBinning(2. * microsecond);
@@ -130,7 +163,7 @@ namespace nexus {
       wndw_logic->SetSensitiveDetector(sipmsd);
     }
 
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -tot_zsize/2. + sipm_z/2.),
+    new G4PVPlacement(0, G4ThreeVector(0., 0., -internal_z_size/2. + sipm_z/2.),
                       sipm_logic, "SIPMpet", lyso_logic, false, 0, true);
 
     G4Box* active_solid =
@@ -139,7 +172,7 @@ namespace nexus {
       new G4LogicalVolume(active_solid, lyso, "ACTIVE_LYSO");
     active_logic->SetVisAttributes(G4VisAttributes::Invisible);
 
-    G4double crystal_zpos = tot_zsize/2. - lyso_zsize_/2.;
+    G4double crystal_zpos = internal_z_size/2. - lyso_zsize_/2.;
     new G4PVPlacement(0, G4ThreeVector(0., 0., crystal_zpos), active_logic,
 		      "ACTIVE_LYSO", lyso_logic, false, 0, true);
 
@@ -154,7 +187,7 @@ namespace nexus {
     G4VisAttributes wndw_col = nexus::Red();
     wndw_col.SetForceSolid(true);
     wndw_logic->SetVisAttributes(wndw_col);
-    
+
     G4VisAttributes active_col = nexus::Blue();
     active_col.SetForceSolid(true);
     active_logic->SetVisAttributes(active_col);
