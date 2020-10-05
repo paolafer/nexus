@@ -1317,7 +1317,7 @@ const G4int sc_entries = 63;
 
   mpt->AddProperty("RINDEX", ri_energy, rindex, ri_entries);
   mpt->AddProperty("FASTCOMPONENT", sc_energy, intensity, sc_entries);
-  mpt->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.773703*ns); //1.7/Ln(9)
+  mpt->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.09*ns);
   // mpt->AddProperty("SLOWCOMPONENT", sc_energy, intensity, sc_entries);
   mpt->AddConstProperty("SCINTILLATIONYIELD", 32000./MeV);
   // mpt->AddConstProperty("SCINTILLATIONYIELD", 100./MeV);
@@ -1331,7 +1331,7 @@ const G4int sc_entries = 63;
   // mpt->AddConstProperty("YIELDRATIO", 1.);
 
   G4double energy[2] = {0.01*eV, 100.*eV};
-  G4double abslen[2] = {41.2*cm, 41.2*cm};
+  G4double abslen[2] = {41.3*cm, 41.3*cm};
 
   mpt->AddProperty("ABSLENGTH", energy, abslen, 2);
 
