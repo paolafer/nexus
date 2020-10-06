@@ -459,6 +459,33 @@ G4Material* MaterialsList::FR4()
   return mat;
 }
 
+G4Material* MaterialsList::OpticalSilicone()
+{
+  // Silicone resin with a methyl group
+  // (https://en.wikipedia.org/wiki/Silicone_resin)
+
+  G4String name = "OpticalSilicone";
+
+  G4Material* mat = G4Material::GetMaterial(name, false);
+
+  if (mat == 0) {
+    G4NistManager* nist = G4NistManager::Instance();
+
+    G4Element* H  = nist->FindOrBuildElement("H");
+    G4Element* C  = nist->FindOrBuildElement("C");
+    G4Element* O  = nist->FindOrBuildElement("O");
+    G4Element* Si = nist->FindOrBuildElement("Si");
+
+    mat = new G4Material(name, 1.05*g/cm3, 4, kStateSolid);
+    mat->AddElement(H,  3);
+    mat->AddElement(C,  1);
+    mat->AddElement(Si, 1);
+    mat->AddElement(O,  1);
+  }
+
+  return mat;
+}
+
 
 G4Material* MaterialsList::CopyMaterial(G4Material* original, G4String newname)
 {

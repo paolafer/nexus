@@ -24,6 +24,8 @@
 #include <G4SDManager.hh>
 #include <G4NistManager.hh>
 #include <G4VisAttributes.hh>
+#include <G4LogicalBorderSurface.hh>
+#include <G4OpticalSurface.hh>
 
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <CLHEP/Units/PhysicalConstants.h>
@@ -60,17 +62,28 @@ namespace nexus {
     // This is just a volume of air surrounding the detector so that
   // events can be generated on the outside.
 
-    G4double lab_size (2. * m);
+    G4double lab_size = 30*mm;
     G4Box* lab_solid =
       new G4Box("LAB", lab_size/2., lab_size/2., lab_size/2.);
 
     G4LogicalVolume* lab_logic =
-      new G4LogicalVolume(lab_solid, G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR"), "AIR");
+      new G4LogicalVolume(lab_solid,
+                          G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR"), "LAB");
     lab_logic->SetVisAttributes(G4VisAttributes::Invisible);
 
     // Set this volume as the wrapper for the whole geometry
     // (i.e., this is the volume that will be placed in the world)
     this->SetLogicalVolume(lab_logic);
+
+    G4double air_size = 29.*mm;
+    G4Box* air_solid =
+      new G4Box("AIR", air_size/2., air_size/2., air_size/2.);
+    G4LogicalVolume* air_logic =
+      new G4LogicalVolume(air_solid,
+                          G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR"), "AIR");
+    G4PVPlacement*  air_phys =
+      new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), air_logic, "AIR",
+                        lab_logic, false, 0, true);
 
     if (lyso_) {
       lyso_module_ = new LYSOCrystal();
@@ -80,6 +93,7 @@ namespace nexus {
 
     G4LogicalVolume* module_logic = nullptr;
      if (lyso_) {
+      lyso_module_->SetMotherPhysicalVolume(air_phys);
       lyso_module_->Construct();
       module_logic = lyso_module_->GetLogicalVolume();
     } else {
@@ -87,29 +101,68 @@ namespace nexus {
       module_logic = lxe_module_->GetLogicalVolume();
     }
 
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -1.*cm), module_logic, "MODULE_0",
-        lab_logic, false, 1, true);
+     G4PVPlacement* mod1_phys  =
+       new G4PVPlacement(0, G4ThreeVector(0., 0., -1.*cm), module_logic, "MODULE_0",
+                         air_logic, false, 1, true);
 
     G4RotationMatrix rot;
     rot.rotateY(pi);
-    new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 1*cm)), module_logic,
-                      "MODULE_1", lab_logic, false, 2, true);
 
-    // // Build walls of stainless steel, with low thickness
-    // G4double det_size = cell_dim.x();
-    // G4double det_size_z = 1.*mm;
-    // G4Box* det_solid =
-    //   new G4Box("WALL", det_size/2., det_size/2., det_size_z/2.);
-    // G4Material* steel = MaterialsList::Steel();
+    G4PVPlacement* mod2_phys  =
+      new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 1*cm)),
+                        module_logic, "MODULE_1", air_logic, false, 2, true);
 
-    // G4LogicalVolume* det_logic = new G4LogicalVolume(det_solid, steel, "WALL");
-    // //   det_logic_->SetVisAttributes(G4VisAttributes::Invisible);
+    
+    // Optical surfaces around crystals
+    G4OpticalSurface* lyso_refl_surf =
+      new G4OpticalSurface("LYSO_AIR_OPSURF"); //, unified, groundbackpainted,
+    //dielectric_dielectric, 0.);
 
-    // new G4PVPlacement(0, G4ThreeVector(0., 0., -10.*cm + det_size_z/2.), det_logic,
-    //      	      "WALL", lab_logic, false, 0, true);
-    // new G4PVPlacement(0, G4ThreeVector(0., 0., 10.*cm - det_size_z/2.), det_logic,
-    //      	      "WALL", lab_logic, false, 1, true);
+    G4double sigma_alpha = 0.;
 
+    lyso_refl_surf->SetType(dielectric_dielectric);
+    lyso_refl_surf->SetModel(unified);
+    lyso_refl_surf->SetFinish(groundbackpainted);
+    lyso_refl_surf->SetSigmaAlpha(sigma_alpha);
+
+    new G4LogicalBorderSurface("LYSO_AIR_OPSURF", mod1_phys, air_phys,
+                               lyso_refl_surf);
+    new G4LogicalBorderSurface("LYSO_AIR_OPSURF", mod2_phys, air_phys,
+                               lyso_refl_surf);
+
+    const G4int entries = 2;
+    G4double energies[entries]      = {1.*eV, 8.*eV};
+    G4double specularlobe[entries]  = {0., 0.};
+    G4double specularspike[entries] = {0., 0.};
+    G4double backscatter[entries]   = {0., 0.};
+    G4double rindex[entries]        = {1., 1.}; // that of air.
+    G4double reflectivity[entries]  = {.95, .95};
+    G4double efficiency[entries]    = {0., 0.};
+    
+
+    G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
+
+    smpt->AddProperty("RINDEX", energies, rindex, entries);
+    smpt->AddProperty("SPECULARLOBECONSTANT", energies, specularlobe, entries);
+    smpt->AddProperty("SPECULARSPIKECONSTANT", energies, specularspike, entries);
+    smpt->AddProperty("BACKSCATTERCONSTANT", energies, backscatter, entries);
+    smpt->AddProperty("REFLECTIVITY", energies, reflectivity, entries);
+    smpt->AddProperty("EFFICIENCY", energies, efficiency, entries);
+   
+    lyso_refl_surf->SetMaterialPropertiesTable(smpt);
+    
+    /*
+    G4OpticalSurface* lyso_refl_surf =
+      new G4OpticalSurface("LYSO_AIR_OPSURF", glisur, ground,
+                           dielectric_metal, 0.);
+
+    G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
+    const G4int entries = 4;
+    G4double energies[entries]      = {1.*eV, 4*eV, 6.*eV, 8.*eV};
+    G4double reflectivity[entries]  = {0.95, 0.95, 0.95, 0.95};
+    smpt->AddProperty("REFLECTIVITY", energies, reflectivity, entries);
+    */
+    
   }
 
 

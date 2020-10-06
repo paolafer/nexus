@@ -88,6 +88,9 @@ namespace nexus {
     // FR4
     static G4Material* FR4();
 
+    // Optical Silicone
+    static G4Material* OpticalSilicone();
+
     // Fake dielectric (to be deprecated)
     static G4Material* FakeDielectric(G4Material*, G4String);
 

@@ -13,6 +13,7 @@
 
 class G4LogicalVolume;
 class G4GenericMessenger;
+class G4VPhysicalVolume;
 
 /* namespace nexus {class SiPMpetVUV;} */
 /* namespace nexus {class SiPMpetTPB;} */
@@ -26,6 +27,8 @@ namespace nexus {
 
     /// Destructor
     ~LYSOCrystal();
+
+    void SetMotherPhysicalVolume(G4VPhysicalVolume* phys);
 
     /// Generate a vertex within a given region of the geometry
     G4ThreeVector GenerateVertex(const G4String& region) const;
@@ -45,6 +48,7 @@ namespace nexus {
 
     G4double lyso_zsize_;
 
+    G4VPhysicalVolume* mother_phys_;
   };
 
 } // end namespace nexus
