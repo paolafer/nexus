@@ -26,6 +26,7 @@
 #include <G4VisAttributes.hh>
 #include <G4LogicalBorderSurface.hh>
 #include <G4OpticalSurface.hh>
+#include <G4LogicalSkinSurface.hh>
 
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <CLHEP/Units/PhysicalConstants.h>
@@ -112,8 +113,9 @@ namespace nexus {
       new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 1*cm)),
                         module_logic, "MODULE_1", air_logic, false, 2, true);
 
-    
+
     // Optical surfaces around crystals
+    /*
     G4OpticalSurface* lyso_refl_surf =
       new G4OpticalSurface("LYSO_AIR_OPSURF"); //, unified, groundbackpainted,
     //dielectric_dielectric, 0.);
@@ -130,6 +132,11 @@ namespace nexus {
     new G4LogicalBorderSurface("LYSO_AIR_OPSURF", mod2_phys, air_phys,
                                lyso_refl_surf);
 
+    new G4LogicalBorderSurface("LYSO_AIR_OPSURF", air_phys, mod1_phys,
+                               lyso_refl_surf);
+    new G4LogicalBorderSurface("LYSO_AIR_OPSURF", air_phys, mod2_phys,
+                               lyso_refl_surf);
+
     const G4int entries = 2;
     G4double energies[entries]      = {1.*eV, 8.*eV};
     G4double specularlobe[entries]  = {0., 0.};
@@ -138,7 +145,7 @@ namespace nexus {
     G4double rindex[entries]        = {1., 1.}; // that of air.
     G4double reflectivity[entries]  = {.95, .95};
     G4double efficiency[entries]    = {0., 0.};
-    
+
 
     G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
 
@@ -148,21 +155,41 @@ namespace nexus {
     smpt->AddProperty("BACKSCATTERCONSTANT", energies, backscatter, entries);
     smpt->AddProperty("REFLECTIVITY", energies, reflectivity, entries);
     smpt->AddProperty("EFFICIENCY", energies, efficiency, entries);
-   
+
     lyso_refl_surf->SetMaterialPropertiesTable(smpt);
-    
+    */
     /*
     G4OpticalSurface* lyso_refl_surf =
       new G4OpticalSurface("LYSO_AIR_OPSURF", glisur, ground,
-                           dielectric_metal, 0.);
+                           dielectric_metal, 0.1);
+
+    new G4LogicalBorderSurface("LYSO_AIR_OPSURF", mod1_phys, air_phys,
+                               lyso_refl_surf);
+    new G4LogicalBorderSurface("LYSO_AIR_OPSURF", mod2_phys, air_phys,
+                               lyso_refl_surf);
 
     G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
     const G4int entries = 4;
     G4double energies[entries]      = {1.*eV, 4*eV, 6.*eV, 8.*eV};
-    G4double reflectivity[entries]  = {0.95, 0.95, 0.95, 0.95};
+    G4double reflectivity[entries]  = {1., 1., 1., 1.};
     smpt->AddProperty("REFLECTIVITY", energies, reflectivity, entries);
+    lyso_refl_surf->SetMaterialPropertiesTable(smpt);
     */
-    
+    /*
+    G4OpticalSurface* lyso_refl_surf =
+      new G4OpticalSurface("LYSO_AIR_OPSURF", glisur, ground,
+                           dielectric_metal, 0.1);
+
+    new G4LogicalSkinSurface("LYSO_AIR_OPSURF", module_logic,
+                               lyso_refl_surf);
+
+    G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
+    const G4int entries = 4;
+    G4double energies[entries]      = {1.*eV, 4*eV, 6.*eV, 8.*eV};
+    G4double reflectivity[entries]  = {1., 1., 1., 1.};
+    smpt->AddProperty("REFLECTIVITY", energies, reflectivity, entries);
+    lyso_refl_surf->SetMaterialPropertiesTable(smpt);
+    */
   }
 
 
