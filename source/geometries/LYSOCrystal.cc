@@ -86,45 +86,69 @@ namespace nexus {
     G4double sipm_y = active_size_;
     G4double sipm_z = 1.55 * mm;
     G4double reflector_thickn = 0.1 * mm;
-    G4double container_thickn = 0.1 * mm;
-    G4double opt_gel_thickn = 0.1 * mm;
+    G4double opt_gel_thickn = 0. * mm;
 
-    G4double tot_xy_size = active_size_ + 2.*reflector_thickn + 2.*container_thickn;
+    G4double tot_xy_size = active_size_ + 2.*reflector_thickn;
     G4double tot_z_size  = lyso_zsize_ + sipm_z + opt_gel_thickn +
-      2.*reflector_thickn + 2.*container_thickn;
-    G4Box* container_solid =
-      new G4Box("CONTAINER", tot_xy_size/2., tot_xy_size/2., tot_z_size/2.);
-    G4LogicalVolume* container_logic =
-      new G4LogicalVolume(container_solid, kapton, "CONTAINER");
-    //this->SetLogicalVolume(container_logic);
+      reflector_thickn;
 
-    G4double refl_xy = tot_xy_size - 2.*container_thickn;
-    G4double refl_z = tot_z_size - 2.*container_thickn;
-    G4Box* refl_solid =
-      new G4Box("REFLECTOR", refl_xy/2., refl_xy/2., refl_z/2.);
-    G4LogicalVolume* refl_logic =
-      new G4LogicalVolume(refl_solid, kapton, "REFLECTOR");
-    //   G4PVPlacement* refl_phys =
-    //       new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
-    //                         refl_logic, "REFLECTOR", container_logic, false, 0, true);
-
-    G4double internal_z_size = lyso_zsize_ + sipm_z + opt_gel_thickn;
-    G4Box* lyso_solid =
-      new G4Box("LYSO", active_size_/2., active_size_/2., internal_z_size/2.);
-    G4LogicalVolume* lyso_logic = new G4LogicalVolume(lyso_solid, lyso, "LYSO");
-    // G4PVPlacement* lyso_phys =
+    // G4double refl_xy = tot_xy_size - 2.*container_thickn;
+    // G4double refl_z = tot_z_size - 2.*container_thickn;
+    // G4Box* refl_solid =
+    //   new G4Box("REFLECTOR", refl_xy/2., refl_xy/2., refl_z/2.);
+    // G4LogicalVolume* refl_logic =
+    //   new G4LogicalVolume(refl_solid, kapton, "REFLECTOR");
+    // G4PVPlacement* refl_phys =
     //   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
-    //                     lyso_logic, "LYSO", refl_logic, false, 0, true);
+    //                     refl_logic, "REFLECTOR", container_logic, false, 0, true);
+
+    //G4double internal_z_size = lyso_zsize_ + sipm_z + opt_gel_thickn;
+    G4Box* lyso_solid =
+      new G4Box("LYSO", tot_xy_size/2., tot_xy_size/2., tot_z_size/2.);
+      // new G4Box("LYSO", active_size_/2., active_size_/2., internal_z_size/2.);
+    G4LogicalVolume* lyso_logic = new G4LogicalVolume(lyso_solid, lyso, "LYSO");
+     // G4PVPlacement* lyso_phys =
+     //   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
+     //                     lyso_logic, "LYSO", refl_logic, false, 0, true);
     this->SetLogicalVolume(lyso_logic);
 
-    /*
+    G4Box* refl1_solid =
+      new G4Box("REFLECTOR", tot_xy_size/2., reflector_thickn/2., tot_z_size/2.);
+    G4LogicalVolume* refl1_logic =
+      new G4LogicalVolume(refl1_solid, kapton, "REFLECTOR");
+    new G4PVPlacement(0, G4ThreeVector(0., tot_xy_size/2. - reflector_thickn/2., 0.),
+                      refl1_logic, "REFLECTOR", lyso_logic, false, 0, true);
+    new G4PVPlacement(0, G4ThreeVector(0., -tot_xy_size/2. + reflector_thickn/2., 0.),
+                      refl1_logic, "REFLECTOR", lyso_logic, false, 1, true);
+
+    G4Box* refl2_solid =
+      new G4Box("REFLECTOR", reflector_thickn/2., active_size_/2., tot_z_size/2.);
+    G4LogicalVolume* refl2_logic =
+      new G4LogicalVolume(refl2_solid, kapton, "REFLECTOR");
+    new G4PVPlacement(0, G4ThreeVector(tot_xy_size/2. - reflector_thickn/2., 0., 0.),
+                      refl2_logic, "REFLECTOR", lyso_logic, false, 0, true);
+    new G4PVPlacement(0, G4ThreeVector(-tot_xy_size/2. + reflector_thickn/2., 0., 0.),
+                      refl2_logic, "REFLECTOR", lyso_logic, false, 1, true);
+
+    G4Box* refl3_solid =
+      new G4Box("REFLECTOR", active_size_/2., active_size_/2., reflector_thickn/2.);
+    G4LogicalVolume* refl3_logic =
+      new G4LogicalVolume(refl3_solid, kapton, "REFLECTOR");
+    new G4PVPlacement(0, G4ThreeVector(0., 0., tot_z_size/2. - reflector_thickn/2.),
+                      refl3_logic, "REFLECTOR", lyso_logic, false, 0, true);
+    
+    
     G4OpticalSurface* lyso_refl_surf =
       new G4OpticalSurface("LYSO_REFL_OPSURF", glisur, ground,
-                           dielectric_dielectric, .01);
-    lyso_refl_surf->SetMaterialPropertiesTable(OpticalMaterialProperties::ReflectantSurface(0.));
-    new G4LogicalBorderSurface("LYSO_REFL_OPSURF", lyso_phys, refl_phys, lyso_refl_surf);
-
-    */
+                           dielectric_metal, .01);
+    lyso_refl_surf->SetMaterialPropertiesTable(OpticalMaterialProperties::ReflectantSurface(0.95));
+    new G4LogicalSkinSurface("LYSO_REFL_OPSURF", refl1_logic, lyso_refl_surf);
+    new G4LogicalSkinSurface("LYSO_REFL_OPSURF", refl2_logic, lyso_refl_surf);
+    new G4LogicalSkinSurface("LYSO_REFL_OPSURF", refl3_logic, lyso_refl_surf);
+    // new G4LogicalSkinSurface("LYSO_REFL_OPSURF", refl4_logic, lyso_refl_surf);
+    //  new G4LogicalSkinSurface("LYSO_REFL_OPSURF", refl5_logic, lyso_refl_surf);
+    
+    
     // Build and place the SiPM
     G4Box* sipm_solid = new G4Box("SIPMpet", sipm_x/2., sipm_y/2., sipm_z/2);
     G4LogicalVolume* sipm_logic =
@@ -170,14 +194,14 @@ namespace nexus {
       wndw_logic->SetSensitiveDetector(sipmsd);
     }
 
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -internal_z_size/2. + sipm_z/2.),
+    new G4PVPlacement(0, G4ThreeVector(0., 0., -tot_z_size/2. + sipm_z/2.),
                       sipm_logic, "SIPMpet", lyso_logic, false, 0, true);
 
 
-    G4Box* opt_gel_solid =
-      new G4Box("OPTICAL_GEL", active_size_/2., active_size_/2., opt_gel_thickn/2.);
-    G4LogicalVolume* opt_gel_logic =
-      new G4LogicalVolume(opt_gel_solid, opt_gel, "OPTICAL_GEL");
+    // G4Box* opt_gel_solid =
+    //   new G4Box("OPTICAL_GEL", active_size_/2., active_size_/2., opt_gel_thickn/2.);
+    // G4LogicalVolume* opt_gel_logic =
+    //   new G4LogicalVolume(opt_gel_solid, opt_gel, "OPTICAL_GEL");
     //    new G4PVPlacement(0, G4ThreeVector(0., 0., -internal_z_size/2. + sipm_z + opt_gel_thickn/2.),
     //                     opt_gel_logic, "OPTICAL_GEL", lyso_logic, false, 0, true);
     
@@ -188,7 +212,7 @@ namespace nexus {
       new G4LogicalVolume(active_solid, lyso, "ACTIVE_LYSO");
     active_logic->SetVisAttributes(G4VisAttributes::Invisible);
 
-    G4double crystal_zpos = internal_z_size/2. - lyso_zsize_/2.;
+    G4double crystal_zpos = tot_z_size/2. - reflector_thickn  - lyso_zsize_/2.;
     new G4PVPlacement(0, G4ThreeVector(0., 0., crystal_zpos), active_logic,
 		      "ACTIVE_LYSO", lyso_logic, false, 0, true);
 
