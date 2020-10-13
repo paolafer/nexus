@@ -157,7 +157,7 @@ namespace nexus {
 
     if (!sdmgr->FindSensitiveDetector(sdname, false)) {
       ToFSD* sipmsd = new ToFSD(sdname);
-      sipmsd->SetDetectorVolumeDepth(3);
+      sipmsd->SetDetectorVolumeDepth(2);
       // sipmsd->SetMotherVolumeDepth(2);
       // sipmsd->SetDetectorNamingOrder(1000.);
       sipmsd->SetTimeBinning(2. * microsecond);
