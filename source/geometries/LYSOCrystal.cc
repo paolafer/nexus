@@ -228,7 +228,7 @@ namespace nexus {
     G4SDManager::GetSDMpointer()->AddNewDetector(ionisd);
 
 
-       G4OpticalSurface* lyso_refl_surf =
+    G4OpticalSurface* lyso_refl_surf =
       new G4OpticalSurface("LYSO_REFL_OPSURF", unified, groundbackpainted,
                            dielectric_dielectric, 0.);
 
