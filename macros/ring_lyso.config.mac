@@ -1,0 +1,29 @@
+
+### GEOMETRY
+
+/Geometry/LYSOLab/pitch 3.5 mm
+/Geometry/LYSOLab/depth 10 mm
+/Geometry/LYSOLab/sec_size 3 mm
+/Geometry/LYSOLab/inner_radius 380 mm
+
+
+### GENERATOR
+/Generator/Back2back/region CENTER
+#/Generator/Back2back/min_costheta 0.9996876464081228 1x1 mm2
+#/Generator/Back2back/max_costheta 1.
+
+/PhysicsList/Nexus/nest false
+/PhysicsList/Nexus/scintRiseTime true
+
+### VERBOSITIES
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+
+/nexus/random_seed 132312
+
+### OUTPUT FILE
+
+/nexus/persistency/start_id 0
+/nexus/persistency/tof_time 50. nanosecond
+/nexus/persistency/outputFile ring_lyso
