@@ -75,9 +75,9 @@ namespace nexus {
 
   void LYSOLab::Construct()
   {
-    // LAB /////////////////////////////////////////////////////////////
+    // LAB //
     // This is just a volume of air surrounding the detector so that
-  // events can be generated on the outside.
+    // events can be generated on the outside.
 
     G4double lab_size (2. * m);
     G4Box* lab_solid =
@@ -108,7 +108,7 @@ namespace nexus {
     G4double axial_length = crystal_pitch_ *  n_crystal_rows_;
 
     G4RotationMatrix rot;
-    rot.rotateX(pi);
+    rot.rotateX(pi/2.);
 
     G4int copy_no = 0;
     for (G4int j=0; j<n_crystal_rows_; j++) {
