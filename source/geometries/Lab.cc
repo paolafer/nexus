@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // nexus | Lab.cc
 //
-// This class consists of two LXe cells placed opposite to each other.
+// This class consists of two cells placed opposite to each other.
 //
 // The NEXT Collaboration
 // ----------------------------------------------------------------------------
@@ -24,12 +24,6 @@
 #include <G4SDManager.hh>
 #include <G4NistManager.hh>
 #include <G4VisAttributes.hh>
-
-#include <CLHEP/Units/SystemOfUnits.h>
-#include <CLHEP/Units/PhysicalConstants.h>
-#include <stdexcept>
-
-#include <TTree.h>
 
 
 namespace nexus {
@@ -94,21 +88,6 @@ namespace nexus {
     rot.rotateY(pi);
     new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 1*cm)), module_logic,
                       "MODULE_1", lab_logic, false, 2, true);
-
-    // // Build walls of stainless steel, with low thickness
-    // G4double det_size = cell_dim.x();
-    // G4double det_size_z = 1.*mm;
-    // G4Box* det_solid =
-    //   new G4Box("WALL", det_size/2., det_size/2., det_size_z/2.);
-    // G4Material* steel = MaterialsList::Steel();
-
-    // G4LogicalVolume* det_logic = new G4LogicalVolume(det_solid, steel, "WALL");
-    // //   det_logic_->SetVisAttributes(G4VisAttributes::Invisible);
-
-    // new G4PVPlacement(0, G4ThreeVector(0., 0., -10.*cm + det_size_z/2.), det_logic,
-    //      	      "WALL", lab_logic, false, 0, true);
-    // new G4PVPlacement(0, G4ThreeVector(0., 0., 10.*cm - det_size_z/2.), det_logic,
-    //      	      "WALL", lab_logic, false, 1, true);
 
   }
 

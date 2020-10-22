@@ -36,31 +36,10 @@ namespace nexus {
 
   LYSOCrystal::LYSOCrystal():
     BaseGeometry(),
-
-    // Detector dimensions
     active_size_ (3.*mm),
-    max_step_size_ (1.*mm),
-    lyso_zsize_ (5.*mm)
-
+    lyso_zsize_ (5.*mm),
+    max_step_size_ (1.*mm)
   {
-    // Messenger
-    // msg_ = new G4GenericMessenger(this, "/Geometry/LYSOCrystal/",
-    //                               "Control commands of geometry Petalo.");
-
-    // // z size
-    //  G4GenericMessenger::Command& zsize_cmd =
-    //    msg_->DeclareProperty("z_size", lyso_zsize_, "z dimension");
-    //  zsize_cmd.SetUnitCategory("Length");
-    //  zsize_cmd.SetParameterName("z_size", false);
-    //  zsize_cmd.SetRange("z_size>0.");
-
-    // // Maximum Step Size
-    // G4GenericMessenger::Command& step_cmd =
-    //   msg_->DeclareProperty("max_step_size", max_step_size_,
-    //                         "Maximum step size");
-    // step_cmd.SetUnitCategory("Length");
-    // step_cmd.SetParameterName("max_step_size", false);
-    // step_cmd.SetRange("max_step_size>0.");
   }
 
 
@@ -92,24 +71,13 @@ namespace nexus {
     G4double tot_z_size  = lyso_zsize_ + sipm_z + opt_gel_thickn +
       reflector_thickn;
 
-    // G4double refl_xy = tot_xy_size - 2.*container_thickn;
-    // G4double refl_z = tot_z_size - 2.*container_thickn;
-    // G4Box* refl_solid =
-    //   new G4Box("REFLECTOR", refl_xy/2., refl_xy/2., refl_z/2.);
-    // G4LogicalVolume* refl_logic =
-    //   new G4LogicalVolume(refl_solid, kapton, "REFLECTOR");
-    // G4PVPlacement* refl_phys =
-    //   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
-    //                     refl_logic, "REFLECTOR", container_logic, false, 0, true);
+    SetDimensions(G4ThreeVector(tot_xy_size, tot_xy_size, tot_z_size));
 
     //G4double internal_z_size = lyso_zsize_ + sipm_z + opt_gel_thickn;
     G4Box* lyso_solid =
       new G4Box("LYSO", tot_xy_size/2., tot_xy_size/2., tot_z_size/2.);
-      // new G4Box("LYSO", active_size_/2., active_size_/2., internal_z_size/2.);
     G4LogicalVolume* lyso_logic = new G4LogicalVolume(lyso_solid, lyso, "LYSO");
-     // G4PVPlacement* lyso_phys =
-     //   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
-     //                     lyso_logic, "LYSO", refl_logic, false, 0, true);
+
     this->SetLogicalVolume(lyso_logic);
 
     G4Box* refl1_solid =

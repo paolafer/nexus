@@ -11,11 +11,8 @@
 
 #include "BaseGeometry.h"
 
-class G4LogicalVolume;
+//class G4LogicalVolume;
 class G4GenericMessenger;
-
-/* namespace nexus {class SiPMpetVUV;} */
-/* namespace nexus {class SiPMpetTPB;} */
 
 namespace nexus {
 
@@ -32,20 +29,25 @@ namespace nexus {
 
     void Construct();
 
+    void SetSecSize(G4double size);
+    void SetDOISize(G4double size);
+
+    G4double GetSecSize() const;
+    G4double GetDOISize() const;
+
   private:
 
-    // Detector dimensions
-    const G4double active_size_; /// Size of the LYSO active volume
-    
-    // Parameters
-    G4double max_step_size_;  /// Maximum Step Size
-
-    /// Messenger for the definition of control commands
-    // G4GenericMessenger* msg_;
-
+    G4double active_size_;
     G4double lyso_zsize_;
+    G4double max_step_size_;
 
   };
+
+  inline void LYSOCrystal::SetSecSize(G4double size) {active_size_ = size;}
+  inline void LYSOCrystal::SetDOISize(G4double size) {lyso_zsize_  = size;}
+
+  inline G4double LYSOCrystal::GetSecSize() const {return active_size_;}
+  inline G4double LYSOCrystal::GetDOISize() const {return lyso_zsize_;}
 
 } // end namespace nexus
 
