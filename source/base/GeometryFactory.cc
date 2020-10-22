@@ -35,6 +35,7 @@ GeometryFactory::~GeometryFactory()
 #include "FullRingLYSO.h"
 #include "Lab_vertices.h"
 #include "Lab.h"
+#include "LYSOLab.h"
 
 BaseGeometry* GeometryFactory::CreateGeometry() const
 {
@@ -49,6 +50,8 @@ BaseGeometry* GeometryFactory::CreateGeometry() const
   else if (name_ == "VERTICES") p = new Lab_vertices();
 
   else if (name_ == "PETALO") p = new Lab();
+
+  else if (name_ == "LYSO_LAB") p = new LYSOLab();
 
   else {
     G4String err = "The user selected an unknown geometry: " + name_;
