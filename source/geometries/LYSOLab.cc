@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // nexus | LYSOLab.cc
 //
-// This class consists of two cells placed opposite to each other.
+// This class instantiates multiple rings of LYSO crystals.
 //
 // The NEXT Collaboration
 // ----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ namespace nexus {
       copy_no += 1;
       G4String vol_name = "CRYSTAL_" + std::to_string(copy_no);
       new G4PVPlacement(G4Transform3D(rot, position), crystal_logic,
-                        vol_name, lab_logic, false, copy_no, true);
+                        vol_name, lab_logic, false, copy_no, false);
 
       for (G4int i=2; i<=n_crystals; ++i) {
         G4double angle = (i-1)*step;
