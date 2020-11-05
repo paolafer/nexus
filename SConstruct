@@ -20,7 +20,7 @@ import os
 import subprocess
 
 ## Geant4 version required by NEXUS
-NEXUS_G4VERSION_NUMBER = [1051, 1061]
+MIN_NEXUS_G4VERSION_NUMBER = 1051
 
 ## NEXUS source code directories
 SRCDIR = ['actions',
@@ -69,7 +69,7 @@ def AssertG4Version(path):
         g4version = int(''.join(g4version.split('.')))
         msg = "Checking for Geant4 version..."
         print (msg, g4version)
-        if not g4version in NEXUS_G4VERSION_NUMBER:
+        if g4version < MIN_NEXUS_G4VERSION_NUMBER:
             msg = 'This version of NEXUS requires Geant4 version(s) ' \
                 + str(NEXUS_G4VERSION_NUMBER)
             Abort(msg)
@@ -128,7 +128,7 @@ vars.AddVariables(
 
     ('CCFLAGS',
      'General options passed to the compiler.',
-     []),
+     ['-g']),
 
     ('CPPFLAGS',
      'User-specified preprocessor options.',
