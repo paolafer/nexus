@@ -20,9 +20,6 @@
 #include <globals.hh>
 #include <G4OpticalPhoton.hh>
 
-#include "TH1F.h"
-#include "TFile.h"
-
 
 namespace nexus {
 
@@ -50,23 +47,12 @@ namespace nexus {
     max_energy_cmd.SetUnitCategory("Energy");
     max_energy_cmd.SetRange("max_energy>0.");
 
-    _msg->DeclareProperty("file_name", file_name_, "");
-    _msg->DeclareProperty("file_number", file_no_, "");
-
-    hNPhotons = new TH1F("NPhotons", "NPhotons", 5000, 0, 70000.);
-    hNPhotons->GetXaxis()->SetTitle("Number of optical photons");
-  }
+   }
 
 
 
   AnalysisEventAction::~AnalysisEventAction()
   {
-    std::ostringstream file_number;
-    file_number << file_no_;
-    G4String filename = file_name_+"."+file_number.str()+".root";
-    Histo = new TFile(filename, "recreate");
-    hNPhotons->Write();
-    Histo->Close();
   }
 
 
@@ -122,7 +108,6 @@ namespace nexus {
       }
       if (!event->IsAborted() && edep > _energy_threshold && edep < _energy_max) {
 	pm->StoreCurrentEvent(true);
-        hNPhotons->Fill(n_opt_photons);
       } else {
 	pm->StoreCurrentEvent(false);
       }

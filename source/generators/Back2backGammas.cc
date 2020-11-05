@@ -21,8 +21,6 @@
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
 
-#include <TFile.h>
-#include <TH1F.h>
 
 namespace nexus {
 
@@ -51,21 +49,12 @@ namespace nexus {
      DetectorConstruction* detconst = (DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction();
     _geom = detconst->GetGeometry();
 
-    theta_angle_ = new TH1F("CosTheta", "CosTheta", 180, -2, 2);
-    theta_angle_->GetXaxis()->SetTitle("Cos(theta)");
-    theta_angle_->GetYaxis()->SetTitle("Entries");
-
-    phi_angle_ = new TH1F("Phi", "Phi", 360, -pi-2, pi+2);
-    phi_angle_->GetXaxis()->SetTitle("Phi (rad)");
-    phi_angle_->GetYaxis()->SetTitle("Entries");
+ 
   }
 
   Back2backGammas::~Back2backGammas()
   {
-    out_file_ = new TFile("GenerationAngles.root", "recreate");
-    theta_angle_->Write();
-    phi_angle_->Write();
-    out_file_->Close();
+ 
   }
 
   void Back2backGammas::GeneratePrimaryVertex(G4Event* evt)
@@ -130,8 +119,6 @@ namespace nexus {
 
     evt->AddPrimaryVertex(vertex);
 
-    theta_angle_->Fill(momentum_direction.z());
-    phi_angle_->Fill(std::atan2(momentum_direction.y(), momentum_direction.x()));
-  }
+   }
 
 }

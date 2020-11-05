@@ -29,7 +29,7 @@
 #include <CLHEP/Units/PhysicalConstants.h>
 #include <stdexcept>
 
-#include <TTree.h>
+//#include <TTree.h>
 
 
 namespace nexus {
@@ -63,28 +63,29 @@ namespace nexus {
   {
         // To read a TTree
     
-    file_ = new TFile(filename_.c_str(),"READ");
-    G4cout << filename_.c_str() << G4endl;
+    //   file_ = new TFile(filename_.c_str(),"READ");
+    //  G4cout << filename_.c_str() << G4endl;
     
-    TTree* tree = dynamic_cast<TTree*>(file_->Get("tpg"));
+    //   TTree* tree = dynamic_cast<TTree*>(file_->Get("tpg"));
 
     
-    tree->SetBranchAddress("px1", &px1_);
-    tree->SetBranchAddress("py1", &py1_);
-    tree->SetBranchAddress("pz1", &pz1_);
-    tree->SetBranchAddress("px2", &px2_);
-    tree->SetBranchAddress("py2", &py2_);
-    tree->SetBranchAddress("pz2", &pz2_);
-    for (G4int i=0; i<tree->GetEntries(); ++i) {
-      tree->GetEntry(i);
-      // G4ThreeVector pos1(px1_, py1_, pz1_ );
-      // G4ThreeVector pos2(px2_, py2_, pz2_ );
+    //   tree->SetBranchAddress("px1", &px1_);
+    //    tree->SetBranchAddress("py1", &py1_);
+    //    tree->SetBranchAddress("pz1", &pz1_);
+    //    tree->SetBranchAddress("px2", &px2_);
+    //    tree->SetBranchAddress("py2", &py2_);
+    //    tree->SetBranchAddress("pz2", &pz2_);
+    //  for (G4int i=0; i<tree->GetEntries(); ++i) {
+    //    tree->GetEntry(i);
+    //    // G4ThreeVector pos1(px1_, py1_, pz1_ );
+    //     // G4ThreeVector pos2(px2_, py2_, pz2_ );
       // New vertices (Jan 2016)
-      G4ThreeVector pos1(px1_, py1_, - pz1_ - 100.);
-      G4ThreeVector pos2(px2_, py2_, pz2_ + 100.);
+    //     G4ThreeVector pos1(px1_, py1_, - pz1_ - 100.);
+    //      G4ThreeVector pos2(px2_, py2_, pz2_ + 100.);
      
  // if ( px1_ < 12. && px1_ > -12. && py1_ < 12. && py1_ > -12. &&  pz1_ < -100. && pz1_  > -150. &&
  // 	   px2_ < 12. && px2_ > -12. && py2_ < 12. && py2_ > -12. &&  pz2_ > 100. && pz2_ < 150.) {
+    /*
       if ( px1_ < 12. && px1_ > -12. && py1_ < 12. && py1_ > -12. &&  (-pz1_-100) < -100. && (- pz1_ - 100) > -150. &&
       	   px2_ < 12. && px2_ > -12. && py2_ < 12. && py2_ > -12. &&  (pz2_+100) > 100. && (pz2_+100) < 150.) {
 	   // G4cout << px1_ << ", " << py1_ << ", " << pz1_  << G4endl;
@@ -94,7 +95,7 @@ namespace nexus {
       }
     }
     file_ ->Close();
-    
+    */
     // LAB /////////////////////////////////////////////////////////////
     // This is just a volume of air surrounding the detector so that
   // events (from calibration sources or cosmic rays) can be generated 
@@ -134,6 +135,7 @@ namespace nexus {
 
   std::pair<G4ThreeVector, G4ThreeVector> Lab_vertices::GenerateVertices(const G4String& /*region*/) const
   {
+    /*
     std::pair<G4ThreeVector, G4ThreeVector> vertices;
     unsigned int i = starting_point_ + index_;
 
@@ -151,6 +153,10 @@ namespace nexus {
     }
     
     return vertices;
+    */
+    std::pair<G4ThreeVector, G4ThreeVector> vertices;
+    return vertices;
+    
   }
   
 

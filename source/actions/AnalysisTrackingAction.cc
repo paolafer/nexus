@@ -23,8 +23,6 @@
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <CLHEP/Units/PhysicalConstants.h>
 
-#include "TH1F.h"
-#include "TFile.h"
 
 #include <iostream>
 #include <sstream>
@@ -49,18 +47,6 @@ AnalysisTrackingAction::AnalysisTrackingAction(): G4UserTrackingAction(),
   hScintEnergy_->GetXaxis()->SetTitle("energy (eV)");
   */
 
-  hCherLambda_ = new TH1F("CherLambda", "CherLambda", 1000, 0, 1500.);
-  hCherLambda_->GetXaxis()->SetTitle("wavelength (nm)");
-  hCherLambda_->GetYaxis()->SetTitle("Entries / bin");
-
-  hScintLambda_ = new TH1F("ScintLambda", "ScintLambda", 1000, 0, 800.);
-  hScintLambda_->GetXaxis()->SetTitle("wavelength (nm)");
-  hScintLambda_->GetYaxis()->SetTitle("Entries / bin");
-
-  hScintTime = new TH1F("ScintillationTime", "ScintillationTime", 8000, 0, 40000.);
-  hScintTime->GetXaxis()->SetTitle("Time (ps)");
-  hScintTime->GetYaxis()->SetTitle("Entries / bin");
-
 }
 
 
@@ -69,15 +55,6 @@ AnalysisTrackingAction::~AnalysisTrackingAction()
 {
   std::ostringstream file_number;
   file_number << file_no_;
-  G4String filename = file_name_+"."+file_number.str()+".root";
-  OptPhotons_ = new TFile(filename, "recreate");
-  // hCherEnergy_->Write();
-  // hScintEnergy_->Write();
-  hCherLambda_->Write();
-  hScintLambda_->Write();
-  hScintTime->Write();
-  OptPhotons_->Close();
-
 }
 
 
@@ -87,20 +64,10 @@ void AnalysisTrackingAction::PreUserTrackingAction(const G4Track* track)
   // if ( track->GetCreatorProcess())
   //   G4cout << track->GetCreatorProcess()->GetProcessName()  << G4endl;
   // Do nothing if the track is an optical photon
-
   if (track->GetDefinition() == G4OpticalPhoton::Definition()) {
-
-     if (track->GetCreatorProcess()->GetProcessName() == "Cerenkov") {
-       //track->CalculateVelocityForOpticalPhoton()
-       hCherLambda_->Fill(h_Planck*c_light/track->GetKineticEnergy()/nanometer);
-     }
-
-     else if (track->GetCreatorProcess()->GetProcessName() == "Scintillation") {
-       hScintLambda_->Fill(h_Planck*c_light/track->GetKineticEnergy()/nanometer);
-       hScintTime->Fill(track->GetGlobalTime()/picosecond);
-     }
+    fpTrackingManager->SetStoreTrajectory(false);
+    return;
   }
-
 
   // Create a new trajectory associated to the track.
   // N.B. If the processesing of a track is interrupted to be resumed

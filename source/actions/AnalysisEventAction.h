@@ -14,8 +14,7 @@
 
 class G4Event;
 class G4GenericMessenger;
-class TH1F;
-class TFile;
+
 
 namespace nexus {
 
@@ -42,9 +41,6 @@ namespace nexus {
     G4String file_name_;
     G4int file_no_;
 
-    TH1F* hNPhotons;
-
-    TFile* Histo;
   };
 
 } // namespace nexus

@@ -14,7 +14,7 @@
 
 #include "BaseGeometry.h"
 
-#include <TFile.h>
+//#include <TFile.h>
 
 class G4GenericMessenger;
 namespace nexus {class Pet2boxes;}
@@ -44,10 +44,10 @@ namespace nexus {
 
     PetLXeCell* module_;
 
-    TFile* file_;
+    //  TFile* file_;
     G4float px1_, py1_, pz1_, px2_, py2_, pz2_;
-    mutable G4int index_;
-    mutable std::vector<std::pair<G4ThreeVector, G4ThreeVector> > vertices_;
+    //  mutable G4int index_;
+    //  mutable std::vector<std::pair<G4ThreeVector, G4ThreeVector> > vertices_;
 
     G4int starting_point_;
     G4String filename_;

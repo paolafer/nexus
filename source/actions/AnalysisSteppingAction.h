@@ -18,8 +18,7 @@
 
 class G4Step;
 class G4GenericMessenger;
-class TH1F;
-class TH2F;
+
 
 namespace nexus {
 
@@ -41,11 +40,7 @@ namespace nexus {
     std::vector<double> times;
     std::vector<double> wavelengths;
 
-    TH1F* hVelocity;
-    TH2F* hVE;
-    TH2F* hTV;
-    TH1F* hCherLambdaDet;
-
+  
     G4GenericMessenger* _msg;
     G4int file_no_;
 

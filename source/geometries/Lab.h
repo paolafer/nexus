@@ -14,7 +14,6 @@
 
 #include "BaseGeometry.h"
 
-#include <TFile.h>
 
 class G4GenericMessenger;
 namespace nexus {class Pet2boxes;}

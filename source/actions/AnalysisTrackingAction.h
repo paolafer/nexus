@@ -15,8 +15,7 @@
 
 class G4Track;
 class G4GenericMessenger;
-class TH1F;
-class TFile;
+
 
 
 namespace nexus {
@@ -43,11 +42,7 @@ namespace nexus {
     //TH1F* hScintEnergy_;
     //TH1F* hCherEnergy_;
 
-    TH1F* hCherLambda_;
-    TH1F* hScintLambda_;
-    TH1F* hScintTime;
-
-    TFile* OptPhotons_;
+   
   };
 
 }

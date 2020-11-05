@@ -29,8 +29,6 @@
 #include <CLHEP/Units/PhysicalConstants.h>
 #include <stdexcept>
 
-#include <TTree.h>
-
 
 namespace nexus {
   

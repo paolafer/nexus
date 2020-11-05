@@ -19,10 +19,6 @@
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "CLHEP/Units/PhysicalConstants.h"
 
-#include "TH1F.h"
-#include "TH2F.h"
-#include "TFile.h"
-
 #include <iostream>
 #include <sstream>
 
@@ -40,21 +36,6 @@ AnalysisSteppingAction::AnalysisSteppingAction(): G4UserSteppingAction(), file_n
  
   times.clear();
   wavelengths.clear();
- 
-
-  hVelocity = new TH1F("PhVelocity", "Velocity of detected photons", 1000, 0, 0.4);
-  hVelocity->GetXaxis()->SetTitle("velocity (ps)");
-  hVE = new TH2F("PhLambdaV", "Wavelength vs velocity of detected photons", 1000., 0, 0.4, 1000, 0, 1500.);
-  hVE->GetXaxis()->SetTitle("velocity (ps)");
-  hVE->GetYaxis()->SetTitle("wavelength (nm)");
-
-  hCherLambdaDet = 
-    new TH1F("CherLambdaDet", "Detection wavelength", 1000, 0, 1500.);
-  hCherLambdaDet->GetXaxis()->SetTitle("wavelength (nm)");
-
-  hTV = new TH2F("PhVelTime", "Velocity vs arrival time of detected photons", 1000, 0, 1000, 1000., 0, 0.4);
-  hTV->GetYaxis()->SetTitle("velocity (mm/ps)");
-  hTV->GetXaxis()->SetTitle("time (ps)");
 }
 
 
@@ -77,21 +58,13 @@ AnalysisSteppingAction::~AnalysisSteppingAction()
    //G4cout << first/picosecond << G4endl;
    //std::vector<double> times_sub;
 
-   for (unsigned int i=0; i< times.size(); ++i) {
-     //    times_sub.push_back(times[i] - first);
-     hTV->Fill((times[i] - first)/picosecond, wavelengths[i]/mm*picosecond);
-   }
+
 
    std::ostringstream file_number;
    file_number << file_no_;
    G4String filename = "PhotonVelocitiesCherLXe."+file_number.str()+".root";
   
-   TFile* histo_file = new TFile(filename,"recreate");
-   hVelocity->Write();
-   hVE->Write();
-   hCherLambdaDet->Write();
-   hTV->Write();
-   histo_file->Close();
+  
  
   G4double total_counts = 0;
   detectorCounts::iterator it = my_counts.begin();
@@ -150,9 +123,6 @@ void AnalysisSteppingAction::UserSteppingAction(const G4Step* step)
 	  std::pow(point2->GetPosition().getY() - point1->GetPosition().getY(), 2)  + std::pow(point2->GetPosition().getZ() - point1->GetPosition().getZ(), 2) ;
 	distance = std::sqrt(distance);
 	G4double lambda = h_Planck*c_light/step->GetTrack()->GetKineticEnergy()/nanometer;
-	hVelocity->Fill(distance/ step->GetDeltaTime()/mm*picosecond);
-	hVE->Fill(distance/ step->GetDeltaTime()/mm*picosecond, lambda);
-	hCherLambdaDet->Fill(h_Planck*c_light/step->GetTrack()->GetKineticEnergy()/nanometer);
 	times.push_back(step->GetDeltaTime());
 	wavelengths.push_back(distance/ step->GetDeltaTime());
 
