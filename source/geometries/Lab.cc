@@ -11,6 +11,7 @@
 #include "Pet2boxes.h"
 #include "PetLXeCell.h"
 #include "LYSOCrystal.h"
+#include "LSOCeCaCrystal.h"
 #include "LXeMiniCell.h"
 #include "PetLYSOCell.h"
 #include "MaterialsList.h"
@@ -31,12 +32,12 @@ namespace nexus {
   using namespace CLHEP;
 
   Lab::Lab():
-    BaseGeometry(), msg_(0), lyso_(true)
+    BaseGeometry(), msg_(0), mat_("lyso")
   {
     msg_ = new G4GenericMessenger(this, "/Geometry/Lab/",
 				  "Control commands of geometry Lab.");
-    msg_->DeclareProperty("lyso", lyso_,
-                          "True if lyso crystals, false if LXe mini cells.");
+    msg_->DeclareProperty("material", mat_,
+                          "Material of modules.");
   }
 
 
@@ -66,27 +67,27 @@ namespace nexus {
     // (i.e., this is the volume that will be placed in the world)
     this->SetLogicalVolume(lab_logic);
 
-    if (lyso_) {
-      lyso_module_ = new LYSOCrystal();
-    } else {
-      lxe_module_ = new LXeMiniCell();
-    }
-
     G4LogicalVolume* module_logic = nullptr;
-     if (lyso_) {
-      lyso_module_->Construct();
-      module_logic = lyso_module_->GetLogicalVolume();
-    } else {
-      lxe_module_->Construct();
-      module_logic = lxe_module_->GetLogicalVolume();
+    if (mat_ == "lyso") {
+        lyso_module_ = new LYSOCrystal();
+        lyso_module_->Construct();
+        module_logic = lyso_module_->GetLogicalVolume();
+    } else if (mat_ == "lxe"){
+        lxe_module_ = new LXeMiniCell();
+        lxe_module_->Construct();
+        module_logic = lxe_module_->GetLogicalVolume();
+    } else if (mat_ == "lso") {
+        lso_module_ = new LSOCeCaCrystal();
+        lso_module_->Construct();
+        module_logic = lso_module_->GetLogicalVolume();
     }
 
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -1.*cm), module_logic, "MODULE_0",
+    new G4PVPlacement(0, G4ThreeVector(0., 0., -3.*cm), module_logic, "MODULE_0",
         lab_logic, false, 1, true);
 
     G4RotationMatrix rot;
     rot.rotateY(pi);
-    new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 1*cm)), module_logic,
+    new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 3*cm)), module_logic,
                       "MODULE_1", lab_logic, false, 2, true);
 
   }

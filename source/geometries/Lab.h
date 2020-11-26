@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // nexus | Lab.h
 //
-// This class consists of two LXe cells placed opposite to each other.
+// This class consists of two LXe cells/crystals placed opposite to each other.
 //
 // The NEXT Collaboration
 // ----------------------------------------------------------------------------
@@ -16,6 +16,7 @@ namespace nexus {class Pet2boxes;}
 namespace nexus {class PetLYSObox;}
 namespace nexus {class PetLXeCell;}
 namespace nexus {class LYSOCrystal;}
+namespace nexus {class LSOCeCaCrystal;}
 namespace nexus {class LXeMiniCell;}
 
 namespace nexus {
@@ -36,9 +37,10 @@ namespace nexus {
   private:
     /// Messenger for the definition of control commands
     G4GenericMessenger* msg_;
-    G4bool lyso_;
+    G4String mat_;
 
     LYSOCrystal* lyso_module_;
+    LSOCeCaCrystal* lso_module_;
     LXeMiniCell* lxe_module_;
 
   };
