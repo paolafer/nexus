@@ -78,6 +78,7 @@ namespace nexus {
     static G4MaterialPropertiesTable* PTFE_with_TPB();
     static G4MaterialPropertiesTable* PTFE_non_reflectant();
     static G4MaterialPropertiesTable* LYSO();
+    static G4MaterialPropertiesTable* LSOCeCa();
     static G4MaterialPropertiesTable* LYSO_nconst();
     static G4MaterialPropertiesTable* FakeLYSO();
     static G4MaterialPropertiesTable* ReflectantSurface(G4double reflectivity=0.95);

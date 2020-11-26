@@ -432,6 +432,35 @@ G4Material* MaterialsList::LYSO()
   return mat;
 }
 
+G4Material* MaterialsList::LSOCeCa()
+{
+  G4String name = "LSOCeCa";
+
+  G4Material* mat = G4Material::GetMaterial(name, false);
+
+  if (mat == 0) {
+    G4NistManager* nist = G4NistManager::Instance();
+
+    G4Element* Si = nist->FindOrBuildElement("Si");
+    G4Element* O = nist->FindOrBuildElement("O");
+    G4Element* Lu = nist->FindOrBuildElement("Lu");
+    //G4Element* Ca = nist->FindOrBuildElement("Ca");
+    G4Element* Ce = nist->FindOrBuildElement("Ce");
+
+
+    mat = new G4Material(name, 7.4*g/cm3, 4, kStateSolid);
+    mat->AddElement(Si, 1);
+    mat->AddElement(O, 5);
+    mat->AddElement(Lu, 2);
+    mat->AddElement(Ce, 2);
+    // We neglect Ca, because it's in very small amount
+    // From IEEE Transactions on Nuclear Science, vol. 39, No. 4, 1992
+  }
+
+  return mat;
+}
+
+
 
 G4Material* MaterialsList::FR4()
 {

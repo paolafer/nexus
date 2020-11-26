@@ -85,6 +85,9 @@ namespace nexus {
     //LYSO
     static G4Material* LYSO();
 
+    // LSOCeCa
+    static G4Material* LSOCeCa();
+
     // FR4
     static G4Material* FR4();
 
