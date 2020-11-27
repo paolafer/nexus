@@ -18,6 +18,7 @@ namespace nexus {class PetLXeCell;}
 namespace nexus {class LYSOCrystal;}
 namespace nexus {class LSOCeCaCrystal;}
 namespace nexus {class LXeMiniCell;}
+namespace nexus {class BoxPointSampler;}
 
 namespace nexus {
 
@@ -31,6 +32,7 @@ namespace nexus {
 
     /// Return vertex within region <region> of the chamber
     virtual G4ThreeVector GenerateVertex(const G4String& region) const;
+    virtual std::pair<G4ThreeVector, G4ThreeVector> GenerateVertices(const G4String& /*region*/) const;
 
     virtual void Construct();
 
@@ -38,10 +40,14 @@ namespace nexus {
     /// Messenger for the definition of control commands
     G4GenericMessenger* msg_;
     G4String mat_;
+    G4double z_;
 
     LYSOCrystal* lyso_module_;
     LSOCeCaCrystal* lso_module_;
     LXeMiniCell* lxe_module_;
+
+    BoxPointSampler* generator1_;
+    BoxPointSampler* generator2_;
 
   };
 

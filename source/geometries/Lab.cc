@@ -17,6 +17,7 @@
 #include "MaterialsList.h"
 #include "OpticalMaterialProperties.h"
 #include "IonizationSD.h"
+#include "BoxPointSampler.h"
 
 #include <G4GenericMessenger.hh>
 #include <G4Box.hh>
@@ -38,6 +39,12 @@ namespace nexus {
 				  "Control commands of geometry Lab.");
     msg_->DeclareProperty("material", mat_,
                           "Material of modules.");
+    G4GenericMessenger::Command& z_cmd =
+        msg_->DeclareProperty("interaction_z", z_,
+                              "Z pos of gamma interaction");
+                              z_cmd.SetUnitCategory("Length");
+                              z_cmd.SetParameterName("interaction_z", false);
+                              z_cmd.SetRange("interaction_z>0.");
   }
 
 
@@ -80,14 +87,26 @@ namespace nexus {
         lso_module_ = new LSOCeCaCrystal();
         lso_module_->Construct();
         module_logic = lso_module_->GetLogicalVolume();
+
+        generator1_ =
+            new BoxPointSampler(lso_module_->GetSecSize(),
+                                lso_module_->GetSecSize(),
+                                1.*mm, 0,
+                                G4ThreeVector(0., 0., -z_), 0);
+        generator2_ =
+            new BoxPointSampler(lso_module_->GetSecSize(),
+                                lso_module_->GetSecSize(),
+                                1.*mm, 0,
+                                G4ThreeVector(0., 0., z_), 0);
     }
 
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -3.*cm), module_logic, "MODULE_0",
+    G4double z_placement = 3.*cm;
+    new G4PVPlacement(0, G4ThreeVector(0., 0., -z_placement), module_logic, "MODULE_0",
         lab_logic, false, 1, true);
 
     G4RotationMatrix rot;
     rot.rotateY(pi);
-    new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 3*cm)), module_logic,
+    new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., z_placement)), module_logic,
                       "MODULE_1", lab_logic, false, 2, true);
 
   }
@@ -106,6 +125,16 @@ namespace nexus {
     }
 
      return vertex;
+  }
+
+  std::pair<G4ThreeVector, G4ThreeVector> Lab::GenerateVertices(const G4String& /*region*/) const
+  {
+    auto vertex1 = generator1_->GenerateVertex("INSIDE");
+    auto vertex2 = generator2_->GenerateVertex("INSIDE");
+
+    auto vertices = std::make_pair(vertex1, vertex2);
+
+    return vertices;
   }
 
 
