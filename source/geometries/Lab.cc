@@ -45,6 +45,24 @@ namespace nexus {
                               z_cmd.SetUnitCategory("Length");
                               z_cmd.SetParameterName("interaction_z", false);
                               z_cmd.SetRange("interaction_z>0.");
+
+    G4GenericMessenger::Command& vx_cmd =
+        msg_->DeclareProperty("specific_vertex_X", vx_,
+                              "If region is AD_HOC, x coord of primary particles");
+                              vx_cmd.SetUnitCategory("Length");
+                              vx_cmd.SetParameterName("specific_vertex_X", false);
+
+    G4GenericMessenger::Command& vy_cmd =
+        msg_->DeclareProperty("specific_vertex_Y", vy_,
+                              "If region is AD_HOC, y coord of primary particles");
+                                vy_cmd.SetUnitCategory("Length");
+                                vy_cmd.SetParameterName("specific_vertex_Y", false);
+
+    G4GenericMessenger::Command& vz_cmd =
+        msg_->DeclareProperty("specific_vertex_Z", vz_,
+                              "If region is AD_HOC, z coord of primary particles");
+                              vz_cmd.SetUnitCategory("Length");
+                              vz_cmd.SetParameterName("specific_vertex_Z", false);
   }
 
 
@@ -119,6 +137,8 @@ namespace nexus {
 
     if (region == "CENTER") {
       vertex = G4ThreeVector(0.,0.,0.);
+    } else if (region == "AD_HOC") {
+      vertex = G4ThreeVector(vx_, vy_, vz_);
     } else {
        G4Exception("[Lab]", "GenerateVertex()", FatalException,
 		  "Unknown vertex generation region!");

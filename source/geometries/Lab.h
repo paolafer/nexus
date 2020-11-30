@@ -42,6 +42,8 @@ namespace nexus {
     G4String mat_;
     G4double z_;
 
+    G4double vx_, vy_, vz_;
+
     LYSOCrystal* lyso_module_;
     LSOCeCaCrystal* lso_module_;
     LXeMiniCell* lxe_module_;
