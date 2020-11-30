@@ -39,6 +39,13 @@ namespace nexus {
 				  "Control commands of geometry Lab.");
     msg_->DeclareProperty("material", mat_,
                           "Material of modules.");
+    G4GenericMessenger::Command& z_size_cmd =
+        msg_->DeclareProperty("active_z_size", active_z_,
+                              "Z dimension of crystal/cell");
+                              z_size_cmd.SetUnitCategory("Length");
+                              z_size_cmd.SetParameterName("active_z_size", false);
+                              z_size_cmd.SetRange("active_z_size>0.");
+
     G4GenericMessenger::Command& z_cmd =
         msg_->DeclareProperty("interaction_z", z_,
                               "Z pos of gamma interaction");
@@ -103,6 +110,7 @@ namespace nexus {
         module_logic = lxe_module_->GetLogicalVolume();
     } else if (mat_ == "lso") {
         lso_module_ = new LSOCeCaCrystal();
+        lso_module_->SetDOISize(active_z_);
         lso_module_->Construct();
         module_logic = lso_module_->GetLogicalVolume();
 

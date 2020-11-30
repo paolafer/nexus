@@ -40,7 +40,7 @@ namespace nexus {
     /// Messenger for the definition of control commands
     G4GenericMessenger* msg_;
     G4String mat_;
-    G4double z_;
+    G4double active_z_, z_;
 
     G4double vx_, vy_, vz_;
 
