@@ -120,16 +120,17 @@ namespace nexus {
     G4double fano_factor = .15;
 
     G4double mean = energy_dep / ioni_energy;
+    G4int num_charges = G4int(mean);
 
-    G4int num_charges = 0;
+//    G4int num_charges = 0;
 
-    if (mean > 10.) {
-      G4double sigma = sqrt(mean*fano_factor);
-      num_charges = G4int(G4RandGauss::shoot(mean, sigma) + 0.5);
-    }
-    else {
-      num_charges = G4int(G4Poisson(mean));
-    }
+//    if (mean > 10.) {
+//      G4double sigma = sqrt(mean*fano_factor);
+//      num_charges = G4int(G4RandGauss::shoot(mean, sigma) + 0.5);
+//    }
+//    else {
+//      num_charges = G4int(G4Poisson(mean));
+//    }
 
     ParticleChange_->SetNumberOfSecondaries(num_charges);
 
