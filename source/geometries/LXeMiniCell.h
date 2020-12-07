@@ -32,10 +32,16 @@ namespace nexus {
 
     void Construct();
 
+    void SetSecSize(G4double size);
+    void SetDOISize(G4double size);
+
+    G4double GetSecSize() const;
+    G4double GetDOISize() const;
+
   private:
 
     // Detector dimensions
-    const G4double active_size_; /// Size of the LYSO active volume
+    G4double active_size_; /// Size of the LYSO active volume
     
     // Parameters
     G4double max_step_size_;  /// Maximum Step Size
@@ -46,6 +52,12 @@ namespace nexus {
     G4double lxe_zsize_;
 
   };
+
+  inline void LXeMiniCell::SetSecSize(G4double size) {active_size_ = size;}
+  inline void LXeMiniCell::SetDOISize(G4double size) {lxe_zsize_   = size;}
+
+  inline G4double LXeMiniCell::GetSecSize() const {return active_size_;}
+  inline G4double LXeMiniCell::GetDOISize() const {return lxe_zsize_;}
 
 } // end namespace nexus
 

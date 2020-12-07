@@ -106,6 +106,7 @@ namespace nexus {
         module_logic = lyso_module_->GetLogicalVolume();
     } else if (mat_ == "lxe"){
         lxe_module_ = new LXeMiniCell();
+        lxe_module_->SetDOISize(active_z_);
         lxe_module_->Construct();
         module_logic = lxe_module_->GetLogicalVolume();
     } else if (mat_ == "lso") {
