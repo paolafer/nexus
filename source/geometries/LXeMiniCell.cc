@@ -140,7 +140,7 @@ namespace nexus {
     const G4int n = 4;
     G4double sipm_energies[n]     = {1.5*eV, 4*eV, 6.*eV, 8.26558*eV};
     G4double sipm_reflectivity[n] = {0., 0., 0., 0.};
-    G4double sipm_efficiency[n]   = {0.2, 0.2, 0.2, 0.2};
+    G4double sipm_efficiency[n]   = {0.25, 0.25, 0.25, 0.25};
 
     G4MaterialPropertiesTable* sipm_mt = new G4MaterialPropertiesTable();
     sipm_mt->AddProperty("EFFICIENCY", sipm_energies, sipm_efficiency, n);
