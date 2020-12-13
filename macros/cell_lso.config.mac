@@ -1,0 +1,38 @@
+### GEOMETRY
+/Geometry/Lab/material lxe
+/Geometry/Lab/active_z_size 3. mm
+/Geometry/Lab/reflectivity 0
+
+#/Geometry/Lab/interaction_z 20 mm
+
+#/Geometry/Lab/specific_vertex_X  0. mm
+#/Geometry/Lab/specific_vertex_Y  0. mm
+#/Geometry/Lab/specific_vertex_Z 21. mm
+
+### GENERATOR
+#/Generator/Back2back/region CENTER
+
+#/Generator/DoubleParticle/particle e-
+#/Generator/DoubleParticle/min_energy 511 keV
+#/Generator/DoubleParticle/max_energy 511 keV
+
+/Generator/SingleParticle/particle geantino
+/Generator/SingleParticle/min_energy 1 eV
+/Generator/SingleParticle/max_energy 1 eV
+/Generator/SingleParticle/region CENTER
+/Generator/SingleParticle/momentum_X 0
+/Generator/SingleParticle/momentum_Y 0
+/Generator/SingleParticle/momentum_Z -1
+
+/PhysicsList/Nexus/nest false
+
+/nexus/random_seed 13231
+
+/nexus/persistency/start_id 0
+/nexus/persistency/outputFile cell_lso
+
+
+### VERBOSITIES
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 1
