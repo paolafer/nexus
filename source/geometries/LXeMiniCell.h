@@ -38,6 +38,8 @@ namespace nexus {
     G4double GetSecSize() const;
     G4double GetDOISize() const;
 
+    void SetReflectivity(G4double refl);
+
   private:
 
     // Detector dimensions
@@ -51,6 +53,8 @@ namespace nexus {
 
     G4double lxe_zsize_;
 
+    G4double reflectivity_;
+
   };
 
   inline void LXeMiniCell::SetSecSize(G4double size) {active_size_ = size;}
@@ -58,6 +62,8 @@ namespace nexus {
 
   inline G4double LXeMiniCell::GetSecSize() const {return active_size_;}
   inline G4double LXeMiniCell::GetDOISize() const {return lxe_zsize_;}
+
+  inline void LXeMiniCell::SetReflectivity(G4double refl) {reflectivity_ = refl;} 
 
 } // end namespace nexus
 

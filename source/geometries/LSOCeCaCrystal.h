@@ -35,11 +35,15 @@ namespace nexus {
     G4double GetSecSize() const;
     G4double GetDOISize() const;
 
+    void SetReflectivity(G4double refl);
+
   private:
 
     G4double active_size_;
     G4double lso_zsize_;
     G4double max_step_size_;
+
+    G4double reflectivity_;
 
   };
 
@@ -48,6 +52,8 @@ namespace nexus {
 
   inline G4double LSOCeCaCrystal::GetSecSize() const {return active_size_;}
   inline G4double LSOCeCaCrystal::GetDOISize() const {return lso_zsize_;}
+
+  inline void LSOCeCaCrystal::SetReflectivity(G4double refl) {reflectivity_ = refl;} 
 
 } // end namespace nexus
 

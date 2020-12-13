@@ -38,7 +38,8 @@ namespace nexus {
     BaseGeometry(),
     active_size_ (3.*mm),
     lso_zsize_ (20.*mm),
-    max_step_size_ (1.*mm)
+    max_step_size_ (1.*mm),
+    reflectivity_(0.95)
   {
   }
 
@@ -204,7 +205,7 @@ namespace nexus {
     G4double specularspike[entries] = {0., 0.};
     G4double backscatter[entries]   = {0., 0.};
     G4double rindex[entries]        = {1., 1.}; // that of air.
-    G4double reflectivity[entries]  = {.95, .95};
+    G4double reflectivity[entries]  = {reflectivity_, reflectivity_};
     G4double efficiency[entries]    = {0., 0.};
 
     G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();

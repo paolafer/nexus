@@ -40,7 +40,8 @@ namespace nexus {
     // Detector dimensions
     active_size_ (3.*mm),
     max_step_size_ (1.*mm),
-    lxe_zsize_ (5.*mm)
+    lxe_zsize_ (5.*mm),
+    reflectivity_(0.)
 
   {
     // Messenger
@@ -207,7 +208,7 @@ namespace nexus {
     G4double specularspike[entries] = {0., 0.};
     G4double backscatter[entries]   = {0., 0.};
     G4double rindex[entries]        = {1., 1.}; // that of air.
-    G4double reflectivity[entries]  = {.95, .95};
+    G4double reflectivity[entries]  = {reflectivity_, reflectivity_};
     G4double efficiency[entries]    = {0., 0.};
 
     G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
