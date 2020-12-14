@@ -101,43 +101,49 @@ namespace nexus {
     // (i.e., this is the volume that will be placed in the world)
     this->SetLogicalVolume(lab_logic);
 
+    G4double z_dist_entry_surf = 3.*cm;
+
     G4LogicalVolume* module_logic = nullptr;
+    G4double z_dim = 0.;
     if (mat_ == "lyso") {
         lyso_module_ = new LYSOCrystal();
         lyso_module_->Construct();
+        z_dim = lyso_module_->GetDimensions().z();
         module_logic = lyso_module_->GetLogicalVolume();
     } else if (mat_ == "lxe"){
         lxe_module_ = new LXeMiniCell();
         lxe_module_->SetDOISize(active_z_);
         lxe_module_->SetReflectivity(reflectivity_);
         lxe_module_->Construct();
+        z_dim = lxe_module_->GetDimensions().z();
         module_logic = lxe_module_->GetLogicalVolume();
     } else if (mat_ == "lso") {
         lso_module_ = new LSOCeCaCrystal();
         lso_module_->SetDOISize(active_z_);
         lso_module_->SetReflectivity(reflectivity_);
         lso_module_->Construct();
+        z_dim = lso_module_->GetDimensions().z();
         module_logic = lso_module_->GetLogicalVolume();
 
         generator1_ =
             new BoxPointSampler(lso_module_->GetSecSize(),
                                 lso_module_->GetSecSize(),
                                 1.*mm, 0,
-                                G4ThreeVector(0., 0., -z_), 0);
+                                G4ThreeVector(0., 0., -z_dist_entry_surf-z_), 0);
         generator2_ =
             new BoxPointSampler(lso_module_->GetSecSize(),
                                 lso_module_->GetSecSize(),
                                 1.*mm, 0,
-                                G4ThreeVector(0., 0., z_), 0);
+                                G4ThreeVector(0., 0., z_dist_entry_surf+z_), 0);
     }
 
-    G4double z_placement = 3.*cm;
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -z_placement), module_logic, "MODULE_0",
+
+    new G4PVPlacement(0, G4ThreeVector(0., 0., -z_dist_entry_surf-z_dim/2.), module_logic, "MODULE_0",
         lab_logic, false, 1, true);
 
     G4RotationMatrix rot;
     rot.rotateY(pi);
-    new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., z_placement)), module_logic,
+    new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., z_dist_entry_surf+z_dim/2.)), module_logic,
                       "MODULE_1", lab_logic, false, 2, true);
 
   }

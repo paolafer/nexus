@@ -85,6 +85,8 @@ namespace nexus {
     G4double tot_xy_size = active_size_ + 2.*reflector_thickn;
     G4double tot_z_size  = lxe_zsize_ + sipm_z + reflector_thickn;
 
+    SetDimensions(G4ThreeVector(tot_xy_size, tot_xy_size, tot_z_size));
+
     G4Box* lxe_solid =
       new G4Box("LXE", tot_xy_size/2., tot_xy_size/2., tot_z_size/2.);
     G4LogicalVolume* lxe_logic = new G4LogicalVolume(lxe_solid, lxe, "LXE");
