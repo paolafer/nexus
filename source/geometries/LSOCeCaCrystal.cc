@@ -185,8 +185,10 @@ namespace nexus {
 
 
     G4OpticalSurface* lso_refl_surf =
-      new G4OpticalSurface("LSO_REFL_OPSURF", unified, groundbackpainted,
-                           dielectric_dielectric, 0.);
+      new G4OpticalSurface("LSO_REFL_OPSURF", unified, polished,
+                           dielectric_metal);
+      // new G4OpticalSurface("LSO_REFL_OPSURF", unified, groundbackpainted,
+      //                     dielectric_dielectric, 0.);
 
     new G4LogicalBorderSurface("LSO_AIR_OPSURF1", active_phys, refl1_phys,
                                lso_refl_surf);
@@ -204,13 +206,13 @@ namespace nexus {
     G4double specularlobe[entries]  = {0., 0.};
     G4double specularspike[entries] = {0., 0.};
     G4double backscatter[entries]   = {0., 0.};
-    G4double rindex[entries]        = {1., 1.}; // that of air.
+    //G4double rindex[entries]        = {1., 1.}; // that of air.
     G4double reflectivity[entries]  = {reflectivity_, reflectivity_};
     G4double efficiency[entries]    = {0., 0.};
 
     G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
 
-    smpt->AddProperty("RINDEX", energies, rindex, entries);
+    //smpt->AddProperty("RINDEX", energies, rindex, entries);
     smpt->AddProperty("SPECULARLOBECONSTANT", energies, specularlobe, entries);
     smpt->AddProperty("SPECULARSPIKECONSTANT", energies, specularspike, entries);
     smpt->AddProperty("BACKSCATTERCONSTANT", energies, backscatter, entries);
