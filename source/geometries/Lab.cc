@@ -33,7 +33,7 @@ namespace nexus {
   using namespace CLHEP;
 
   Lab::Lab():
-    BaseGeometry(), msg_(0), mat_("lyso")
+    BaseGeometry(), msg_(0), mat_("lyso"), reflectivity_(0.95), surf_n_(1)
   {
     msg_ = new G4GenericMessenger(this, "/Geometry/Lab/",
 				  "Control commands of geometry Lab.");
@@ -41,6 +41,9 @@ namespace nexus {
                           "Material of modules.");
     msg_->DeclareProperty("reflectivity", reflectivity_,
                           "Reflectivity if walls.");
+    msg_->DeclareProperty("surface_refr_index", surf_n_,
+                          "Refractive index of layer between surface and reflector.");
+    
     G4GenericMessenger::Command& z_size_cmd =
         msg_->DeclareProperty("active_z_size", active_z_,
                               "Z dimension of crystal/cell");

@@ -41,7 +41,7 @@ namespace nexus {
     G4GenericMessenger* msg_;
     G4String mat_;
     G4double active_z_, z_;
-    G4double reflectivity_;
+    G4double reflectivity_, surf_n_;
 
     G4double vx_, vy_, vz_;
 

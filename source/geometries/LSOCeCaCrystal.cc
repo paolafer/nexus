@@ -39,7 +39,8 @@ namespace nexus {
     active_size_ (3.*mm),
     lso_zsize_ (20.*mm),
     max_step_size_ (1.*mm),
-    reflectivity_(0.95)
+    reflectivity_(0.95),
+    surf_n_(1)
   {
   }
 
@@ -57,16 +58,18 @@ namespace nexus {
       G4NistManager::Instance()->FindOrBuildMaterial("G4_KAPTON");
 
     G4Material* resin = MaterialsList::Epoxy(); // what matters is n
-    // resin->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyFixedRefr(1.49));
-    resin->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyFixedRefr(1.54));
+    resin->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyFixedRefr(1.49));
+    G4Material* opt_gel = MaterialsList::OpticalSilicone(); // what matters is n
+    opt_gel->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyFixedRefr(1.6));
 
     G4double sipm_x = active_size_;
     G4double sipm_y = active_size_;
     G4double sipm_z = 1.55 * mm;
     G4double reflector_thickn = 0.1 * mm;
+    G4double opt_gel_thickn   = 0.1 * mm;
 
     G4double tot_xy_size = active_size_ + 2.*reflector_thickn;
-    G4double tot_z_size  = lso_zsize_ + sipm_z +
+    G4double tot_z_size  = lso_zsize_ + sipm_z + opt_gel_thickn +
       reflector_thickn;
 
     SetDimensions(G4ThreeVector(tot_xy_size, tot_xy_size, tot_z_size));
@@ -166,15 +169,24 @@ namespace nexus {
     new G4PVPlacement(0, G4ThreeVector(0., 0., -tot_z_size/2. + sipm_z/2.),
                       sipm_logic, "SIPMpet", lso_logic, false, 0, true);
 
+
+    // Define optical gel
+    G4Box* opt_gel_solid =
+      new G4Box("OPTICAL_GEL", active_size_/2., active_size_/2., opt_gel_thickn/2.);
+    G4LogicalVolume* opt_gel_logic =
+      new G4LogicalVolume(opt_gel_solid, opt_gel, "OPTICAL_GEL");
+    new G4PVPlacement(0, G4ThreeVector(0., 0., -tot_z_size/2. + sipm_z + opt_gel_thickn/2.),
+                      opt_gel_logic, "OPTICAL_GEL", lso_logic, false, 0, true);
+
     G4Box* active_solid =
       new G4Box("ACTIVE_LSO", active_size_/2., active_size_/2., lso_zsize_/2.);
     G4LogicalVolume* active_logic =
       new G4LogicalVolume(active_solid, lso, "ACTIVE_LSO");
     active_logic->SetVisAttributes(G4VisAttributes::Invisible);
 
-    G4double crystal_zpos = tot_z_size/2. - reflector_thickn  - lso_zsize_/2.;
+    G4double active_zpos = tot_z_size/2. - reflector_thickn  - lso_zsize_/2.;
     G4PVPlacement* active_phys =
-      new G4PVPlacement(0, G4ThreeVector(0., 0., crystal_zpos), active_logic,
+      new G4PVPlacement(0, G4ThreeVector(0., 0., active_zpos), active_logic,
 		      "ACTIVE_LSO", lso_logic, false, 0, true);
 
     active_logic->SetUserLimits(new G4UserLimits(max_step_size_));
@@ -206,13 +218,13 @@ namespace nexus {
     G4double specularlobe[entries]  = {0., 0.};
     G4double specularspike[entries] = {0., 0.};
     G4double backscatter[entries]   = {0., 0.};
-    //G4double rindex[entries]        = {1., 1.}; // that of air.
+    G4double rindex[entries]        = {surf_n_, surf_n_}; 
     G4double reflectivity[entries]  = {reflectivity_, reflectivity_};
     G4double efficiency[entries]    = {0., 0.};
 
     G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
 
-    //smpt->AddProperty("RINDEX", energies, rindex, entries);
+    smpt->AddProperty("RINDEX", energies, rindex, entries);
     smpt->AddProperty("SPECULARLOBECONSTANT", energies, specularlobe, entries);
     smpt->AddProperty("SPECULARSPIKECONSTANT", energies, specularspike, entries);
     smpt->AddProperty("BACKSCATTERCONSTANT", energies, backscatter, entries);
