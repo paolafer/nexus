@@ -218,13 +218,13 @@ namespace nexus {
     G4double specularlobe[entries]  = {0., 0.};
     G4double specularspike[entries] = {0., 0.};
     G4double backscatter[entries]   = {0., 0.};
-    G4double rindex[entries]        = {surf_n_, surf_n_}; 
+    //G4double rindex[entries]        = {surf_n_, surf_n_};
     G4double reflectivity[entries]  = {reflectivity_, reflectivity_};
     G4double efficiency[entries]    = {0., 0.};
 
     G4MaterialPropertiesTable* smpt = new G4MaterialPropertiesTable();
 
-    smpt->AddProperty("RINDEX", energies, rindex, entries);
+    //   smpt->AddProperty("RINDEX", energies, rindex, entries);
     smpt->AddProperty("SPECULARLOBECONSTANT", energies, specularlobe, entries);
     smpt->AddProperty("SPECULARSPIKECONSTANT", energies, specularspike, entries);
     smpt->AddProperty("BACKSCATTERCONSTANT", energies, backscatter, entries);
