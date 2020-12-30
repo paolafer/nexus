@@ -120,6 +120,17 @@ namespace nexus {
         lxe_module_->Construct();
         z_dim = lxe_module_->GetDimensions().z();
         module_logic = lxe_module_->GetLogicalVolume();
+
+        generator1_ =
+            new BoxPointSampler(lxe_module_->GetSecSize(),
+                                lxe_module_->GetSecSize(),
+                                1.*mm, 0,
+                                G4ThreeVector(0., 0., -z_dist_entry_surf-z_), 0);
+        generator2_ =
+            new BoxPointSampler(lxe_module_->GetSecSize(),
+                                lxe_module_->GetSecSize(),
+                                1.*mm, 0,
+                                G4ThreeVector(0., 0., z_dist_entry_surf+z_), 0);
     } else if (mat_ == "lso") {
         lso_module_ = new LSOCeCaCrystal();
         lso_module_->SetDOISize(active_z_);
