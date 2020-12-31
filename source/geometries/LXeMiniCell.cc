@@ -74,8 +74,8 @@ namespace nexus {
   {
     G4Material* lxe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
     lxe->SetMaterialPropertiesTable(OpticalMaterialProperties::LXe());
-    G4Material* kapton =
-      G4NistManager::Instance()->FindOrBuildMaterial("G4_KAPTON");
+    G4Material* kapton = MaterialsList::Steel316Ti(); // to stop electrons
+    //G4Material* kapton = G4NistManager::Instance()->FindOrBuildMaterial("G4_KAPTON");
 
     G4double sipm_x = active_size_;
     G4double sipm_y = active_size_;

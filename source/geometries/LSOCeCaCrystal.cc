@@ -54,8 +54,9 @@ namespace nexus {
   {
     G4Material* lso = MaterialsList::LSOCeCa();
     lso->SetMaterialPropertiesTable(OpticalMaterialProperties::LSOCeCa());
-    G4Material* kapton =
-      G4NistManager::Instance()->FindOrBuildMaterial("G4_KAPTON");
+    G4Material* kapton = MaterialsList::Steel316Ti(); // to stop electrons
+    // G4Material* kapton =
+    //   G4NistManager::Instance()->FindOrBuildMaterial("G4_KAPTON");
 
     G4Material* resin = MaterialsList::Epoxy(); // what matters is n
     resin->SetMaterialPropertiesTable(OpticalMaterialProperties::EpoxyFixedRefr(1.49));
