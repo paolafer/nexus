@@ -8,7 +8,7 @@
 // ----------------------------------------------------------------------------
 
 #include "FullRingInfinity.h"
-#include "SiPMpetFBK.h"
+#include "SiPMVUVnaked.h"
 #include "SpherePointSampler.h"
 #include "MaterialsList.h"
 #include "IonizationSD.h"
@@ -162,7 +162,7 @@ namespace nexus {
     sns_z_max_cmd.SetParameterName("sens_z_max", false);
 
 
-    sipm_ = new SiPMpetFBK();
+    sipm_ = new SiPMVUVnaked();
   }
 
   FullRingInfinity::~FullRingInfinity()
@@ -299,6 +299,8 @@ namespace nexus {
   void FullRingInfinity::BuildSensors()
   {
     sipm_->SetSensorDepth(1);
+    sipm_->SetTimeBinning(2.*microsecond);
+    sipm_->SetPDE(1);
     sipm_->Construct();
 
     G4LogicalVolume* sipm_logic = sipm_->GetLogicalVolume();

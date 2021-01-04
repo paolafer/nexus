@@ -1,0 +1,31 @@
+
+### GEOMETRY
+
+/Geometry/FullRingInfinity/depth 3. cm
+/Geometry/FullRingInfinity/pitch 7. mm
+/Geometry/FullRingInfinity/inner_radius 380. mm
+/Geometry/FullRingInfinity/sipm_rows 278
+/Geometry/FullRingInfinity/instrumented_faces 1
+/Geometry/FullRingInfinity/cryostat_width 200 cm
+
+
+### GENERATOR
+/Generator/Back2back/region CENTER
+
+### PHYSICS
+/process/optical/processActivation Scintillation false
+/PhysicsList/Nexus/nest true
+
+/Actions/DefaultEventAction/energy_threshold 0.511 MeV
+
+### VERBOSITIES
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+
+/nexus/random_seed 27022020
+
+### OUTPUT FILE
+
+/nexus/persistency/start_id 0
+/nexus/persistency/outputFile full_body_nest.pet

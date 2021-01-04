@@ -16,7 +16,7 @@
 class G4GenericMessenger;
 class G4LogicalVolume;
 namespace nexus {
-  class SiPMpetFBK;
+  class SiPMVUVnaked;
   class SpherePointSampler;
 }
 
@@ -43,7 +43,7 @@ namespace nexus {
     G4ThreeVector RandomPointVertex() const;
     void CalculateSensitivityVertices(G4double binning);
 
-    SiPMpetFBK* sipm_;
+    SiPMVUVnaked* sipm_;
 
     G4LogicalVolume* lab_logic_;
     G4LogicalVolume* LXe_logic_;
