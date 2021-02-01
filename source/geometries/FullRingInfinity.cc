@@ -300,7 +300,7 @@ namespace nexus {
   {
     sipm_->SetSensorDepth(1);
     sipm_->SetTimeBinning(2.*microsecond);
-    sipm_->SetPDE(1);
+    sipm_->SetPDE(1.);
     sipm_->Construct();
 
     G4LogicalVolume* sipm_logic = sipm_->GetLogicalVolume();

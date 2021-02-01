@@ -48,7 +48,7 @@
 
      // PACKAGE ///////////////////////////////////////////////////////
      G4double sipm_x = 6. * mm;
-     G4double sipm_y = 3. * mm;
+     G4double sipm_y = 6. * mm;
      G4double sipm_z = 0.6 * mm;
 
      SetDimensions(G4ThreeVector(sipm_x, sipm_y, sipm_z));
