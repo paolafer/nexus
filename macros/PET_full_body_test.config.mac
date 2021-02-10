@@ -1,0 +1,47 @@
+
+### GEOMETRY
+
+/Geometry/FullRingInfinity/depth 3. cm
+/Geometry/FullRingInfinity/pitch 7. mm
+/Geometry/FullRingInfinity/inner_radius 380. mm
+/Geometry/FullRingInfinity/sipm_rows 278
+/Geometry/FullRingInfinity/instrumented_faces 1
+/Geometry/FullRingInfinity/cryostat_width 200 cm
+
+/Geometry/FullRingInfinity/specific_vertex_X 0 mm
+/Geometry/FullRingInfinity/specific_vertex_Y 0  mm
+/Geometry/FullRingInfinity/specific_vertex_Z 3 mm
+
+/Geometry/SiPMpet/efficiency 0.25
+/Geometry/SiPMpet/visibility true
+/Geometry/SiPMpet/time_binning 1. microsecond
+/Geometry/SiPMpet/size 6. mm
+
+
+### GENERATOR
+#/Generator/Back2back/region CENTER
+/Generator/SingleParticle/region AD_HOC
+/Generator/SingleParticle/particle geantino
+/Generator/SingleParticle/min_energy 0.1 eV
+/Generator/SingleParticle/max_energy 0.1 eV
+/Generator/SingleParticle/momentum_X 0
+/Generator/SingleParticle/momentum_Y 1
+/Generator/SingleParticle/momentum_Z 0
+
+### PHYSICS
+#/process/optical/processActivation Scintillation false
+/PhysicsList/Nexus/nest false
+
+/Actions/DefaultEventAction/energy_threshold 0.511 MeV
+
+### VERBOSITIES
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 1
+
+/nexus/random_seed 27022020
+
+### OUTPUT FILE
+
+/nexus/persistency/start_id 0
+/nexus/persistency/outputFile full_body_test.pet
