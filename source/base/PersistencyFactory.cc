@@ -12,7 +12,7 @@
 #include <G4GenericMessenger.hh>
 #include <G4VPersistencyManager.hh>
 
-//using namespace nexus;
+using namespace nexus;
 
 
 PersistencyFactory::PersistencyFactory(): msg_(0)

@@ -16,7 +16,7 @@ class G4VPersistencyManager;
 class G4GenericMessenger;
 
 
-//namespace nexus {
+namespace nexus {
 
   class PersistencyFactory
   {
@@ -34,6 +34,6 @@ class G4GenericMessenger;
     G4String persman_name_; ///< Name of the user persistency manager
   };
 
-//} // end namespace nexus
+} // end namespace nexus
 
 #endif
