@@ -16,9 +16,10 @@
 #include "PersistencyFactory.h"
 #include "DetectorConstruction.h"
 #include "PrimaryGeneration.h"
-#include "PersistencyManager.h"
+#include "BasePersistencyManager.h"
 #include "BatchSession.h"
 
+#include <G4VPersistencyManager.hh>
 #include <G4GenericPhysicsList.hh>
 #include <G4UImanager.hh>
 #include <G4StateManager.hh>
@@ -114,8 +115,9 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
 NexusApp::~NexusApp()
 {
   // Close output file before finishing
-  PersistencyManager* current = dynamic_cast<PersistencyManager*>
+  BasePersistencyManager* current = dynamic_cast<BasePersistencyManager*>
     (G4VPersistencyManager::GetPersistencyManager());
+ 
   current->CloseFile();
 
   delete msg_;

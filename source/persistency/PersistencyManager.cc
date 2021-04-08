@@ -53,6 +53,7 @@ PersistencyManager::PersistencyManager(G4String init_macro,
   msg_->DeclareProperty("start_id", start_id_,
                         "Starting event ID for this job.");
 
+G4cout << "Opening PM standard"<< G4endl;	
   secondary_macros_.clear();
 }
 
