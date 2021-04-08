@@ -13,15 +13,15 @@
 /PhysicsList/RegisterPhysics NexusPhysics
 /PhysicsList/RegisterPhysics G4StepLimiterPhysics
 
-/Persistency/RegisterPersistencyManager NEXT
+/Persistency/RegisterPersistencyManager PETALO
 
 
 /Geometry/RegisterGeometry NEXT_NEW
 
 /Generator/RegisterGenerator ION
 
+/Actions/RegisterEventAction PETALO_DEFAULT
 /Actions/RegisterTrackingAction VALIDATION
-/Actions/RegisterEventAction DEFAULT
 /Actions/RegisterRunAction DEFAULT
 
 /nexus/RegisterMacro macros/NEW.config.mac

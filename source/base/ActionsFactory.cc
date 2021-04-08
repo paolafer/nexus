@@ -58,16 +58,21 @@ G4UserRunAction* ActionsFactory::CreateRunAction() const
 #include "DefaultEventAction.h"
 #include "SaveAllEventAction.h"
 #include "MuonsEventAction.h"
+#include "petalo_source/actions/DefaultEventAction.h"
 
 G4UserEventAction* ActionsFactory::CreateEventAction() const
 {
   G4UserEventAction* p = 0;
 
-  if      (evtact_name_ == "DEFAULT") p = new DefaultEventAction();
+  G4cout << evtact_name_ << G4endl;
+
+  if      (evtact_name_ == "DEFAULT") p = new nexus::DefaultEventAction();
 
   else if (evtact_name_ == "SAVE_ALL") p = new SaveAllEventAction();
 
   else if (evtact_name_ == "MUONS") p = new MuonsEventAction();
+
+  else if (evtact_name_ == "PETALO_DEFAULT") p = new petalo::DefaultEventAction();
 
   else {
     G4String err = "Unknown user event action: " + evtact_name_;
