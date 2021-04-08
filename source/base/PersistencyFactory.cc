@@ -12,7 +12,7 @@
 #include <G4GenericMessenger.hh>
 #include <G4VPersistencyManager.hh>
 
-using namespace nexus;
+//using namespace nexus;
 
 
 PersistencyFactory::PersistencyFactory(): msg_(0)
@@ -30,6 +30,7 @@ PersistencyFactory::~PersistencyFactory()
 
 //////////////////////////////////////////////////////////////////////
 #include "PersistencyManager.h"
+#include "petalo_source/persistency/PersistencyManager.h"
 
 
 G4VPersistencyManager* PersistencyFactory::CreatePersistencyManager(G4String init,
@@ -38,7 +39,8 @@ G4VPersistencyManager* PersistencyFactory::CreatePersistencyManager(G4String ini
 {
   G4VPersistencyManager* p = 0;
 
-  if (persman_name_ == "NEXT") p = new PersistencyManager(init, macros, delayed);
+  if (persman_name_ == "NEXT") p = new nexus::PersistencyManager(init, macros, delayed);
+  else if (persman_name_ == "PETALO") p = new petalo::PersistencyManager(init, macros, delayed);
   else {
     G4String err = "Unknown user persistency manager: " + persman_name_;
     G4Exception("[PersistencyFactory]", "CreatePersistencyManager()", JustWarning, err);

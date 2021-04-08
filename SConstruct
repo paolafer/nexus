@@ -233,12 +233,21 @@ vars.Save(BUILDVARS_FILE, env)
 ## ###################################################################
 ## BUILDING NEXUS
 
-SRCDIR  = ['source/' + dir for dir in SRCDIR]
+env.Append(CPPPATH = ['.'])
 
-env.Append(CPPPATH = SRCDIR)
+SRCDIRNEXT  = ['source/' + dir for dir in SRCDIR]
+
+env.Append(CPPPATH = SRCDIRNEXT)
 
 src = []
-for d in SRCDIR:
+for d in SRCDIRNEXT:
+    src += Glob(d+'/*.cc')
+
+SRCDIRPET = ['petalo_source/' + dir for dir in SRCDIR]
+
+#env.Append(CPPPATH = SRCDIRPET)
+
+for d in SRCDIRPET:
     src += Glob(d+'/*.cc')
 
 env['CXXCOMSTR']  = "Compiling $SOURCE"
