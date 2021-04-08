@@ -30,9 +30,11 @@ namespace nexus {
   class PersistencyManager: public G4VPersistencyManager
   {
   public:
+    PersistencyManager(G4String init_macro, std::vector<G4String>& macros,
+                       std::vector<G4String>& delayed_macros);
     /// Create the singleton instance of the persistency manager
-    static void Initialize(G4String init_macro, std::vector<G4String>& macros,
-                           std::vector<G4String>& delayed_macros);
+    // static void Initialize(G4String init_macro, std::vector<G4String>& macros,
+    //                        std::vector<G4String>& delayed_macros);
 
     /// Set whether to store or not the current event
     void StoreCurrentEvent(G4bool);
@@ -54,8 +56,6 @@ namespace nexus {
 
 
   private:
-    PersistencyManager(G4String init_macro, std::vector<G4String>& macros,
-                           std::vector<G4String>& delayed_macros);
     ~PersistencyManager();
     PersistencyManager(const PersistencyManager&);
 

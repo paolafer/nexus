@@ -13,6 +13,7 @@
 #include "GeometryFactory.h"
 #include "GeneratorFactory.h"
 #include "ActionsFactory.h"
+#include "PersistencyFactory.h"
 #include "DetectorConstruction.h"
 #include "PrimaryGeneration.h"
 #include "PersistencyManager.h"
@@ -56,6 +57,7 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
   GeometryFactory  geomfctr;
   GeneratorFactory genfctr;
   ActionsFactory   actfctr;
+  PersistencyFactory persfctr;
 
   // The physics lists are handled with Geant4's own 'factory'
   physicsList = new G4GenericPhysicsList();
@@ -79,7 +81,8 @@ NexusApp::NexusApp(G4String init_macro): G4RunManager()
   // User interface
   G4UImanager* UI = G4UImanager::GetUIpointer();
 
-  PersistencyManager::Initialize(init_macro, macros_, delayed_);
+  persfctr.CreatePersistencyManager(init_macro, macros_, delayed_);
+  //PersistencyManager::Initialize(init_macro, macros_, delayed_);
 
   // Set the user action instances, if any, in the run manager
 

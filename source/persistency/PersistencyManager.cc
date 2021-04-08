@@ -66,23 +66,23 @@ PersistencyManager::~PersistencyManager()
 
 
 
-void PersistencyManager::Initialize(G4String init_macro, std::vector<G4String>& macros,
-                                    std::vector<G4String>& delayed_macros)
-{
+// void PersistencyManager::Initialize(G4String init_macro, std::vector<G4String>& macros,
+//                                     std::vector<G4String>& delayed_macros)
+// {
 
-  // Get a pointer to the current singleton instance of the persistency
-  // manager using the method of the base class
-  PersistencyManager* current = dynamic_cast<PersistencyManager*>
-    (G4VPersistencyManager::GetPersistencyManager());
+//   // Get a pointer to the current singleton instance of the persistency
+//   // manager using the method of the base class
+//   PersistencyManager* current = dynamic_cast<PersistencyManager*>
+//     (G4VPersistencyManager::GetPersistencyManager());
 
-  // If no instance exists yet, create a new one.
-  // (Notice that the above dynamic cast would also return 0 if an instance
-  // of another G4VPersistencyManager-derived was previously set, resulting
-  // in the leak of that object since the pointer will no longer be
-  // accessible.)
-  if (!current) current =
-                  new PersistencyManager(init_macro, macros, delayed_macros);
-}
+//   // If no instance exists yet, create a new one.
+//   // (Notice that the above dynamic cast would also return 0 if an instance
+//   // of another G4VPersistencyManager-derived was previously set, resulting
+//   // in the leak of that object since the pointer will no longer be
+//   // accessible.)
+//   if (!current) current =
+//                   new PersistencyManager(init_macro, macros, delayed_macros);
+// }
 
 
 void PersistencyManager::OpenFile(G4String filename)
