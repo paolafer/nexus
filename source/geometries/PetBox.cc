@@ -14,6 +14,7 @@
 #include "OpticalMaterialProperties.h"
 #include "Visibilities.h"
 #include "IonizationSD.h"
+#include "BoxPointSampler.h"
 
 #include <G4GenericMessenger.hh>
 #include <G4LogicalVolume.hh>
@@ -291,6 +292,10 @@ namespace nexus {
     // Limit the step size in ACTIVE volume for better tracking precision
     active_logic->SetUserLimits(new G4UserLimits(max_step_size_));
 
+    active_gen_ =
+      new BoxPointSampler(dist_lat_panels_, dist_lat_panels_, active_depth, 0.,
+                          G4ThreeVector(0., 0., -active_z_pos), 0);
+
 
     // PYREX PANELS BETWEEN THE INTERNAL HAT AND THE ACTIVE REGIONS
     G4Box* entry_panel_solid =
@@ -517,6 +522,8 @@ namespace nexus {
       return vertex;
     } else if (region == "AD_HOC") {
       vertex = G4ThreeVector(source_pos_x_, source_pos_y_, source_pos_z_);
+    } else if (region == "ACTIVE") {
+      vertex = active_gen_->GenerateVertex("INSIDE");
     } else {
       G4Exception("[PetBox]", "GenerateVertex()", FatalException,
                   "Unknown vertex generation region!");

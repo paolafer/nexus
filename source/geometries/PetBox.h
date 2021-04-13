@@ -1,7 +1,9 @@
 // ----------------------------------------------------------------------------
-// nexus | PetBox.cc
+// nexus | PetBox.h
 //
-// This class implements the geometry of a symmetric box of LXe.
+// This class implements the geometry of the first PETALO prototype.
+// It is an aluminum box filled with LXe, with SiPMs on opposite sides and
+// a calibration source in a port in the middle.
 //
 // The NEXT Collaboration
 // ----------------------------------------------------------------------------
@@ -20,6 +22,7 @@ namespace nexus {
   class TileHamamatsuVUV;
   class TileHamamatsuBlue;
   class TileFBK;
+  class BoxPointSampler;
 }
 
 namespace nexus {
@@ -85,6 +88,8 @@ namespace nexus {
 
     /// Messenger for the definition of control commands
     G4GenericMessenger* msg_;
+
+    BoxPointSampler* active_gen_;
 
   };
 
