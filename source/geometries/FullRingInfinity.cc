@@ -44,8 +44,11 @@ namespace nexus {
     kapton_thickn_(0.3*mm),
     depth_(5.*cm),
     inner_radius_(15.*cm),
-    cryo_width_(12.*cm),
-    cryo_thickn_(1.*mm),
+    lxe_container_int_thickn_(1.*mm),
+    lxe_container_ext_thickn_(2.*cm),
+    vessel_int_thickn_(3.*mm),
+    vessel_ext_thickn_(1.*cm),
+    vacuum_thickn_(10.*cm),
     max_step_size_(1.*mm),
     phantom_(false),
     pt_Lx_(0.),
@@ -82,11 +85,11 @@ namespace nexus {
     inner_r_cmd.SetParameterName("inner_radius", false);
     inner_r_cmd.SetRange("inner_radius>0.");
 
-    G4GenericMessenger::Command& cryo_width_cmd =
-      msg_->DeclareProperty("cryostat_width", cryo_width_, "Width of cryostat in z");
-    cryo_width_cmd.SetUnitCategory("Length");
-    cryo_width_cmd.SetParameterName("cryostat_width", false);
-    cryo_width_cmd.SetRange("cryostat_width>0.");
+    // G4GenericMessenger::Command& cryo_width_cmd =
+    //   msg_->DeclareProperty("cryostat_width", lxe_container_width_, "Width of cryostat in z");
+    // cryo_width_cmd.SetUnitCategory("Length");
+    // cryo_width_cmd.SetParameterName("cryostat_width", false);
+    // cryo_width_cmd.SetRange("cryostat_width>0.");
 
     msg_->DeclareProperty("sipm_rows", n_sipm_rows_, "Number of SiPM rows");
     msg_->DeclareProperty("instrumented_faces", instr_faces_, "Number of instrumented faces");
@@ -176,13 +179,13 @@ namespace nexus {
     G4Box* lab_solid = new G4Box("LAB", lab_size/2., lab_size/2., lab_size/2.);
 
     lab_logic_ =
-      new G4LogicalVolume(lab_solid, G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR"), "LAB");
+      new G4LogicalVolume(lab_solid,
+                          G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR"), "LAB");
     lab_logic_->SetVisAttributes(G4VisAttributes::Invisible);
     this->SetLogicalVolume(lab_logic_);
 
     axial_length_ = sipm_pitch_ *  n_sipm_rows_;
     G4cout << "Axial dimensions (mm) = " << axial_length_/mm << G4endl;
-
 
     external_radius_ = inner_radius_ + depth_;
     G4cout << "Radial dimensions (mm): "<< inner_radius_/mm << ", "
@@ -200,33 +203,68 @@ namespace nexus {
 
   void FullRingInfinity::BuildCryostat()
   {
-    const G4double space_for_elec = 2. * cm;
-    const G4double int_radius_cryo = inner_radius_ - cryo_thickn_ - space_for_elec;
-    const G4double ext_radius_cryo = external_radius_ + cryo_thickn_ + space_for_elec;
+    const G4double extra_int_space = 2. * mm;
+    const G4double elec_ext_space  = 2. * cm;
 
+    const G4double lxe_int_radius = inner_radius_ - extra_int_space;
+    const G4double lxe_ext_radius = external_radius_ + elec_ext_space;
+    const G4double lxe_width      = axial_length_ + 2.*kapton_thickn_;
 
-    G4Tubs* cryostat_solid =
-      new G4Tubs("CRYOSTAT", int_radius_cryo, ext_radius_cryo, cryo_width_/2., 0, twopi);
+    const G4double lxe_container_int_radius = lxe_int_radius - lxe_container_int_thickn_;
+    const G4double lxe_container_ext_radius = lxe_ext_radius + lxe_container_ext_thickn_;
+    const G4double lxe_container_width      = lxe_width + 2.*lxe_container_ext_thickn_;
+
+    const G4double vacuum_int_radius = lxe_container_int_radius - vacuum_thickn_;
+    const G4double vacuum_ext_radius = lxe_container_ext_radius + vacuum_thickn_ ;
+
+    const G4double vessel_int_radius = vacuum_int_radius - vessel_int_thickn_;
+    const G4double vessel_ext_radius = vacuum_ext_radius + vessel_ext_thickn_;
+    const G4double vessel_width      = lxe_container_width + 2.*vessel_ext_thickn_;
+
+    G4Tubs* vessel_solid =
+      new G4Tubs("VACUUM_VESSEL", vessel_int_radius, vessel_ext_radius,
+                 vessel_width/2., 0, twopi);
     G4Material* steel = MaterialsList::Steel();
-    G4LogicalVolume* cryostat_logic =
-      new G4LogicalVolume(cryostat_solid, steel, "CRYOSTAT");
-    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), cryostat_logic,
-		      "CRYOSTAT", lab_logic_, false, 0, true);
+        G4LogicalVolume* vessel_logic =
+          new G4LogicalVolume(vessel_solid, steel, "VACUUM_VESSEL");
+    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), vessel_logic,
+		      "VACUUM_VESSEL", lab_logic_, false, 0, true);
 
 
-    G4double ext_offset = 0. * mm;
+    G4Tubs* vacuum_solid =
+      new G4Tubs("VACUUM", vacuum_int_radius, vacuum_ext_radius,
+                 lxe_container_width/2., 0, twopi);
+    G4Material* vacuum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+    G4LogicalVolume* vacuum_logic =
+          new G4LogicalVolume(vacuum_solid, vacuum, "VACUUM");
+    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), vacuum_logic,
+		      "VACUUM", vessel_logic, false, 0, true);
+
+
+    G4Tubs* lxe_container_solid =
+      new G4Tubs("CONTAINER", lxe_container_int_radius, lxe_container_ext_radius,
+                 lxe_container_width/2., 0, twopi);
+
+    G4Material* aluminum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+    G4LogicalVolume* lxe_container_logic =
+      new G4LogicalVolume(lxe_container_solid, aluminum, "CONTAINER");
+    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), lxe_container_logic,
+		      "CONTAINER", vacuum_logic, false, 0, true);
+
+
+
     G4Tubs* LXe_solid =
-      new G4Tubs("LXE", inner_radius_ - kapton_thickn_, external_radius_ + ext_offset + kapton_thickn_,
-                 (axial_length_ + 2.*kapton_thickn_)/2., 0, twopi);
+      new G4Tubs("LXE", lxe_int_radius, lxe_ext_radius,
+                 lxe_width/2., 0, twopi);
     G4Material* LXe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
     LXe->SetMaterialPropertiesTable(OpticalMaterialProperties::LXe());
     LXe_logic_ =
       new G4LogicalVolume(LXe_solid, LXe, "LXE");
     new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), LXe_logic_,
-		      "LXE", cryostat_logic, false, 0, true);
+		      "LXE", lxe_container_logic, false, 0, true);
 
     G4Tubs* active_solid =
-      new G4Tubs("ACTIVE", inner_radius_, external_radius_ + ext_offset,
+      new G4Tubs("ACTIVE", inner_radius_, external_radius_,
                  axial_length_/2., 0, twopi);
     active_logic_ =
       new G4LogicalVolume(active_solid, LXe, "ACTIVE");
@@ -253,7 +291,7 @@ namespace nexus {
 		      "KAPTON", LXe_logic_, false, 0, true);
 
     G4Tubs* kapton_ext_solid =
-      new G4Tubs("KAPTON", external_radius_ + ext_offset, external_radius_ + ext_offset + kapton_thickn_,
+      new G4Tubs("KAPTON", external_radius_, external_radius_ + kapton_thickn_,
                  axial_length_/2., 0, twopi);
     G4LogicalVolume* kapton_ext_logic =
       new G4LogicalVolume(kapton_ext_solid, kapton, "KAPTON");
@@ -261,7 +299,7 @@ namespace nexus {
     		      "KAPTON", LXe_logic_, false, 0, true);
 
     G4Tubs* kapton_lat_solid =
-      new G4Tubs("KAPTON", inner_radius_ - kapton_thickn_, external_radius_ + ext_offset + kapton_thickn_,
+      new G4Tubs("KAPTON", inner_radius_ - kapton_thickn_, external_radius_ + kapton_thickn_,
                  kapton_thickn_/2., 0, twopi);
     G4LogicalVolume* kapton_lat_logic =
       new G4LogicalVolume(kapton_lat_solid, kapton, "KAPTON");
