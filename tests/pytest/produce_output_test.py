@@ -40,7 +40,6 @@ def test_create_nexus_output_file_full_body(config_tmpdir, output_tmpdir, NEXUSD
 /Geometry/FullRingInfinity/inner_radius 380. mm
 /Geometry/FullRingInfinity/sipm_rows 278
 /Geometry/FullRingInfinity/instrumented_faces 1
-/Geometry/FullRingInfinity/cryostat_width 200 cm
 /Geometry/FullRingInfinity/specific_vertex_X 0. cm
 /Geometry/FullRingInfinity/specific_vertex_Y 0. cm
 /Geometry/FullRingInfinity/specific_vertex_Z 0. cm
