@@ -8,6 +8,7 @@
 
 #include "NexusPhysics.h"
 #include "WavelengthShifting.h"
+#include "LXeScintillation.h"
 
 #include <G4Scintillation.hh>
 #include <G4GenericMessenger.hh>
@@ -88,6 +89,20 @@ namespace nexus {
         FindProcess("compt", G4Gamma::Definition());
        pmanager->RemoveProcess(cs);
     }
+
+
+    LXeScintillation* lxe_scint = new LXeScintillation();
+    auto aParticleIterator = GetParticleIterator();
+    aParticleIterator->reset();
+    while ((*aParticleIterator)()) {
+        G4ParticleDefinition* particle = aParticleIterator->value();
+        pmanager = particle->GetProcessManager();
+
+        if (lxe_scint->IsApplicable(*particle)) {
+          pmanager->AddDiscreteProcess(lxe_scint);
+          pmanager->AddRestProcess(lxe_scint);
+        }
+      }
 
   }
 
