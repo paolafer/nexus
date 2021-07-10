@@ -108,6 +108,9 @@ LXeScintillation::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         G4double      t0 = pPreStepPoint->GetGlobalTime();
 
         G4double TotalEnergyDeposit = aStep.GetTotalEnergyDeposit();
+        G4double ResAt511keV        = 0.06;
+        G4double ResAtStepEnergy    = ResAt511keV * sqrt(511 * keV / TotalEnergyDeposit);
+        G4double FluctEnergyDeposit = G4RandGauss::shoot(TotalEnergyDeposit, TotalEnergyDeposit*ResAtStepEnergy);
 
         G4MaterialPropertiesTable* aMaterialPropertiesTable =
                                aMaterial->GetMaterialPropertiesTable();
@@ -163,7 +166,8 @@ LXeScintillation::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
            MeanNumberOfPhotons = ScintillationYield*
              (fEmSaturation->VisibleEnergyDepositionAtAStep(&aStep));
         else
-           MeanNumberOfPhotons = ScintillationYield*TotalEnergyDeposit;
+            MeanNumberOfPhotons = ScintillationYield*FluctEnergyDeposit;
+           // MeanNumberOfPhotons = ScintillationYield*TotalEnergyDeposit;
 
         if (MeanNumberOfPhotons > 10.)
         {
@@ -705,6 +709,7 @@ GetScintillationYieldByParticleType(const G4Track &aTrack, const G4Step &aStep)
     G4double Yield1 = Scint_Yield_Vector->Value(PreStepKineticEnergy);
     G4double Yield2 = Scint_Yield_Vector->
                                Value(PreStepKineticEnergy - FluctEnergyDeposit); // Value(PreStepKineticEnergy - StepEnergyDeposit);
+    G4cout << Yield2 << ", " << Scint_Yield_Vector->Value(PreStepKineticEnergy - StepEnergyDeposit) << G4endl;
     ScintillationYield = Yield1 - Yield2;
   } else {
     G4ExceptionDescription ed;
