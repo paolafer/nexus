@@ -14,6 +14,7 @@
 #include "IonizationSD.h"
 #include "OpticalMaterialProperties.h"
 #include "Visibilities.h"
+#include "BoxPointSampler.h"
 
 #include <G4GenericMessenger.hh>
 #include <G4Box.hh>
@@ -293,6 +294,10 @@ namespace nexus {
     // active_col.SetForceSolid(true);
     // active_logic->SetVisAttributes(active_col);
 
+    //active_gen_ = new CylinderPointSampler(inner_radius_, axial_length_, depth_ - 1*mm,
+    //              0., G4ThreeVector(0., 0., 0.));
+    active_gen_ = new BoxPointSampler(1.*mm, depth_ - 0.5*mm, 1.*mm, 0, G4ThreeVector(0.*mm, inner_radius_ + depth_/2. - 0.5*mm/2, 0.*mm), 0);
+
   }
 
   void FullRingInfinity::BuildSensors()
@@ -387,6 +392,9 @@ namespace nexus {
       }
     }
 
+// temporary
+
+
   }
 
 
@@ -419,6 +427,8 @@ namespace nexus {
       vertex = spheric_gen_->GenerateVertex("VOLUME");
     } else if (region == "CUSTOM") {
       vertex = RandomPointVertex();
+    } else if (region == "ACTIVE") {
+      vertex = active_gen_->GenerateVertex("INSIDE");
     } else if (region == "SENSITIVITY") {
       unsigned int i = sensitivity_point_id_ + sensitivity_index_;
 

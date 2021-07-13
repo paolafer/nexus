@@ -18,6 +18,7 @@ class G4LogicalVolume;
 namespace nexus {
   class SiPMpetVUV;
   class SpherePointSampler;
+  class BoxPointSampler;
 }
 
 namespace nexus {
@@ -90,7 +91,7 @@ namespace nexus {
     G4double sens_y_min_, sens_y_max_;
     G4double sens_z_min_, sens_z_max_;
 
-
+    BoxPointSampler* active_gen_;
 
   };
 }
