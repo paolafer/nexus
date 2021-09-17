@@ -28,7 +28,6 @@
 #include <TFile.h>
 #include <TH1F.h>
 
-
 using namespace CLHEP;
 using namespace nexus;
 
@@ -78,7 +77,9 @@ void Back2backGammas::GeneratePrimaryVertex(G4Event* evt)
   G4ParticleDefinition* gamma =
     G4ParticleTable::GetParticleTable()->FindParticle("gamma");
 
-  auto p = 510.999 * keV * (
+  G4double energy = 510.999 * keV;
+
+  auto p = energy * (
            (costheta_min_ != -1. || costheta_max_ != 1. || phi_min_ != 0. || phi_max_ != 2.*pi) ?
            Direction(costheta_min_, costheta_max_, phi_min_, phi_max_)                          :
            G4RandomDirection());
@@ -88,7 +89,22 @@ void Back2backGammas::GeneratePrimaryVertex(G4Event* evt)
   auto vertex = new G4PrimaryVertex(position, time);
 
   vertex->SetPrimary(new G4PrimaryParticle(gamma,  p.x(),  p.y(),  p.z()));
-  vertex->SetPrimary(new G4PrimaryParticle(gamma, -p.x(), -p.y(), -p.z()));
+
+  G4double sigma = 0.213 * pi / 180; // radiants
+  G4double angle = G4RandGauss::shoot(0, sigma);
+
+  auto collinear_dir     = G4ThreeVector(-p.x(), -p.y(), -p.z());
+  auto perpendicular_dir = G4ThreeVector(1, 2, 0); // random direction
+  G4double z             = (-collinear_dir.x()*perpendicular_dir.x() - collinear_dir.y()*perpendicular_dir.y())/collinear_dir.z();
+  perpendicular_dir.setZ(z);
+
+  auto final_dir = collinear_dir;
+  final_dir.rotate(angle, perpendicular_dir);
+  G4double angle2 = 2*pi*G4UniformRand();
+  final_dir.rotate(angle2, collinear_dir);
+  auto final_momentum = energy * final_dir.unit();
+
+  vertex->SetPrimary(new G4PrimaryParticle(gamma, final_momentum.x(), final_momentum.y(), final_momentum.z()));
 
   evt->AddPrimaryVertex(vertex);
 
