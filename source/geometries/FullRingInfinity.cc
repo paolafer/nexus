@@ -430,13 +430,14 @@ namespace nexus {
 
  void FullRingInfinity::BuildPhantom()
   {
-    phantom_diam_ = 6.*cm;
+    phantom_diam_ = 12.*cm;
 
     G4Orb* phantom_solid = new G4Orb("PHANTOM",  phantom_diam_/2.);
     G4LogicalVolume* phantom_logic =
-      new G4LogicalVolume(phantom_solid, MaterialsList::PEEK(), "PHANTOM");
-    G4ThreeVector phantom_origin =
-      G4ThreeVector(specific_vertex_X_, specific_vertex_Y_, specific_vertex_Z_);
+      new G4LogicalVolume(phantom_solid,
+                          G4NistManager::Instance()->FindOrBuildMaterial("G4_WATER"),
+                          "PHANTOM");
+    G4ThreeVector phantom_origin = G4ThreeVector(0., 0., 0.);
     new G4PVPlacement(0, phantom_origin, phantom_logic, "PHANTOM", lab_logic_, false, 0, true);
 
     spheric_gen_ =
