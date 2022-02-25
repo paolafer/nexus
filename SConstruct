@@ -328,7 +328,8 @@ WriteNexusConfig(w_prefix_dir)
 env.Execute(Chmod(w_prefix_dir+'/bin/nexus-config', 0o755))
 nexus = env.Program('bin/nexus', ['source/nexus.cc']+src)
 
-TSTDIR = ['materials',
+TSTDIR = ['geometries',
+          'materials',
           'utils',
           'example']
 TSTDIR = ['source/tests/' + dir for dir in TSTDIR]
