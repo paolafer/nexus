@@ -63,8 +63,9 @@ G4double LXeDensity()
   {
 
     // Density at ~0.9 bar, T ~ 163 K
-    G4double density = 2.953 * g/cm3;
-
+//    G4double density = 2.953 * g/cm3;
+    // Density at 1.26 bar, T = 164 K, according to NEST.
+    G4double density = 2.94883 * g/cm3;
     return density;
   }
 
