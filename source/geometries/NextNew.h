@@ -102,7 +102,6 @@ namespace nexus {
     // Distance from the end of the lateral feedthrough to the source pos
     //   G4double ext_source_distance_;
 
-    G4bool lead_castle_; ///< false if castle is open (e.g., lead collimator in axial port)
     G4bool lab_walls_; ///< false (default) if no wall simulation
 
     G4bool disk_source_; ///< true if external disk-like calibration source

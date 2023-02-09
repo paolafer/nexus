@@ -62,7 +62,6 @@ namespace nexus {
     ext_scint_(false),
     calib_port_(""),
     dist_scint_(25.*cm),
-    lead_castle_(true),
     lab_walls_(false),
     disk_source_(false),
     source_mat_(""),
@@ -99,7 +98,7 @@ namespace nexus {
     lead_dist_cmd.SetRange("lead_distance>=0.");
 
     msg_->DeclareProperty("ext_scint", ext_scint_, "Placement of external NaI scintillator");
-    msg_->DeclareProperty("calib_port", calib_port_, "Where calibration source is placed (lateral/axial/upper)");
+    msg_->DeclareProperty("calib_port", calib_port_, "Where calibration source is placed (lateral/upper/random)");
 
     G4GenericMessenger::Command& scint_dist_cmd =
       msg_->DeclareProperty("scint_distance", dist_scint_,
@@ -108,7 +107,6 @@ namespace nexus {
     scint_dist_cmd.SetParameterName("scint_distance", false);
     scint_dist_cmd.SetRange("scint_distance>=0.");
 
-    msg_->DeclareProperty("lead_castle", lead_castle_, "Placement of lead castle");
     msg_->DeclareProperty("lab_walls", lab_walls_, "Placement of Hall A walls");
     msg_->DeclareProperty("disk_source", disk_source_, "External disk-shape calibration source");
     msg_->DeclareProperty("source_material", source_mat_, "Kind of external disk-shape calibration source");
@@ -137,7 +135,6 @@ namespace nexus {
 
   NextNew::~NextNew()
   {
-    //deletes
     delete hallA_walls_;
     delete shielding_;
     delete pedestal_;
@@ -197,27 +194,10 @@ namespace nexus {
     // (i.e., this is the volume that will be placed in the world)
     this->SetLogicalVolume(lab_logic_);
 
-    G4LogicalVolume* surroundings_logic;
-    G4String         surroundings_name;
-    if (lead_castle_) {
-      //SHIELDING
-      shielding_->Construct();
-      G4LogicalVolume*
-      shielding_logic = shielding_->GetLogicalVolume();
-      // shielding_air_logic_ = shielding_->GetAirLogicalVolume();
-      air_logic_ = shielding_->GetAirLogicalVolume();
-
-      surroundings_logic = shielding_logic;
-      surroundings_name  = "LEAD_BOX";
-
-    } else {
-      air_->Construct();
-      //shieldingair__logic_ = air_->GetLogicalVolume();
-      air_logic_ = air_->GetLogicalVolume();
-
-      surroundings_logic = air_logic_;
-      surroundings_name  = "AIR";
-    }
+    //SHIELDING
+    shielding_->Construct();
+    G4LogicalVolume* shielding_logic = shielding_->GetLogicalVolume();
+    air_logic_ = shielding_->GetAirLogicalVolume();
 
     //VESSEL
     vessel_->Construct();
@@ -242,13 +222,13 @@ namespace nexus {
       G4ThreeVector castle_pos(0., hallA_walls_->GetLSCHallACastleY(),
 			       hallA_walls_->GetLSCHallACastleZ());
       new G4PVPlacement(G4Transform3D(rot, castle_pos),
-       			surroundings_logic, surroundings_name,
+       			shielding_logic, "LEAD_BOX",
        			hallA_logic_, false, 0, false);
       new G4PVPlacement(0, displ_ - castle_pos, hallA_logic_, "Hall_A",
       			lab_logic_, false, 0, false);
     } else {
       new G4PVPlacement(G4Transform3D(rot, displ_),
-			surroundings_logic, surroundings_name,
+			shielding_logic, "LEAD_BOX",
 			lab_logic_, false, 0, false);
     }
 
@@ -289,11 +269,6 @@ namespace nexus {
     G4RotationMatrix* up_rot = new G4RotationMatrix();
     up_rot->rotateX(pi/2.);
 
-    G4ThreeVector axial_pos = vessel_->GetAxialExtSourcePosition(); // this is the position of the end of the port tube
-    G4RotationMatrix* ax_rot = new G4RotationMatrix();
-    ax_rot->rotateY(2*pi);
-
-
     if (disk_source_) {
       if (source_mat_ == "Na") {
         source_ = new Na22Source();
@@ -326,7 +301,7 @@ namespace nexus {
                           air_logic_, false, 0, true);
       } else {
         G4Exception("[NextNew]", "Construct()", FatalException,
-                    "The placement of disk source must be lateral or upper!");
+                    "The placement of disk source must be lateral, upper or random!");
       }
 
       G4VisAttributes light_brown_col = nexus::CopperBrown();
@@ -341,13 +316,9 @@ namespace nexus {
         // rot.rotateY(-pi/2.);
         BuildExtScintillator(G4ThreeVector(lat_pos.getX() + naI_->GetLength()/2. + dist_scint_,
                                            lat_pos.getY(), lat_pos.getZ()), *lat_rot);
-      } else if (calib_port_ == "axial") {
-        //    G4RotationMatrix rot_ax;
-        BuildExtScintillator(G4ThreeVector(axial_pos.getX(), axial_pos.getY(),
-                                           axial_pos.getZ() - dist_scint_ - naI_->GetLength()/2.), *ax_rot);
       } else {
          G4Exception("[NextNew]", "Construct()", FatalException,
-		  "The placement of external scintillator must be lateral or axial!");
+		  "The placement of external scintillator must be lateral!");
       }
     }
 
@@ -364,10 +335,6 @@ namespace nexus {
       CollProtection coll_protection;
       coll_protection.Construct();
       G4LogicalVolume* coll_protection_logic = coll_protection.GetLogicalVolume();
-
-      CollSupport coll_support;
-      coll_support.Construct();
-      G4LogicalVolume* coll_support_logic = coll_support.GetLogicalVolume();
 
       if (calib_port_ == "lateral") {
 
@@ -387,46 +354,23 @@ namespace nexus {
         new G4PVPlacement(G4Transform3D(*lat_rot, source_pos), cal_logic,
                           "SCREW_SUPPORT", air_logic_, false, 0, false);
 
-      } else if (calib_port_ == "axial") {
-
-        G4ThreeVector pos(axial_pos.getX(), axial_pos.getY(), axial_pos.getZ() - coll_centre);
-        // new G4PVPlacement(0, pos, coll_logic, "LEAD_COLLIMATOR",
-        //                   air_logic_, false, 0, true);
-        G4ThreeVector pos_protection(axial_pos.getX(), axial_pos.getY(),
-                                     axial_pos.getZ() - coll_->GetLength() - coll_protection.GetAxisCentre());
-        new G4PVPlacement(0, pos_protection, coll_protection_logic, "SOURCE_PROTECTION",
-                          air_logic_, false, 0, false);
-        G4ThreeVector pos_support(axial_pos.getX(), axial_pos.getY() - coll_support.GetYDisplacement(),
-                                     axial_pos.getZ() + coll_support.GetAxisCentre());
-        new G4PVPlacement(0, pos_support, coll_support_logic, "SOURCE_SUPPORT",
-                          air_logic_, false, 0, false);
-
-        G4LogicalVolume* cal_logic = cal_->GetLogicalVolume();
-        source_pos = G4ThreeVector(axial_pos.getX(), axial_pos.getY(),
-                                   axial_pos.getZ() - coll_->GetLength() + cal_->GetCapsuleThickness()/2.);
-
-        new G4PVPlacement(G4Transform3D(*ax_rot, source_pos), cal_logic,
-                          "SCREW_SUPPORT", air_logic_, false, 0, false);
-
       } else {
         G4Exception("[NextNew]", "Construct()", FatalException,
-                    "The placement of lead collimator must be lateral or axial!");
+                    "The placement of lead collimator must be lateral!");
       }
 
     }
 
     //// VERTEX GENERATORS   //
     lab_gen_ =
-      new BoxPointSampler(lab_size_ - 1.*m, lab_size_ - 1.*m, lab_size_ - 1.*m, 1.*m,G4ThreeVector(0.,0.,0.),0);
+      new BoxPointSampler(lab_size_ - 1.*m, lab_size_ - 1.*m, lab_size_ - 1.*m, 1.*m,
+                          G4ThreeVector(0.,0.,0.),0);
 
     // These are the positions of the source inside the capsule
     G4ThreeVector gen_pos_lat = source_pos - G4ThreeVector(cal_->GetSourceZpos(), 0., 0.);
-    G4ThreeVector gen_pos_axial = source_pos + G4ThreeVector(0, 0., cal_->GetSourceZpos());
-    lat_source_gen_ = new CylinderPointSampler(0., cal_->GetSourceThickness(), cal_->GetSourceDiameter()/2.,
+    lat_source_gen_ = new CylinderPointSampler(0., cal_->GetSourceThickness(),
+                                               cal_->GetSourceDiameter()/2.,
                                                0., gen_pos_lat, lat_rot);
-
-    axial_source_gen_ = new CylinderPointSampler(0., cal_->GetSourceThickness(), cal_->GetSourceDiameter()/2.,
-                                               0., gen_pos_axial, ax_rot);
 
     // These are the vertices of the external disk source
     if (disk_source_) {
@@ -436,11 +380,15 @@ namespace nexus {
         G4ThreeVector(lat_pos.getX() + source_->GetSourceThickness()/2., lat_pos.getY(), lat_pos.getZ());
       G4ThreeVector up_pos_gen =
         G4ThreeVector(up_pos.getX(), up_pos.getY() + source_->GetSourceThickness()/2., up_pos.getZ());
-       G4ThreeVector random_pos_gen =
-        G4ThreeVector(up_pos.getX(), vessel_->GetOuterRadius() + source_->GetSourceThickness()/2., inner_elements_->GetELzCoord() - source_dist_from_anode_);
-      source_gen_lat_ = new CylinderPointSampler(0., source_thick, source_diam/2., 0., lat_pos_gen, lat_rot);
-      source_gen_up_ = new CylinderPointSampler(0., source_thick, source_diam/2., 0., up_pos_gen, up_rot);
-      source_gen_random_ = new CylinderPointSampler(0., source_thick, source_diam/2., 0., random_pos_gen, up_rot);
+      G4ThreeVector random_pos_gen =
+        G4ThreeVector(up_pos.getX(), vessel_->GetOuterRadius() + source_->GetSourceThickness()/2.,
+                      inner_elements_->GetELzCoord() - source_dist_from_anode_);
+      source_gen_lat_ =
+        new CylinderPointSampler(0., source_thick, source_diam/2., 0., lat_pos_gen, lat_rot);
+      source_gen_up_ =
+        new CylinderPointSampler(0., source_thick, source_diam/2., 0., up_pos_gen, up_rot);
+      source_gen_random_ =
+        new CylinderPointSampler(0., source_thick, source_diam/2., 0., random_pos_gen, up_rot);
     }
 
   }
@@ -464,18 +412,6 @@ namespace nexus {
         G4Exception("[NextNew]", "GenerateVertex()", FatalException,
                     "This vertex generation region must be used together with lead_block == true!");
       }
-    }
-    else if (region == "EXTERNAL_PORT_AXIAL") {
-      if (lead_block_) {
-        vertex =  axial_source_gen_->GenerateVertex("BODY_VOL");
-      } else {
-        G4Exception("[NextNew]", "GenerateVertex()", FatalException,
-                    "This vertex generation region must be used together with lead_block == true!");
-      }
-    }
-    // Vertex just outside the axial port
-    else if (region == "SOURCE_PORT_AXIAL_EXT") {
-      vertex = vessel_->GetAxialExtSourcePosition();
     }
     // Vertex just outside the lateral port
     else if (region == "SOURCE_PORT_LATERAL_EXT") {
