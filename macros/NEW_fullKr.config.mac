@@ -23,7 +23,9 @@
 /Geometry/PmtR11410/time_binning 100. nanosecond
 /Geometry/KDB/sipm_time_binning 1. microsecond
 
-/PhysicsList/Nexus/photoelectric false
+/Geometry/NextNew/photoe_prob 1.e-3
+
+/PhysicsList/Nexus/photoelectric true
 /process/optical/processActivation Cerenkov false
 
 # GENERATOR

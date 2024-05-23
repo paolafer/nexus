@@ -14,6 +14,7 @@
 #include "Electroluminescence.h"
 #include "WavelengthShifting.h"
 #include "OpPhotoelectricEffect.h"
+//#include "OpPhotoelectricEffectGrids.h"
 
 #include <G4GenericMessenger.hh>
 #include <G4OpticalPhoton.hh>
@@ -142,6 +143,7 @@ namespace nexus {
         if (photoe->IsApplicable(*particle)){
           pmanager = particle->GetProcessManager();
           pmanager->AddDiscreteProcess(photoe);
+          //pmanager->AddRestProcess(photoe);
         }
       }
     }

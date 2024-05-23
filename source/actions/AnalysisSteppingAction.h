@@ -36,6 +36,8 @@ namespace nexus {
   private:
     typedef std::map<G4String, int> detectorCounts;
     detectorCounts my_counts_;
+
+    G4int ph_on_grids_, photoel_ie_, refl_, abs_, refr_;
   };
 
 } // namespace nexus

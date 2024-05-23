@@ -23,5 +23,6 @@
 /nexus/RegisterTrackingAction DefaultTrackingAction
 /nexus/RegisterEventAction DefaultEventAction
 /nexus/RegisterRunAction DefaultRunAction
+/nexus/RegisterSteppingAction AnalysisSteppingAction
 
 /nexus/RegisterMacro macros/NEW_fullKr.config.mac

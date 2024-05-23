@@ -23,5 +23,6 @@
 /nexus/RegisterRunAction DefaultRunAction
 /nexus/RegisterEventAction DefaultEventAction
 /nexus/RegisterTrackingAction DefaultTrackingAction
+/nexus/RegisterSteppingAction AnalysisSteppingAction
 
 /nexus/RegisterMacro macros/NEXT100_full.config.mac

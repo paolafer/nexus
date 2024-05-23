@@ -293,7 +293,8 @@ void Next100FieldCage::DefineMaterials()
   // In Geant4 11.0.0, a bug in treating the OpBoundaryProcess produced in the
   // surface makes the code fail. This is avoided by setting
   // an empty G4MaterialPropertiesTable of the G4Material.
-  steel_->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
+  //steel_->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
+  steel_->SetMaterialPropertiesTable(opticalprops::Steel(photoe_prob_));
 }
 
 
@@ -403,7 +404,7 @@ void Next100FieldCage::BuildCathode()
     new G4LogicalVolume(cathode_solid, steel_, "CATHODE_RING");
 
     new G4PVPlacement(0, G4ThreeVector(GetCoordOrigin().x(), GetCoordOrigin().y(),
-                                     cathode_zpos_),
+                                       cathode_zpos_),
                     cathode_logic, "CATHODE_RING", mother_logic_, false, 0, false);
 
     G4Tubs* diel_grid_solid =
@@ -461,7 +462,7 @@ void Next100FieldCage::BuildCathode()
       gas_mesh_opsur->SetModel(unified);
       gas_mesh_opsur->SetFinish(ground);
       gas_mesh_opsur->SetSigmaAlpha(0.0);
-      gas_mesh_opsur->SetMaterialPropertiesTable(opticalprops::Steel());
+      gas_mesh_opsur->SetMaterialPropertiesTable(opticalprops::SteelSurface());
       new G4LogicalSkinSurface("GAS_CATHODE_MESH_OPSURF",
                               cathode_grid_logic, gas_mesh_opsur);
 
@@ -701,7 +702,7 @@ void Next100FieldCage::BuildELRegion()
     gas_mesh_opsur->SetModel(unified);
     gas_mesh_opsur->SetFinish(ground);
     gas_mesh_opsur->SetSigmaAlpha(0.0);
-    gas_mesh_opsur->SetMaterialPropertiesTable(opticalprops::Steel());
+    gas_mesh_opsur->SetMaterialPropertiesTable(opticalprops::SteelSurface());
     new G4LogicalSkinSurface("GAS_EL_MESH_OPSURF",
                              el_grid_logic, gas_mesh_opsur);
 

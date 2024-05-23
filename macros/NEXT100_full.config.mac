@@ -16,14 +16,18 @@
 
 ##### GEOMETRY #####
 /Geometry/Next100/elfield true
-/Geometry/Next100/EL_field 13 kV/cm
-/Geometry/Next100/pressure 10. bar
+/Geometry/Next100/EL_field 3 kV/cm
+/Geometry/Next100/pressure 1. bar
 /Geometry/Next100/max_step_size 1. mm
+#/Geometry/Next100/use_dielectric_grid true
 
+/Geometry/Next100/photoe_prob 1.e-3
 /process/optical/processActivation Cerenkov false
 
 ##### GENERATOR #####
 /Generator/Kr83mGenerator/region ACTIVE
+
+/PhysicsList/Nexus/photoelectric true
 
 ##### PERSISTENCY #####
 /nexus/persistency/output_file Next100_full.next

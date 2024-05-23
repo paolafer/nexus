@@ -10,6 +10,7 @@
 #include "MaterialsList.h"
 #include "SiPM11.h"
 #include "OpticalMaterialProperties.h"
+#include "FactoryBase.h"
 
 #include <G4Box.hh>
 #include <G4Tubs.hh>
@@ -26,6 +27,8 @@
 #include <CLHEP/Units/SystemOfUnits.h>
 
 namespace nexus {
+
+  REGISTER_CLASS(PMT_QE_setup, GeometryBase)
 
   using namespace CLHEP;
 
@@ -84,18 +87,38 @@ namespace nexus {
 
     G4LogicalVolume* gas_logic = new G4LogicalVolume(gas_solid, gxe, "GAS");
 
-    new G4PVPlacement(0, G4ThreeVector(0,0,0), gas_logic, "GAS",
-		      chamber_logic, false, 0, true);
+    new G4PVPlacement(0, {0,0,0}, gas_logic, "GAS",
+    		      chamber_logic, false, 0, true);
 
+    // Plate of steel
+
+    G4Box* steel_solid = new G4Box("STEEL", 10*cm/2., 10*cm/2., 10*cm/2.);
+    G4Material* steel = materials::Steel316Ti();
+    steel->SetMaterialPropertiesTable(opticalprops::Steel(1.e-3));
+    G4LogicalVolume* steel_logic = new G4LogicalVolume(steel_solid, steel, "STEEL");
+
+    new G4PVPlacement(0, {0,0,0}, steel_logic, "STEEL",
+    		      gas_logic, false, 0, true);
+
+    
+    G4OpticalSurface* gas_mesh_opsur = new G4OpticalSurface("GAS_EL_MESH_OPSURF");
+    gas_mesh_opsur->SetType(dielectric_dielectric);
+    gas_mesh_opsur->SetModel(unified);
+    gas_mesh_opsur->SetFinish(ground);
+    gas_mesh_opsur->SetSigmaAlpha(0.0);
+    gas_mesh_opsur->SetMaterialPropertiesTable(opticalprops::SteelSurface());
+    new G4LogicalSkinSurface("GAS_EL_MESH_OPSURF",
+                             steel_logic, gas_mesh_opsur);
+    
     // Positioning of the PMT /////////////////////////////////////////
-    pmt_.Construct();
-    G4LogicalVolume* pmt_logic = pmt_.GetLogicalVolume();
+    //    pmt_.Construct();
+    //    G4LogicalVolume* pmt_logic = pmt_.GetLogicalVolume();
     //   pmt_length_ = pmt_.Length() // this is R7378A
-    pmt_length_ = 20*cm; // this is R11410
+    //    pmt_length_ = 20*cm; // this is R11410
 
-    new G4PVPlacement(0, G4ThreeVector(0.,0.,-length_/2.+pmt_length_/2.),
-		      pmt_logic, "PMT",
-		      gas_logic, false, 0, true);
+    //    new G4PVPlacement(0, G4ThreeVector(0.,0.,-length_/2.+pmt_length_/2.),
+    //		      pmt_logic, "PMT",
+    //		      gas_logic, false, 0, true);
 
     // Positioning of the teflon panel
     // G4Box* teflon_solid = new G4Box("GAS", 22.*cm/2., 50.*cm/2., thickn/2.);
@@ -139,7 +162,8 @@ namespace nexus {
       point =  G4ThreeVector(x, y,-length_/2.+pmt_length_+z_dist_);
 
     } else if (region == "POINT") {
-      point = G4ThreeVector(0, 0, -length_/2.+pmt_length_+z_dist_);
+      //point = G4ThreeVector(0, 0, -length_/2.+pmt_length_+z_dist_);
+      point = G4ThreeVector(0, 0, -6*cm);
     }
 
     return point;

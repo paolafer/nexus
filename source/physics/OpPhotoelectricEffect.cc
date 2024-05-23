@@ -49,17 +49,19 @@ namespace nexus {
   G4VParticleChange*
   OpPhotoelectricEffect::PostStepDoIt(const G4Track& track, const G4Step& step)
   {
+    // G4cout << "Here" << G4endl;
     // Initialize particle change with current track values
     particle_change_->Initialize(track);
 
     const G4Material* material = track.GetMaterial();
 
     G4MaterialPropertiesTable* mpt = material->GetMaterialPropertiesTable();
-
     if (!mpt ||
         !mpt->ConstPropertyExists("WORK_FUNCTION") ||
         !mpt->ConstPropertyExists("OP_PHOTOELECTRIC_PROBABILITY"))
       return G4VDiscreteProcess::PostStepDoIt(track, step);
+
+    G4cout << "In phot. " << material->GetName() << G4endl;
 
     G4double photon_energy = track.GetDynamicParticle()->GetTotalEnergy();
     G4double work_function = mpt->GetConstProperty("WORK_FUNCTION");
@@ -68,11 +70,16 @@ namespace nexus {
     if (!work_function || !probability)
       return G4VDiscreteProcess::PostStepDoIt(track, step);
 
+    //   G4cout << photon_energy << ", " << work_function << ", " << probability << G4endl;
+
+
     // We have to compare the energy with the work function here because
     // Geant4 doesn't deal with the vector of probabilities correctly.
     if ((photon_energy   <  work_function) ||
-        (G4UniformRand() >= probability  ) )
+        (G4UniformRand() >= probability  ) ) {
+      //     particle_change_->ProposeTrackStatus(fStopAndKill);
       return G4VDiscreteProcess::PostStepDoIt(track, step);
+    }
 
     particle_change_->ProposeTrackStatus(fStopAndKill);
 

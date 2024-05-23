@@ -756,9 +756,7 @@ namespace opticalprops {
     mpt->AddProperty("ABSLENGTH", abs_energy, absLength);
 
     // PHOTOELECTRIC REEMISSION
-    // https://aip.scitation.org/doi/10.1063/1.1708797
-    G4double stainless_wf = 4.3 * eV; // work function
-    mpt->AddConstProperty("WORK_FUNCTION", stainless_wf, 1);
+    mpt->AddConstProperty("WORK_FUNCTION", stainless_wf_, 1);
     mpt->AddConstProperty("OP_PHOTOELECTRIC_PROBABILITY", photoe_p, 1);
 
     return mpt;
@@ -1653,7 +1651,7 @@ namespace opticalprops {
   }
 
   // Stainles Steel Optical Properties Table
-  G4MaterialPropertiesTable * Steel()
+  G4MaterialPropertiesTable* SteelSurface()
   {
       G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
 
@@ -1665,7 +1663,8 @@ namespace opticalprops {
       // We assume a reflectivity of the stainless steel of 20% at VUV
       // Measurements may be required to update these values
       // Visible spectrum taken from: https://doi.org/10.1063/1.331503
-      std::vector<G4double> reflectivities = { 0.60, 0.60, 0.50, 0.40, 0.20, 0.20};
+      std::vector<G4double> reflectivities = {0.60, 0.60, 0.50, 0.40, 0.20, 0.20};
+      std::vector<G4double> transmittance  = {0.40, 0.40, 0.50, 0.60, 0.80, 0.80};
 
       // We assume that the reflectivity is mostly specular.
       // Measurements may be required to update these values
@@ -1673,8 +1672,40 @@ namespace opticalprops {
       mpt->AddProperty("SPECULARLOBECONSTANT", {optPhotMinE_, optPhotMaxE_}, {0., 0.});
       mpt->AddProperty("SPECULARSPIKECONSTANT",{optPhotMinE_, optPhotMaxE_}, {0.75, 0.75});
       mpt->AddProperty("BACKSCATTERCONSTANT",  {optPhotMinE_, optPhotMaxE_}, {0., 0.});
-      mpt->AddProperty("REFLECTIVITY", refl_energies, reflectivities);
+      //mpt->AddProperty("REFLECTIVITY", refl_energies, reflectivities);
+      mpt->AddProperty("TRANSMITTANCE", refl_energies, transmittance);
+
       return mpt;
+  }
+
+  G4MaterialPropertiesTable* Steel(G4double photoe_p)
+  {
+    G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
+    
+    // REFRACTIVE INDEX
+    //G4MaterialPropertiesTable* steel_pt = opticalprops::SteelSurface();
+    //G4MaterialPropertyVector*  refl = steel_pt->GetProperty("REFLECTIVITY");
+  
+
+    // REFRACTIVE INDEX
+    std::vector<G4double> rindex_energy = {
+      optPhotMinE_, hc_ / (500. * nm), hc_ / (350. * nm),
+      hc_ / (300. * nm), hc_ / (170. * nm),  optPhotMaxE_ };
+
+    G4cout << hc_ / (500. * nm) << ", " << hc_ / (350. * nm) << ", " <<
+      hc_ / (300. * nm) << ", " << hc_ / (170. * nm) << G4endl; 
+    std::vector<G4double> rindex = {1.0, 1.0, 1.0, 1.0, 5., 5.};
+    mpt->AddProperty("RINDEX", rindex_energy, rindex);
+    
+    // ABSORPTION LENGTH
+    std::vector<G4double> abs_energy = {optPhotMinE_, optPhotMaxE_};
+    std::vector<G4double> abs_length  = {1.e-9*micrometer, 1.e-9*micrometer};
+    mpt->AddProperty("ABSLENGTH", abs_energy, abs_length);
+    
+    // PHOTOELECTRIC REEMISSION
+    mpt->AddConstProperty("WORK_FUNCTION", stainless_wf_, 1);
+    mpt->AddConstProperty("OP_PHOTOELECTRIC_PROBABILITY", photoe_p, 1);
+    return mpt;
   }
 
   /// Generic material, to be modifed by the user ///

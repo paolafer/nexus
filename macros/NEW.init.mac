@@ -15,7 +15,7 @@
 
 /nexus/RegisterGeometry NextNew
 
-/nexus/RegisterGenerator IonGenerator
+/nexus/RegisterGenerator IonGenerators
 
 /nexus/RegisterPersistencyManager PersistencyManager
 

@@ -85,7 +85,9 @@ namespace opticalprops {
 
   G4MaterialPropertiesTable* Copper();
 
-  G4MaterialPropertiesTable* Steel();
+  G4MaterialPropertiesTable* SteelSurface();
+
+  G4MaterialPropertiesTable* Steel(G4double photoe_p=0);
 
   G4MaterialPropertiesTable* XXX();
 
@@ -97,6 +99,9 @@ namespace opticalprops {
   constexpr G4double noAbsLength_ = 1.e8  * m;
 
   constexpr G4double hc_ = h_Planck * c_light;
+
+  // https://aip.scitation.org/doi/10.1063/1.1708797
+  constexpr G4double stainless_wf_ = 4.3 * eV;
 
 
 } // end namespace opticalprops

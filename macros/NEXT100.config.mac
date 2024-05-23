@@ -13,6 +13,7 @@
 /tracking/verbose 0
 
 /process/em/verbose 0
+/process/had/verbose 0
 
 ##### GEOMETRY #####
 /Geometry/Next100/elfield false
